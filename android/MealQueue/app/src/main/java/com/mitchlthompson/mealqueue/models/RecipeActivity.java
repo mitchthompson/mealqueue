@@ -1,7 +1,9 @@
-package com.mitchlthompson.mealqueue;
+package com.mitchlthompson.mealqueue.models;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.mitchlthompson.mealqueue.R;
 
 public class RecipeActivity extends AppCompatActivity {
 
