@@ -19,6 +19,7 @@
         <activity android:name=".models.CalendarActivity" />
         <activity android:name=".models.RecipeActivity" />
         <activity android:name=".models.GroceryActivity" />
+        <activity android:name=".models.LoginActivity"></activity>
     </application>
 
 </manifest>

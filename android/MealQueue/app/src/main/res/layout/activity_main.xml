@@ -27,5 +27,4 @@
         android:scrollbars="vertical"
         tools:listitem="@layout/weekplan_items" />
 
-
 </RelativeLayout>
