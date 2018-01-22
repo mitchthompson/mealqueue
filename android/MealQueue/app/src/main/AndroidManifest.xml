@@ -9,16 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".MainActivity">
+        <activity android:name=".models.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CalendarActivity" />
-        <activity android:name=".RecipeActivity" />
-        <activity android:name=".GroceryActivity" />
+        <activity android:name=".models.CalendarActivity" />
+        <activity android:name=".models.RecipeActivity" />
+        <activity android:name=".models.GroceryActivity" />
+        <activity android:name=".models.LoginActivity"></activity>
     </application>
 
 </manifest>
