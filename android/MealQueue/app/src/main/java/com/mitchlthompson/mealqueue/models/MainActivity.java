@@ -3,6 +3,7 @@ package com.mitchlthompson.mealqueue.models;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,8 @@ import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.mitchlthompson.mealqueue.R;
 import com.mitchlthompson.mealqueue.adapters.WeekPlanAdapter;
 
@@ -29,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> daysList;
     private ArrayList<String> mealList;
 
+    private FirebaseAuth auth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(myToolbar);
         context = getApplicationContext();
-
 
         daysList = new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"));
 
@@ -63,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_logout:
                 // User chose the "Log Out" item...
+                auth = FirebaseAuth.getInstance();
+                auth.signOut();
+
                 Toast.makeText(getApplicationContext(), "Logout toast. Cheers!",
                         Toast.LENGTH_SHORT).show();
 
@@ -84,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_grocery:
                 startActivity(new Intent(MainActivity.this, GroceryActivity.class));
+                return true;
+
+            case R.id.action_settings:
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 return true;
 
             default:

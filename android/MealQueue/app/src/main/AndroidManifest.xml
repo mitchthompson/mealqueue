@@ -10,16 +10,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".models.MainActivity">
+
+            <!--
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
+        </activity>
+        <activity android:name=".models.CalendarActivity" />
+        <activity android:name=".models.RecipeActivity" />
+        <activity android:name=".models.GroceryActivity" />
+        <activity android:name=".models.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".models.CalendarActivity" />
-        <activity android:name=".models.RecipeActivity" />
-        <activity android:name=".models.GroceryActivity" />
-        <activity android:name=".models.LoginActivity"></activity>
+        <activity android:name=".models.SignupActivity" />
+        <activity android:name=".models.ResetPasswordActivity" />
+        <activity android:name=".models.SettingsActivity"></activity>
     </application>
 
 </manifest>
