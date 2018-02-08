@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,6 +25,11 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
     private Context context;
     private RecyclerView recyclerView;
     private RelativeLayout relativeLayout;
@@ -31,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
     private ArrayList<String> daysList;
     private ArrayList<String> mealList;
-
-    private FirebaseAuth auth;
 
 
     @Override
@@ -42,6 +46,22 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(myToolbar);
         context = getApplicationContext();
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                if(user != null){
+                    Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
+                    Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                }else{
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
 
         daysList = new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"));
 
@@ -67,12 +87,8 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_logout:
                 // User chose the "Log Out" item...
-                auth = FirebaseAuth.getInstance();
-                auth.signOut();
-
-                Toast.makeText(getApplicationContext(), "Logout toast. Cheers!",
-                        Toast.LENGTH_SHORT).show();
-
+                mAuth.signOut();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 return true;
 
             // TODO Remove following action items from actionbar here and in res/main_menu.xml
@@ -104,4 +120,19 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
 }
