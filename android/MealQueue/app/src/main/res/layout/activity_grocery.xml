@@ -20,7 +20,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/myToolbar">
 
@@ -32,7 +32,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Sync"
-            app:layout_constraintEnd_toStartOf="@+id/button4"
+            app:layout_constraintEnd_toStartOf="@+id/grocery_clear"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,7 +47,7 @@
             app:layout_constraintTop_toBottomOf="@+id/button2" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/grocery_clear"
             android:layout_width="188dp"
             android:layout_height="0dp"
             android:layout_marginEnd="8dp"
@@ -55,19 +55,6 @@
             android:text="Clear"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/grocery_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="518dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:scrollbars="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/grocery_item"
-            tools:listitem="@layout/grocery_items" />
 
         <EditText
             android:id="@+id/grocery_item"
@@ -80,6 +67,20 @@
             android:text=""
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button2" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/grocery_recycler"
+            android:layout_width="398dp"
+            android:layout_height="451dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:scrollbars="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.228"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_item_btn"
+            tools:listitem="@layout/grocery_items" />
 
     </android.support.constraint.ConstraintLayout>
 

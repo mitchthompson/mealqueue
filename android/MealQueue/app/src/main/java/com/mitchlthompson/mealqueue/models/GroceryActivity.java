@@ -28,7 +28,6 @@ import com.mitchlthompson.mealqueue.R;
 import com.mitchlthompson.mealqueue.adapters.GroceryListAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class GroceryActivity extends AppCompatActivity {
     private static final String TAG = "GroceryActivity";
@@ -38,11 +37,12 @@ public class GroceryActivity extends AppCompatActivity {
     private RelativeLayout relativeLayout;
     private GroceryListAdapter groceryListAdapter;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
-    private ArrayList<String> groceryList;
 
-    private ArrayList<String> groceryItems;
+    private ArrayList<String> itemNames;
+    private ArrayList<String> itemIDs;
     private EditText groceryItem;
     private Button addItemBtn;
+    private Button clearItemsBtn;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
@@ -81,10 +81,8 @@ public class GroceryActivity extends AppCompatActivity {
 
         Log.d(TAG, userID);
 
-        groceryList = new ArrayList<>(Arrays.asList("Tomato", "Cheese", "Green Beans",
-                "Jelly", "Eggs", "Peaches", "Ice Cream"));
-        groceryItems = new ArrayList<>();
-
+        itemNames = new ArrayList<>();
+        itemIDs = new ArrayList<>();
 
         groceryItem = findViewById(R.id.grocery_item);
         addItemBtn = findViewById(R.id.add_item_btn);
@@ -98,11 +96,21 @@ public class GroceryActivity extends AppCompatActivity {
             }
         });
 
+        clearItemsBtn = findViewById(R.id.grocery_clear);
+        clearItemsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRef.removeValue();
+            }
+        });
+
         mRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String value = dataSnapshot.getValue(String.class);
-                groceryItems.add(value);
+                String key = dataSnapshot.getKey();
+                itemIDs.add(key);
+                itemNames.add(value);
                 groceryListAdapter.notifyDataSetChanged();
             }
 
@@ -113,7 +121,9 @@ public class GroceryActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                itemIDs.clear();
+                itemNames.clear();
+                groceryListAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -133,7 +143,7 @@ public class GroceryActivity extends AppCompatActivity {
         recyclerViewLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
-        groceryListAdapter = new GroceryListAdapter(context, groceryItems);
+        groceryListAdapter = new GroceryListAdapter(context, userID, itemNames, itemIDs);
         recyclerView.setAdapter(groceryListAdapter);
     }
 
