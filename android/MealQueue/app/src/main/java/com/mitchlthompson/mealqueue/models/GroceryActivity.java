@@ -89,8 +89,6 @@ public class GroceryActivity extends AppCompatActivity {
         addItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getBaseContext(), groceryItem.getText() + " added!",
-                        Toast.LENGTH_LONG).show();
                 mRef.push().setValue(groceryItem.getText().toString());
 
             }
@@ -101,7 +99,11 @@ public class GroceryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mRef.removeValue();
+                itemIDs.clear();
+                itemNames.clear();
+                groceryListAdapter.notifyDataSetChanged();
             }
+
         });
 
         mRef.addChildEventListener(new ChildEventListener() {
@@ -121,9 +123,7 @@ public class GroceryActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                itemIDs.clear();
-                itemNames.clear();
-                groceryListAdapter.notifyDataSetChanged();
+
             }
 
             @Override

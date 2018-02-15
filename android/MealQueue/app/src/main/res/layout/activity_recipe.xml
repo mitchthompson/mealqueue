@@ -18,12 +18,36 @@
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recipe_recycler"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/myToolbar"
-        android:scrollbars="vertical"
-        tools:listitem="@layout/recipe_items" />
+        android:layout_height="fill_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/myToolbar">
+
+        <Button
+            android:id="@+id/launch_addrecipe_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="57dp"
+            android:layout_height="58dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/myToolbar"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="9dp"
+            android:background="@drawable/ic_add_black_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recipe_recycler"
+            android:layout_width="395dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:scrollbars="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/launch_addrecipe_btn"
+            tools:layout_editor_absoluteX="8dp"
+            tools:listitem="@layout/recipe_items" />
+
+    </android.support.constraint.ConstraintLayout>
+
 
 </RelativeLayout>
