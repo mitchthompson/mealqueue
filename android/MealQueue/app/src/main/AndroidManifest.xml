@@ -31,7 +31,8 @@
         </activity>
         <activity android:name=".models.SignupActivity" />
         <activity android:name=".models.ResetPasswordActivity" />
-        <activity android:name=".models.SettingsActivity"></activity>
+        <activity android:name=".models.SettingsActivity" />
+        <activity android:name=".models.AddRecipeActivity"></activity>
     </application>
 
 </manifest>
