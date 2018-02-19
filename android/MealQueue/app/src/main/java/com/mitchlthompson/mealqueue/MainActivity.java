@@ -1,4 +1,4 @@
-package com.mitchlthompson.mealqueue.models;
+package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.mitchlthompson.mealqueue.R;
 import com.mitchlthompson.mealqueue.adapters.WeekPlanAdapter;
 
 import java.util.ArrayList;
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_recipes:
-                startActivity(new Intent(MainActivity.this, RecipeActivity.class));
+                startActivity(new Intent(MainActivity.this, RecipesActivity.class));
                 return true;
 
             case R.id.action_grocery:

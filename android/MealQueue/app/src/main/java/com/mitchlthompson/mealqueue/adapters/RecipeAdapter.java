@@ -1,13 +1,17 @@
 package com.mitchlthompson.mealqueue.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.mitchlthompson.mealqueue.R;
+import com.mitchlthompson.mealqueue.RecipeActivity;
+import com.mitchlthompson.mealqueue.models.Recipe;
 
 import java.util.ArrayList;
 
@@ -17,12 +21,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     private View view;
     private RecipeViewHolder recipeViewHolder;
     private LayoutInflater inflater;
-    private ArrayList<String> recipeList = new ArrayList();
+    private ArrayList<String> recipeNames;
+    private ArrayList<String> recipeIDs;
 
-    public RecipeAdapter(Context newContext, ArrayList<String> newData) {
+    public RecipeAdapter(Context newContext, ArrayList<String> newNameData, ArrayList<String> newIDData) {
         this.context = newContext;
         inflater = LayoutInflater.from(context);
-        this.recipeList = newData;
+        this.recipeNames = newNameData;
+        this.recipeIDs = newIDData;
     }
 
     @Override
@@ -33,20 +39,31 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     @Override
-    public void onBindViewHolder(RecipeViewHolder holder, int position) {
-        holder.itemTextView.setText(recipeList.get(position));
+    public void onBindViewHolder(RecipeViewHolder holder, final int position) {
+        holder.recipeBtn.setText(recipeNames.get(position).toString());
+        holder.recipeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(context, newHireID.get(position), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(v.getContext(), RecipeActivity.class);
+                intent.putExtra("Recipe ID",  recipeIDs.get(position));
+                intent.putExtra("Recipe Name", recipeNames.get(position).toString());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return recipeList.size();
+        return recipeNames.size();
     }
 
     public static class RecipeViewHolder extends RecyclerView.ViewHolder {
-        public TextView itemTextView;
+        public Button recipeBtn;
         public RecipeViewHolder(View v) {
             super(v);
-            itemTextView = (TextView) v.findViewById(R.id.recipe_item);
+            recipeBtn = v.findViewById(R.id.recipe_btn);
         }
     }
 }

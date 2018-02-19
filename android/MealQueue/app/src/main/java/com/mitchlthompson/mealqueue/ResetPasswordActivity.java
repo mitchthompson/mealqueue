@@ -1,9 +1,7 @@
-package com.mitchlthompson.mealqueue.models;
+package com.mitchlthompson.mealqueue;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import com.mitchlthompson.mealqueue.R;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;

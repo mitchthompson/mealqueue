@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".models.MainActivity">
+        <activity android:name=".MainActivity">
 
             <!--
             <intent-filter>
@@ -19,20 +19,21 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".models.CalendarActivity" />
-        <activity android:name=".models.RecipeActivity" />
-        <activity android:name=".models.GroceryActivity" />
-        <activity android:name=".models.LoginActivity">
+        <activity android:name=".CalendarActivity" />
+        <activity android:name=".RecipesActivity" />
+        <activity android:name=".GroceryActivity" />
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".models.SignupActivity" />
-        <activity android:name=".models.ResetPasswordActivity" />
-        <activity android:name=".models.SettingsActivity" />
-        <activity android:name=".models.AddRecipeActivity"></activity>
+        <activity android:name=".SignupActivity" />
+        <activity android:name=".ResetPasswordActivity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".AddRecipeActivity" />
+        <activity android:name=".RecipeActivity"></activity>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.mitchlthompson.mealqueue.models;
+package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

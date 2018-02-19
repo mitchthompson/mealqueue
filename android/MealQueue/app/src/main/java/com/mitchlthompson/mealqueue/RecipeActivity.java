@@ -1,15 +1,13 @@
-package com.mitchlthompson.mealqueue.models;
+package com.mitchlthompson.mealqueue;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.mitchlthompson.mealqueue.R;
-
-public class CalendarActivity extends AppCompatActivity {
+public class RecipeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calendar);
+        setContentView(R.layout.activity_recipe);
     }
 }
