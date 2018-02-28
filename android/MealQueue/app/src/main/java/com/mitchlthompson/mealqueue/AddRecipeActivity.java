@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +32,12 @@ public class AddRecipeActivity extends AppCompatActivity {
     private TextView recipeNameInput, directionsInput;
     private String recipeName, directions;
     private Map<String, String> ingredients;
-    private Button addRecipeBtn;
+    private Button nextBtn;
+
+    private ArrayList<String> itemNames;
+    private ArrayList<String> itemIDs;
+    private EditText ingredientItem;
+    private Button addIngredientBtn;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
@@ -73,25 +80,25 @@ public class AddRecipeActivity extends AppCompatActivity {
         ingredients.put("Salt", "1 teaspoon");
         ingredients.put("Pepper", "1/4 teaspoon");
 
-        addRecipeBtn = findViewById(R.id.add_to_recipes);
-        addRecipeBtn.setOnClickListener(new View.OnClickListener() {
+        nextBtn = findViewById(R.id.add_to_recipes);
+        nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 recipeName = recipeNameInput.getText().toString();
                 directions = directionsInput.getText().toString();
                 Log.d(TAG, "Recipe name: " + recipeName + " Directions: " + directions);
-                String key = mRef.push().getKey();
-                mRef.child(key).child("Recipe Name").setValue(recipeName);
-                mRef.child(key).child("Directions").setValue(directions);
-                mRef.child(key).child("Ingredients").setValue(ingredients);
-                mRef.child(key).child("Recipe ID").setValue(key);
-                startActivity(new Intent(AddRecipeActivity.this, RecipesActivity.class));
+                //String key = mRef.push().getKey();
+                //mRef.child(key).child("Recipe Name").setValue(recipeName);
+                //mRef.child(key).child("Directions").setValue(directions);
+                //mRef.child(key).child("Ingredients").setValue(ingredients);
+                //mRef.child(key).child("Recipe ID").setValue(key);
+                startActivity(new Intent(AddRecipeActivity.this, AddIngredientsActivity.class)
+                        .putExtra("Recipe Name", recipeName)
+                        .putExtra("Directions", directions));
 
 
             }
         });
-
-
     }
 
     @Override

@@ -33,7 +33,8 @@
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".AddRecipeActivity" />
-        <activity android:name=".RecipeActivity"></activity>
+        <activity android:name=".RecipeActivity" />
+        <activity android:name=".AddIngredientsActivity"></activity>
     </application>
 
 </manifest>
