@@ -1,4 +1,4 @@
-package com.mitchlthompson.mealqueue.models;
+package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,19 +18,18 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.mitchlthompson.mealqueue.R;
+import com.google.firebase.database.ValueEventListener;
 import com.mitchlthompson.mealqueue.adapters.RecipeAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Map;
 
-public class RecipeActivity extends AppCompatActivity {
-    private static final String TAG = "RecipeActivity";
+public class RecipesActivity extends AppCompatActivity {
+    private static final String TAG = "RecipesActivity";
 
     private Context context;
     private RecyclerView recyclerView;
@@ -42,6 +41,8 @@ public class RecipeActivity extends AppCompatActivity {
     private ArrayList<String> recipeIDs;
     private Button addRecipeBtn;
 
+    private Map<String,Object> recipes;
+
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -52,7 +53,7 @@ public class RecipeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe);
+        setContentView(R.layout.activity_recipes);
         Toolbar myToolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(myToolbar);
         context = getApplicationContext();
@@ -79,28 +80,42 @@ public class RecipeActivity extends AppCompatActivity {
 
         Log.d(TAG, userID);
 
-        mRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                String value = dataSnapshot.getValue(String.class);
-                String key = dataSnapshot.getKey();
-                recipeIDs.add(key);
-                recipeNames.add(value);
-                recipeAdapter.notifyDataSetChanged();
-            }
 
+        addRecipeBtn = findViewById(R.id.launch_addrecipe_btn);
+        addRecipeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            public void onClick(View v) {
+                startActivity(new Intent(RecipesActivity.this, AddRecipeActivity.class));
 
             }
+        });
 
+        recipeIDs = new ArrayList<>();
+        recipeNames = new ArrayList<>();
+
+        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-            }
+                recipes = (Map<String,Object>) dataSnapshot.getValue();
+                for (Map.Entry<String, Object> entry : recipes.entrySet()){
+                    //Get user map
+                    Map singleRecipe = (Map) entry.getValue();
+                    //Get recipe name field and append to list
+                    recipeNames.add((singleRecipe.get("Recipe Name").toString()));
+                    recipeIDs.add(singleRecipe.get("Recipe ID").toString());
+                    Log.d(TAG, " recipe name: " + singleRecipe.get("Recipe Name").toString()
+                    + " recipeID: " + singleRecipe.get("Recipe ID").toString());
 
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                    relativeLayout = (RelativeLayout) findViewById(R.id.action_recipes);
+                    recyclerView = (RecyclerView) findViewById(R.id.recipe_recycler);
+                    recyclerViewLayoutManager = new LinearLayoutManager(context);
+                    recyclerView.setLayoutManager(recyclerViewLayoutManager);
+
+                    recipeAdapter = new RecipeAdapter(context, recipeNames, recipeIDs);
+                    recyclerView.setAdapter(recipeAdapter);
+
+                }
 
             }
 
@@ -110,25 +125,6 @@ public class RecipeActivity extends AppCompatActivity {
             }
         });
 
-        addRecipeBtn = findViewById(R.id.launch_addrecipe_btn);
-        addRecipeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(RecipeActivity.this, AddRecipeActivity.class));
-
-            }
-        });
-
-        recipeIDs = new ArrayList<>();
-        recipeNames = new ArrayList<>();
-
-        relativeLayout = (RelativeLayout) findViewById(R.id.action_recipes);
-        recyclerView = (RecyclerView) findViewById(R.id.recipe_recycler);
-        recyclerViewLayoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(recyclerViewLayoutManager);
-
-        recipeAdapter = new RecipeAdapter(context, recipeNames);
-        recyclerView.setAdapter(recipeAdapter);
     }
 
     @Override

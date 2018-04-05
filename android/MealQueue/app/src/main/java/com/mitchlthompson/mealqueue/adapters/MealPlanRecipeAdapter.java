@@ -7,15 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mitchlthompson.mealqueue.R;
 import com.mitchlthompson.mealqueue.RecipeActivity;
-import com.mitchlthompson.mealqueue.models.Recipe;
 
 import java.util.ArrayList;
 
-public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
+public class MealPlanRecipeAdapter extends RecyclerView.Adapter<MealPlanRecipeAdapter.RecipeViewHolder> {
 
     private Context context;
     private View view;
@@ -24,7 +23,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     private ArrayList<String> recipeNames;
     private ArrayList<String> recipeIDs;
 
-    public RecipeAdapter(Context newContext, ArrayList<String> newNameData, ArrayList<String> newIDData) {
+    public MealPlanRecipeAdapter(Context newContext, ArrayList<String> newNameData, ArrayList<String> newIDData) {
         this.context = newContext;
         inflater = LayoutInflater.from(context);
         this.recipeNames = newNameData;
@@ -44,12 +43,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.recipeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(context, newHireID.get(position), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(v.getContext(), RecipeActivity.class);
-                intent.putExtra("Recipe ID",  recipeIDs.get(position));
-                intent.putExtra("Recipe Name", recipeNames.get(position).toString());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                v.getContext().startActivity(intent);
+                Toast.makeText(context, recipeNames.get(position), Toast.LENGTH_SHORT).show();
             }
         });
     }

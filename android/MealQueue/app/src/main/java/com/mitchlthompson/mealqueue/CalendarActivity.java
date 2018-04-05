@@ -1,4 +1,4 @@
-package com.mitchlthompson.mealqueue.models;
+package com.mitchlthompson.mealqueue;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
