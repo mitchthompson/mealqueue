@@ -12,30 +12,42 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mitchlthompson.mealqueue.adapters.WeekPlanAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private String userID;
+    private DatabaseReference mRefRecipe, mRefMealPlan;
+
+    private HashMap<String,Object> mealPlan, recipes;
+    private String mealPlanDate;
 
     private Context context;
-    private RecyclerView recyclerView;
-    private RelativeLayout relativeLayout;
-    private WeekPlanAdapter weekPlanAdapter;
-    private RecyclerView.LayoutManager recyclerViewLayoutManager;
-    private ArrayList<String> daysList;
-    private ArrayList<String> mealList;
+    private Button mondayBtn;
+    private TextView mondayTV, monMeal1, monMeal2, monMeal3;
 
 
     @Override
@@ -47,6 +59,25 @@ public class MainActivity extends AppCompatActivity {
         context = getApplicationContext();
 
         mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        userID = user.getUid();
+
+        mondayBtn = findViewById(R.id.monday_btn);
+        mondayBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, MealPlanDayActivity.class)
+                        .putExtra("Day", "Monday" ));
+
+            }
+        });
+
+        mRefRecipe = mFirebaseDatabase.getReference("/recipes/" + userID);
+
+        mealPlanDate = "1-12-18";
+        mRefMealPlan = mFirebaseDatabase.getReference("/mealplans/" + userID + "/" + mealPlanDate+ "/" +
+        "Monday");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -62,15 +93,23 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        daysList = new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"));
+        mealPlan = new HashMap<>();
 
-        relativeLayout = (RelativeLayout) findViewById(R.id.activity_main);
-        recyclerView = (RecyclerView) findViewById(R.id.weekplan_recycler);
-        recyclerViewLayoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(recyclerViewLayoutManager);
+        mRefMealPlan.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        weekPlanAdapter = new WeekPlanAdapter(context, daysList);
-        recyclerView.setAdapter(weekPlanAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
     }
 
     @Override
