@@ -3,11 +3,14 @@ package com.mitchlthompson.mealqueue;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.renderscript.Sampler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,34 +23,44 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mitchlthompson.mealqueue.adapters.WeekPlanAdapter;
+import com.mitchlthompson.mealqueue.helpers.myCalendar;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private Context context;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String userID;
-    private DatabaseReference mRefRecipe, mRefMealPlan;
+    private DatabaseReference mRefMealPlan;
 
-    private HashMap<String,Object> mealPlan, recipes;
-    private String mealPlanDate;
+    private String weekStart;
+    private String date;
 
-    private Context context;
     private Button mondayBtn;
-    private TextView mondayTV, monMeal1, monMeal2, monMeal3;
+    private TextView mondayTV;
+    private TextView mondayMeal1;
+
+    private Map<String,Object> mealPlanData;
 
 
     @Override
@@ -63,21 +76,28 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
+        myCalendar c = new myCalendar();
+        List dates = formatDates(c.getCalendar());
+        //Log.d(TAG, dates.toString());
+        weekStart = dates.get(0).toString();
+
+        mondayTV = findViewById(R.id.monday_tv);
+        mondayTV.setText(dates.get(0).toString());
+        mondayMeal1 = findViewById(R.id.monday_meal_1);
+
         mondayBtn = findViewById(R.id.monday_btn);
+        date = dates.get(0).toString();
         mondayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, MealPlanDayActivity.class)
-                        .putExtra("Day", "Monday" ));
+                        .putExtra("WeekStart", weekStart)
+                        .putExtra("Date", date));
 
             }
         });
 
-        mRefRecipe = mFirebaseDatabase.getReference("/recipes/" + userID);
-
-        mealPlanDate = "1-12-18";
-        mRefMealPlan = mFirebaseDatabase.getReference("/mealplans/" + userID + "/" + mealPlanDate+ "/" +
-        "Monday");
+        mRefMealPlan = mFirebaseDatabase.getReference("/mealplans/" + userID + "/" + weekStart + "/" + date);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -93,12 +113,15 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        mealPlan = new HashMap<>();
 
         mRefMealPlan.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                mealPlanData = (HashMap<String,Object>) dataSnapshot.getValue();
+                if(mealPlanData!=null){
+                    parseMealPlanData(mealPlanData);
+                }
+                //Log.d(TAG, "mealplandata " + mealPlanData.toString());
 
             }
 
@@ -107,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
 
 
     }
@@ -171,6 +193,29 @@ public class MainActivity extends AppCompatActivity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+
+    public List formatDates(List inputDates){
+        for(int x=0; x<inputDates.size();x++){
+            //Log.d(TAG, dates.get(x).toString());
+            String[] splitArray = inputDates.get(x).toString().split("\\s+");
+            inputDates.set(x,
+                    splitArray[0] + " "
+                            + splitArray[1] + " "
+                            + splitArray[2]);
+        }
+        return inputDates;
+    }
+
+    public void parseMealPlanData(Map<String,Object> inputMap){
+        String mealsText = "";
+        for (String key : inputMap.keySet()){
+            Log.d(TAG, key.toString());
+            mealsText = mealsText + key.toString() + "\n";
+            //Log.d(TAG,inputMap.get(key)+" ");
+            //Log.d(TAG,inputMap.get(key)+" "+key);
+        }
+        mondayMeal1.setText(mealsText);
     }
 
 }

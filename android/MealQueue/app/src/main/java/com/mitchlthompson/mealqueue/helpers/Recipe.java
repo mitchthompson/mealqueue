@@ -1,4 +1,4 @@
-package com.mitchlthompson.mealqueue.models;
+package com.mitchlthompson.mealqueue.helpers;
 
 /**
  * Created by mitch on 2/15/2018.

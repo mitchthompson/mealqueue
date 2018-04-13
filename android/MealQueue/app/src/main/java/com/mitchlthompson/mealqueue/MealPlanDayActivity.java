@@ -1,6 +1,7 @@
 package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,6 +43,8 @@ public class MealPlanDayActivity extends AppCompatActivity {
 
     private ArrayList<String> recipeNames;
     private ArrayList<String> recipeIDs;
+    private String weekStart;
+    private String date;
     private Button addRecipeBtn;
 
     private Map<String,Object> recipes;
@@ -74,6 +77,18 @@ public class MealPlanDayActivity extends AppCompatActivity {
             }
         };
 
+        if(getIntent().hasExtra("Date")) {
+            Bundle bundle = getIntent().getExtras();
+            weekStart = bundle.getString("WeekStart");
+            date = bundle.getString("Date");
+        }
+        else {
+            Log.d(TAG, "Nothing in intent bundle");
+            startActivity(new Intent(MealPlanDayActivity.this, MainActivity.class));
+        }
+
+
+
         recipeIDs = new ArrayList<>();
         recipeNames = new ArrayList<>();
 
@@ -88,14 +103,12 @@ public class MealPlanDayActivity extends AppCompatActivity {
                     //Get recipe name field and append to list
                     recipeNames.add((singleRecipe.get("Recipe Name").toString()));
                     recipeIDs.add(singleRecipe.get("Recipe ID").toString());
-                    Log.d(TAG, " recipe name: " + singleRecipe.get("Recipe Name").toString()
-                            + " recipeID: " + singleRecipe.get("Recipe ID").toString());
 
                     recyclerView = findViewById(R.id.recipe_recycler);
                     recyclerViewLayoutManager = new LinearLayoutManager(context);
                     recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
-                    mealPlanRecipeAdapter = new MealPlanRecipeAdapter(context, recipeNames, recipeIDs);
+                    mealPlanRecipeAdapter = new MealPlanRecipeAdapter(context, weekStart, date, recipeNames, recipeIDs);
                     recyclerView.setAdapter(mealPlanRecipeAdapter);
 
                 }
