@@ -57,7 +57,7 @@ public class MealPlanRecipeAdapter extends RecyclerView.Adapter<MealPlanRecipeAd
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
-        mRef = mFirebaseDatabase.getReference("/mealplans/" + userID + "/" + weekStart + "/" + date);
+        mRef = mFirebaseDatabase.getReference("/mealplans/" + userID + "/" + date);
 
         holder.recipeBtn.setText(recipeNames.get(position).toString());
         holder.recipeBtn.setOnClickListener(new View.OnClickListener() {

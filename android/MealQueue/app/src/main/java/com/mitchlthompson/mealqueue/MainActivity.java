@@ -2,43 +2,39 @@ package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.renderscript.Sampler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
+import android.widget.CalendarView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mitchlthompson.mealqueue.adapters.MealPlanRecipeAdapter;
 import com.mitchlthompson.mealqueue.adapters.WeekPlanAdapter;
 import com.mitchlthompson.mealqueue.helpers.myCalendar;
 
-import java.security.Key;
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -52,15 +48,23 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String userID;
     private DatabaseReference mRefMealPlan;
+    private DatabaseReference mRefMealPlan2;
+
+    private RecyclerView recyclerView;
+    private WeekPlanAdapter weekPlanAdapter;
+    private RecyclerView.LayoutManager recyclerViewLayoutManager;
 
     private String weekStart;
-    private String date;
-
-    private Button mondayBtn;
-    private TextView mondayTV;
-    private TextView mondayMeal1;
+    private List dates;
+    private String todaysDate;
+    private CalendarView calenderView;
+    private myCalendar c;
 
     private Map<String,Object> mealPlanData;
+
+    private TextView dateTextView;
+    private TextView mealsTextView;
+    private Button addPlanBtn;
 
 
     @Override
@@ -76,28 +80,10 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
-        myCalendar c = new myCalendar();
-        List dates = formatDates(c.getCalendar());
-        //Log.d(TAG, dates.toString());
-        weekStart = dates.get(0).toString();
-
-        mondayTV = findViewById(R.id.monday_tv);
-        mondayTV.setText(dates.get(0).toString());
-        mondayMeal1 = findViewById(R.id.monday_meal_1);
-
-        mondayBtn = findViewById(R.id.monday_btn);
-        date = dates.get(0).toString();
-        mondayBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, MealPlanDayActivity.class)
-                        .putExtra("WeekStart", weekStart)
-                        .putExtra("Date", date));
-
-            }
-        });
-
-        mRefMealPlan = mFirebaseDatabase.getReference("/mealplans/" + userID + "/" + weekStart + "/" + date);
+        Calendar c = Calendar.getInstance();
+        //Log.d(TAG, String.valueOf(c.get(Calendar.MONTH)) + " " + String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
+        todaysDate = getDate(c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+        Log.d(TAG, todaysDate);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -113,20 +99,54 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-
-        mRefMealPlan.addValueEventListener(new ValueEventListener() {
+        dateTextView = findViewById(R.id.date_tv);
+        dateTextView.setText(todaysDate);
+        mealsTextView = findViewById(R.id.meals_tv);
+        addPlanBtn = findViewById(R.id.add_plan_btn);
+        addPlanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mealPlanData = (HashMap<String,Object>) dataSnapshot.getValue();
-                if(mealPlanData!=null){
-                    parseMealPlanData(mealPlanData);
-                }
-                //Log.d(TAG, "mealplandata " + mealPlanData.toString());
-
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, MealPlanDayActivity.class)
+                        .putExtra("WeekStart", weekStart)
+                        .putExtra("Date", todaysDate));
             }
+        });
+
+        getMeals(todaysDate);
+
+        calenderView = findViewById(R.id.calendarView);
+        calenderView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onSelectedDayChange(CalendarView view, int year, int month,
+                                            int dayOfMonth) {
+                todaysDate = getDate(month, dayOfMonth);
+                dateTextView.setText(todaysDate);
+                mealsTextView.setText("");
+
+                mRefMealPlan2 = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(todaysDate);
+
+                mRefMealPlan2.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mealPlanData = (HashMap<String,Object>) dataSnapshot.getValue();
+                        String meals = "";
+                        if(mealPlanData!=null) {
+                            for (String key : mealPlanData.keySet()) {
+                                Log.d(TAG, key);
+                                meals = meals + key + "\n\n";
+                            }
+                            if (meals != "") {
+                                mealsTextView.setText(meals);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
             }
         });
@@ -195,27 +215,64 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public String getDate(int month, int dayOfMonth) {
+        String date = "";
+        switch (month) {
+            case 0:
+                date = "Jan";
+                break;
+
+            case 1:
+                date = "Feb";
+                break;
+
+            case 2:
+                date = "Mar";
+                break;
+
+            case 3:
+                date = "Apr";
+                break;
+        }
+        date = date + " " + dayOfMonth;
+        return date;
+    }
+
     public List formatDates(List inputDates){
         for(int x=0; x<inputDates.size();x++){
             //Log.d(TAG, dates.get(x).toString());
             String[] splitArray = inputDates.get(x).toString().split("\\s+");
-            inputDates.set(x,
-                    splitArray[0] + " "
-                            + splitArray[1] + " "
+            inputDates.set(x, splitArray[1] + " "
                             + splitArray[2]);
         }
         return inputDates;
     }
 
-    public void parseMealPlanData(Map<String,Object> inputMap){
-        String mealsText = "";
-        for (String key : inputMap.keySet()){
-            Log.d(TAG, key.toString());
-            mealsText = mealsText + key.toString() + "\n";
-            //Log.d(TAG,inputMap.get(key)+" ");
-            //Log.d(TAG,inputMap.get(key)+" "+key);
-        }
-        mondayMeal1.setText(mealsText);
+    public void getMeals(String date) {
+        mRefMealPlan = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(date);
+
+        mRefMealPlan.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mealPlanData = (HashMap<String,Object>) dataSnapshot.getValue();
+                String meals = "";
+                if(mealPlanData!=null) {
+                    for (String key : mealPlanData.keySet()) {
+                        Log.d(TAG, key);
+                        meals = meals + key + "\n\n";
+                    }
+                    if (meals != "") {
+                        mealsTextView.setText(meals);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
+
 
 }
