@@ -1,37 +1,32 @@
 package com.mitchlthompson.mealqueue.helpers;
 
-/**
- * Created by mitch on 2/15/2018.
- */
 
 public class Recipe {
     public String name;
-    public String cookingTime;
-    public String directions;
+    public String ID;
 
     public Recipe(){
 
     }
 
-    public Recipe(String name, String cookingTime, String directions){
+    public Recipe(String name, String ID){
         this.name = name;
-        this.cookingTime = cookingTime;
-        this.directions = directions;
+        this.ID = ID;
     }
 
-    public String getCookingTime() {
-        return cookingTime;
+    public String getName() {
+        return name;
     }
 
-    public void setCookingTime(String cookingTime) {
-        this.cookingTime = cookingTime;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getDirections() {
-        return directions;
+    public String getID() {
+        return ID;
     }
 
-    public void setDirections(String directions) {
-        this.directions = directions;
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }

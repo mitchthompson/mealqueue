@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mitchlthompson.mealqueue.R;
 import com.mitchlthompson.mealqueue.RecipeActivity;
+import com.mitchlthompson.mealqueue.helpers.Recipe;
 
 import java.util.ArrayList;
 
@@ -27,7 +28,6 @@ public class MealPlanRecipeAdapter extends RecyclerView.Adapter<MealPlanRecipeAd
     private ArrayList<String> recipeNames;
     private ArrayList<String> recipeIDs;
     private String date;
-    private String weekStart;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
@@ -35,10 +35,9 @@ public class MealPlanRecipeAdapter extends RecyclerView.Adapter<MealPlanRecipeAd
     private DatabaseReference mRef;
     private String userID;
 
-    public MealPlanRecipeAdapter(Context newContext, String newWeekStart, String newDate, ArrayList<String> newNameData, ArrayList<String> newIDData) {
+    public MealPlanRecipeAdapter(Context newContext, String newDate, ArrayList<String> newNameData, ArrayList<String> newIDData) {
         this.context = newContext;
         inflater = LayoutInflater.from(context);
-        this.weekStart = newWeekStart;
         this.date = newDate;
         this.recipeNames = newNameData;
         this.recipeIDs = newIDData;
@@ -57,15 +56,16 @@ public class MealPlanRecipeAdapter extends RecyclerView.Adapter<MealPlanRecipeAd
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
-        mRef = mFirebaseDatabase.getReference("/mealplans/" + userID + "/" + date);
+        mRef = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(date);
 
         holder.recipeBtn.setText(recipeNames.get(position).toString());
         holder.recipeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(context, recipeNames.get(position), Toast.LENGTH_SHORT).show();
-                //String key = mRef.push().getKey();
                 mRef.child(recipeNames.get(position)).setValue(recipeIDs.get(position));
+                //mRef.child(recipeIDs.get(position));
+                //mRef.push().setValue(recipeIDs.get(position));
             }
         });
     }

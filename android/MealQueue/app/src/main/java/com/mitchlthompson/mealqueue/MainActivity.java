@@ -50,15 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mRefMealPlan;
     private DatabaseReference mRefMealPlan2;
 
-    private RecyclerView recyclerView;
-    private WeekPlanAdapter weekPlanAdapter;
-    private RecyclerView.LayoutManager recyclerViewLayoutManager;
-
-    private String weekStart;
-    private List dates;
     private String todaysDate;
     private CalendarView calenderView;
-    private myCalendar c;
 
     private Map<String,Object> mealPlanData;
 
@@ -82,8 +75,9 @@ public class MainActivity extends AppCompatActivity {
 
         Calendar c = Calendar.getInstance();
         //Log.d(TAG, String.valueOf(c.get(Calendar.MONTH)) + " " + String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
-        todaysDate = getDate(c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-        Log.d(TAG, todaysDate);
+        //todaysDate = getDate(c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+        todaysDate = (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DAY_OF_MONTH) + "-" + c.get(Calendar.YEAR);
+        Log.d(TAG, "Date: " + todaysDate);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -100,14 +94,13 @@ public class MainActivity extends AppCompatActivity {
         };
 
         dateTextView = findViewById(R.id.date_tv);
-        dateTextView.setText(todaysDate);
+        dateTextView.setText(formatDate(todaysDate));
         mealsTextView = findViewById(R.id.meals_tv);
         addPlanBtn = findViewById(R.id.add_plan_btn);
         addPlanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, MealPlanDayActivity.class)
-                        .putExtra("WeekStart", weekStart)
                         .putExtra("Date", todaysDate));
             }
         });
@@ -120,8 +113,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month,
                                             int dayOfMonth) {
-                todaysDate = getDate(month, dayOfMonth);
-                dateTextView.setText(todaysDate);
+                todaysDate = (month + 1) + "-" + dayOfMonth + "-" + year;
+                Log.d(TAG, "Date: " + todaysDate);
+                dateTextView.setText(formatDate(todaysDate));
                 mealsTextView.setText("");
 
                 mRefMealPlan2 = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(todaysDate);
@@ -215,37 +209,62 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public String getDate(int month, int dayOfMonth) {
+    public String formatDate(String oldDate) {
         String date = "";
-        switch (month) {
-            case 0:
+        String[] splitArray = oldDate.split("-");
+        switch (Integer.parseInt(splitArray[0])) {
+            case 1:
                 date = "Jan";
                 break;
 
-            case 1:
+            case 2:
                 date = "Feb";
                 break;
 
-            case 2:
+            case 3:
                 date = "Mar";
                 break;
 
-            case 3:
+            case 4:
                 date = "Apr";
                 break;
-        }
-        date = date + " " + dayOfMonth;
-        return date;
-    }
 
-    public List formatDates(List inputDates){
-        for(int x=0; x<inputDates.size();x++){
-            //Log.d(TAG, dates.get(x).toString());
-            String[] splitArray = inputDates.get(x).toString().split("\\s+");
-            inputDates.set(x, splitArray[1] + " "
-                            + splitArray[2]);
+            case 5:
+                date = "May";
+                break;
+
+            case 6:
+                date = "June";
+                break;
+
+            case 7:
+                date = "July";
+                break;
+
+            case 8:
+                date = "Aug";
+                break;
+
+            case 9:
+                date = "Sep";
+                break;
+
+            case 10:
+                date = "Oct";
+                break;
+
+            case 11:
+                date = "Nov";
+                break;
+
+            case 12:
+                date = "Dec";
+                break;
+
+
         }
-        return inputDates;
+        date = date + " " + splitArray[1];
+        return date;
     }
 
     public void getMeals(String date) {

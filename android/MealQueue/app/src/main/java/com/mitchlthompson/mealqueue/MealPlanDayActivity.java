@@ -43,7 +43,6 @@ public class MealPlanDayActivity extends AppCompatActivity {
 
     private ArrayList<String> recipeNames;
     private ArrayList<String> recipeIDs;
-    private String weekStart;
     private String date;
     private Button addRecipeBtn;
 
@@ -79,7 +78,6 @@ public class MealPlanDayActivity extends AppCompatActivity {
 
         if(getIntent().hasExtra("Date")) {
             Bundle bundle = getIntent().getExtras();
-            weekStart = bundle.getString("WeekStart");
             date = bundle.getString("Date");
         }
         else {
@@ -108,7 +106,7 @@ public class MealPlanDayActivity extends AppCompatActivity {
                     recyclerViewLayoutManager = new LinearLayoutManager(context);
                     recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
-                    mealPlanRecipeAdapter = new MealPlanRecipeAdapter(context, weekStart, date, recipeNames, recipeIDs);
+                    mealPlanRecipeAdapter = new MealPlanRecipeAdapter(context, date, recipeNames, recipeIDs);
                     recyclerView.setAdapter(mealPlanRecipeAdapter);
 
                 }

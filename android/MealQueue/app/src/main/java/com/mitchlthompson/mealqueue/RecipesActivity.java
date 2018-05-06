@@ -78,7 +78,8 @@ public class RecipesActivity extends AppCompatActivity {
             }
         };
 
-        Log.d(TAG, userID);
+        Log.d(TAG, "Firebase URL: " + mRef);
+        Log.d(TAG, "User ID: " + userID);
 
 
         addRecipeBtn = findViewById(R.id.launch_addrecipe_btn);
@@ -93,28 +94,31 @@ public class RecipesActivity extends AppCompatActivity {
         recipeIDs = new ArrayList<>();
         recipeNames = new ArrayList<>();
 
-        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 recipes = (Map<String,Object>) dataSnapshot.getValue();
-                for (Map.Entry<String, Object> entry : recipes.entrySet()){
-                    //Get user map
-                    Map singleRecipe = (Map) entry.getValue();
-                    //Get recipe name field and append to list
-                    recipeNames.add((singleRecipe.get("Recipe Name").toString()));
-                    recipeIDs.add(singleRecipe.get("Recipe ID").toString());
-                    Log.d(TAG, " recipe name: " + singleRecipe.get("Recipe Name").toString()
-                    + " recipeID: " + singleRecipe.get("Recipe ID").toString());
+                if(recipes!= null) {
+                    for (Map.Entry<String, Object> entry : recipes.entrySet()) {
+                        //Get user map
+                        Map singleRecipe = (Map) entry.getValue();
+                        //Get recipe name field and append to list
+                        recipeNames.add((singleRecipe.get("Recipe Name").toString()));
+                        recipeIDs.add(singleRecipe.get("Recipe ID").toString());
+                        Log.d(TAG, " recipe name: " + singleRecipe.get("Recipe Name").toString()
+                                + " recipeID: " + singleRecipe.get("Recipe ID").toString());
 
-                    relativeLayout = (RelativeLayout) findViewById(R.id.action_recipes);
-                    recyclerView = (RecyclerView) findViewById(R.id.recipe_recycler);
-                    recyclerViewLayoutManager = new LinearLayoutManager(context);
-                    recyclerView.setLayoutManager(recyclerViewLayoutManager);
+                        relativeLayout = (RelativeLayout) findViewById(R.id.action_recipes);
+                        recyclerView = (RecyclerView) findViewById(R.id.recipe_recycler);
+                        recyclerViewLayoutManager = new LinearLayoutManager(context);
+                        recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
-                    recipeAdapter = new RecipeAdapter(context, recipeNames, recipeIDs);
-                    recyclerView.setAdapter(recipeAdapter);
-
+                        recipeAdapter = new RecipeAdapter(context, recipeNames, recipeIDs);
+                        recyclerView.setAdapter(recipeAdapter);
+                    }
+                }else{
+                    Log.d(TAG, "No Recipes found.");
                 }
 
             }

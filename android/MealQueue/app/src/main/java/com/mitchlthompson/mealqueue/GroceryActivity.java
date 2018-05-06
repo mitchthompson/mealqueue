@@ -1,6 +1,7 @@
 package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ public class GroceryActivity extends AppCompatActivity {
     private EditText groceryItem;
     private Button addItemBtn;
     private Button clearItemsBtn;
+    private Button grocerySyncBtn;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
@@ -83,6 +85,14 @@ public class GroceryActivity extends AppCompatActivity {
 
         itemNames = new ArrayList<>();
         itemIDs = new ArrayList<>();
+
+        grocerySyncBtn = findViewById(R.id.grocery_sync_btn);
+        grocerySyncBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(GroceryActivity.this, SyncActivity.class));
+            }
+        });
 
         groceryItem = findViewById(R.id.grocery_item);
         addItemBtn = findViewById(R.id.add_item_btn);

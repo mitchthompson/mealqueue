@@ -34,7 +34,6 @@ public class WeekPlanAdapter extends RecyclerView.Adapter<WeekPlanAdapter.WeekPl
     private View view;
     private WeekPlanViewHolder weekPlanViewHolder;
     private LayoutInflater inflater;
-    private String weekStart;
     private List<String> dayList;
     private String day;
 
@@ -48,10 +47,9 @@ public class WeekPlanAdapter extends RecyclerView.Adapter<WeekPlanAdapter.WeekPl
     private String mealsText;
 
 
-    public WeekPlanAdapter(Context newContext, String newWeekStart, List<String> newDayList) {
+    public WeekPlanAdapter(Context newContext, List<String> newDayList) {
         this.context = newContext;
         inflater = LayoutInflater.from(context);
-        this.weekStart = newWeekStart;
         this.dayList = newDayList;
     }
 
@@ -70,7 +68,6 @@ public class WeekPlanAdapter extends RecyclerView.Adapter<WeekPlanAdapter.WeekPl
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, MealPlanDayActivity.class)
-                        .putExtra("WeekStart", weekStart)
                         .putExtra("Date", dayList.get(position)));
 
             }
