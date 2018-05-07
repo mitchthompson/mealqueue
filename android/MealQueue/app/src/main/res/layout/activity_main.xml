@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
@@ -7,85 +7,94 @@
     android:layout_height="fill_parent"
     tools:context="com.mitchlthompson.mealqueue.MainActivity">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/myToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/myToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:layout_alignParentStart="true"/>
 
     <android.support.v7.widget.CardView
         android:id="@+id/mealplan_cardview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="125dp"
+        android:layout_below="@+id/myToolbar"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/myToolbar">
+        android:layout_marginTop="8dp">
 
-        <android.support.constraint.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/date_tv"
-                android:layout_width="96dp"
-                android:layout_height="52dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:textAlignment="center"
-                android:textSize="24sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <android.support.v7.widget.CardView
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:id="@+id/mealplan_cardview2">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/date_tv"
+                    android:layout_width="96dp"
+                    android:layout_height="52dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:textAlignment="center"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/add_plan_btn"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="98dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/mealplan_addmeal"
+                    android:textAlignment="center"
+                    android:layout_below="@+id/date_tv"/>
+
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
 
             <TextView
                 android:id="@+id/meals_tv"
-                android:layout_width="190dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
                 android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/date_tv"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/add_plan_btn"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="98dp"
-                android:layout_height="40dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="Add Meal"
-                android:textAlignment="center"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/date_tv" />
-        </android.support.constraint.ConstraintLayout>
+                android:layout_marginTop="4dp"
+                tools:text="No meals planned"
+                android:layout_toRightOf="@id/mealplan_cardview2"
+                />
+
+
+        </RelativeLayout>
+
     </android.support.v7.widget.CardView>
 
     <CalendarView
         android:id="@+id/calendarView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/mealplan_cardview"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mealplan_cardview" />
+        android:layout_marginTop="2dp" />
 
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="8dp"
+            app:menu="@menu/nav_items"></android.support.design.widget.BottomNavigationView>
+</RelativeLayout>
 
-</android.support.constraint.ConstraintLayout>
-</ScrollView>
