@@ -1,17 +1,17 @@
 package com.mitchlthompson.mealqueue;
 
+
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -19,21 +19,24 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.mitchlthompson.mealqueue.R;
 import com.mitchlthompson.mealqueue.adapters.GroceryListAdapter;
 
 import java.util.ArrayList;
 
-public class GroceryActivity extends AppCompatActivity {
-    private static final String TAG = "GroceryActivity";
 
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class GroceryFragment extends Fragment {
+    private static final String TAG = "GroceryFragment";
+    private View view;
     private Context context;
+
     private RecyclerView recyclerView;
     private RelativeLayout relativeLayout;
     private GroceryListAdapter groceryListAdapter;
@@ -53,13 +56,16 @@ public class GroceryActivity extends AppCompatActivity {
     private String userID;
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_grocery);
+    public GroceryFragment() {
+        // Required empty public constructor
+    }
 
-        Toolbar myToolbar = findViewById(R.id.myToolbar);
-        setSupportActionBar(myToolbar);
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_grocery, container, false);
+        context = getActivity();
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -86,16 +92,16 @@ public class GroceryActivity extends AppCompatActivity {
         itemNames = new ArrayList<>();
         itemIDs = new ArrayList<>();
 
-        grocerySyncBtn = findViewById(R.id.grocery_sync_btn);
+        grocerySyncBtn = view.findViewById(R.id.grocery_sync_btn);
         grocerySyncBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(GroceryActivity.this, SyncActivity.class));
+
             }
         });
 
-        groceryItem = findViewById(R.id.grocery_item);
-        addItemBtn = findViewById(R.id.add_item_btn);
+        groceryItem = view.findViewById(R.id.grocery_item);
+        addItemBtn = view.findViewById(R.id.add_item_btn);
         addItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,7 +110,7 @@ public class GroceryActivity extends AppCompatActivity {
             }
         });
 
-        clearItemsBtn = findViewById(R.id.grocery_clear);
+        clearItemsBtn = view.findViewById(R.id.grocery_clear);
         clearItemsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,20 +153,23 @@ public class GroceryActivity extends AppCompatActivity {
             }
         });
 
-        context = getApplicationContext();
-        relativeLayout = findViewById(R.id.action_grocery);
-        recyclerView = findViewById(R.id.grocery_recycler);
+        relativeLayout = view.findViewById(R.id.action_grocery);
+        recyclerView = view.findViewById(R.id.grocery_recycler);
         recyclerViewLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
         groceryListAdapter = new GroceryListAdapter(context, userID, itemNames, itemIDs);
         recyclerView.setAdapter(groceryListAdapter);
+
+
+
+        return view;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
     }
+
 }

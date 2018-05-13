@@ -2,8 +2,12 @@ package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +18,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
+import android.widget.CalendarView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,29 +30,44 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mitchlthompson.mealqueue.adapters.MealPlanRecipeAdapter;
 import com.mitchlthompson.mealqueue.adapters.WeekPlanAdapter;
+import com.mitchlthompson.mealqueue.helpers.myCalendar;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private Context context;
+
+    private BottomNavigationView mMainNav;
+    private FrameLayout mMainFrame;
+    private HomeFragment homeFragment;
+    private RecipesFragment recipesFragment;
+    private GroceryFragment groceryFragment;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String userID;
-    private DatabaseReference mRefRecipe, mRefMealPlan;
+    private DatabaseReference mRefMealPlan;
+    private DatabaseReference mRefMealPlan2;
 
-    private HashMap<String,Object> mealPlan, recipes;
-    private String mealPlanDate;
+    private String todaysDate;
+    private CalendarView calenderView;
 
-    private Context context;
-    private Button mondayBtn;
-    private TextView mondayTV, monMeal1, monMeal2, monMeal3;
+    private Map<String,Object> mealPlanData;
+
+    private TextView dateTextView;
+    private TextView mealsTextView;
+    private Button addPlanBtn;
 
 
     @Override
@@ -63,22 +83,6 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
-        mondayBtn = findViewById(R.id.monday_btn);
-        mondayBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, MealPlanDayActivity.class)
-                        .putExtra("Day", "Monday" ));
-
-            }
-        });
-
-        mRefRecipe = mFirebaseDatabase.getReference("/recipes/" + userID);
-
-        mealPlanDate = "1-12-18";
-        mRefMealPlan = mFirebaseDatabase.getReference("/mealplans/" + userID + "/" + mealPlanDate+ "/" +
-        "Monday");
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -93,22 +97,41 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        mealPlan = new HashMap<>();
+        mMainFrame = findViewById(R.id.main_frame);
+        mMainNav = findViewById(R.id.main_nav);
 
-        mRefMealPlan.addValueEventListener(new ValueEventListener() {
+        homeFragment = new HomeFragment();
+        recipesFragment = new RecipesFragment();
+        groceryFragment = new GroceryFragment();
+
+        setFragment(homeFragment);
+
+        mMainNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch(item.getItemId()){
+                    case R.id.nav_home:
+                        //mMainNav.setItemBackgroundResource(R.color.colorPrimary);
+                        setFragment(homeFragment);
+                        return true;
 
+                    case R.id.nav_recipes:
+                        //mMainNav.setItemBackgroundResource(R.color.colorAccent);
+                        setFragment(recipesFragment);
+                        //startActivity(new Intent(context, RecipesActivity.class));
+                        return true;
 
-            }
+                    case R.id.nav_grocery:
+                        //mMainNav.setItemBackgroundResource(R.color.colorPrimaryDark);
+                        //startActivity(new Intent(context, GroceryActivity.class));
+                        setFragment(groceryFragment);
+                        return true;
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+                    default:
+                        return false;
+                }
             }
         });
-
-
 
     }
 
@@ -155,8 +178,13 @@ public class MainActivity extends AppCompatActivity {
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
+    }
+
+    private void setFragment(Fragment fragment){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_frame, fragment);
+        fragmentTransaction.commit();
     }
 
     @Override

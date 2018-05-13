@@ -9,8 +9,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mitchlthompson.mealqueue.R;
 import com.mitchlthompson.mealqueue.RecipeActivity;
+import com.mitchlthompson.mealqueue.helpers.Recipe;
 
 import java.util.ArrayList;
 
@@ -22,10 +27,18 @@ public class MealPlanRecipeAdapter extends RecyclerView.Adapter<MealPlanRecipeAd
     private LayoutInflater inflater;
     private ArrayList<String> recipeNames;
     private ArrayList<String> recipeIDs;
+    private String date;
 
-    public MealPlanRecipeAdapter(Context newContext, ArrayList<String> newNameData, ArrayList<String> newIDData) {
+    private FirebaseDatabase mFirebaseDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference mRef;
+    private String userID;
+
+    public MealPlanRecipeAdapter(Context newContext, String newDate, ArrayList<String> newNameData, ArrayList<String> newIDData) {
         this.context = newContext;
         inflater = LayoutInflater.from(context);
+        this.date = newDate;
         this.recipeNames = newNameData;
         this.recipeIDs = newIDData;
     }
@@ -39,11 +52,20 @@ public class MealPlanRecipeAdapter extends RecyclerView.Adapter<MealPlanRecipeAd
 
     @Override
     public void onBindViewHolder(RecipeViewHolder holder, final int position) {
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        userID = user.getUid();
+        mRef = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(date);
+
         holder.recipeBtn.setText(recipeNames.get(position).toString());
         holder.recipeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(context, recipeNames.get(position), Toast.LENGTH_SHORT).show();
+                mRef.child(recipeNames.get(position)).setValue(recipeIDs.get(position));
+                //mRef.child(recipeIDs.get(position));
+                //mRef.push().setValue(recipeIDs.get(position));
             }
         });
     }

@@ -1,17 +1,17 @@
 package com.mitchlthompson.mealqueue;
 
+
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -28,10 +28,11 @@ import com.mitchlthompson.mealqueue.adapters.RecipeAdapter;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class RecipesActivity extends AppCompatActivity {
-    private static final String TAG = "RecipesActivity";
-
+public class RecipesFragment extends Fragment {
+    private static final String TAG = "RecipesFragment";
     private Context context;
+    private View view;
+
     private RecyclerView recyclerView;
     private RelativeLayout relativeLayout;
     private RecipeAdapter recipeAdapter;
@@ -50,19 +51,22 @@ public class RecipesActivity extends AppCompatActivity {
     private String userID;
 
 
+    public RecipesFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipes);
-        Toolbar myToolbar = findViewById(R.id.myToolbar);
-        setSupportActionBar(myToolbar);
-        context = getApplicationContext();
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_recipes, container, false);
+        context = getActivity();
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
-        mRef = mFirebaseDatabase.getReference("/recipes/" + userID);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -78,15 +82,17 @@ public class RecipesActivity extends AppCompatActivity {
             }
         };
 
+        mRef = mFirebaseDatabase.getReference("/recipes/" + userID);
+
         Log.d(TAG, "Firebase URL: " + mRef);
         Log.d(TAG, "User ID: " + userID);
 
 
-        addRecipeBtn = findViewById(R.id.launch_addrecipe_btn);
+        addRecipeBtn = view.findViewById(R.id.launch_addrecipe_btn);
         addRecipeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(RecipesActivity.this, AddRecipeActivity.class));
+                startActivity(new Intent(context, AddRecipeActivity.class));
 
             }
         });
@@ -109,8 +115,8 @@ public class RecipesActivity extends AppCompatActivity {
                         Log.d(TAG, " recipe name: " + singleRecipe.get("Recipe Name").toString()
                                 + " recipeID: " + singleRecipe.get("Recipe ID").toString());
 
-                        relativeLayout = (RelativeLayout) findViewById(R.id.action_recipes);
-                        recyclerView = (RecyclerView) findViewById(R.id.recipe_recycler);
+                        relativeLayout = view.findViewById(R.id.action_recipes);
+                        recyclerView = view.findViewById(R.id.recipe_recycler);
                         recyclerViewLayoutManager = new LinearLayoutManager(context);
                         recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
@@ -129,12 +135,7 @@ public class RecipesActivity extends AppCompatActivity {
             }
         });
 
+        return view;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 }

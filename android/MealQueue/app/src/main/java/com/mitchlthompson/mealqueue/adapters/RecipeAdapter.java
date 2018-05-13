@@ -7,11 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.mitchlthompson.mealqueue.R;
 import com.mitchlthompson.mealqueue.RecipeActivity;
-import com.mitchlthompson.mealqueue.models.Recipe;
 
 import java.util.ArrayList;
 

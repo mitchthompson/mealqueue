@@ -35,7 +35,9 @@
         <activity android:name=".AddRecipeActivity" />
         <activity android:name=".RecipeActivity" />
         <activity android:name=".AddIngredientsActivity" />
-        <activity android:name=".MealPlanDayActivity"></activity>
+        <activity android:name=".MealPlanDayActivity" />
+        <activity android:name=".SyncActivity" />
+        <activity android:name=".SyncHelperActivity"></activity>
     </application>
 
 </manifest>
