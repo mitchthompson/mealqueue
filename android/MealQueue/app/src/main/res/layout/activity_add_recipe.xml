@@ -58,10 +58,10 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/directions_textview" />
+        app:layout_constraintTop_toBottomOf="@+id/directions_title_textview" />
 
     <TextView
-        android:id="@+id/directions_textview"
+        android:id="@+id/directions_title_textview"
         android:layout_width="113dp"
         android:layout_height="23dp"
         android:layout_marginStart="16dp"

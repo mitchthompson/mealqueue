@@ -8,10 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -105,8 +107,11 @@ public class GroceryFragment extends Fragment {
         addItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRef.push().setValue(groceryItem.getText().toString());
-
+                if(TextUtils.isEmpty(groceryItem.getText())){
+                    Toast.makeText(context, "Enter an item to add to the grocery list", Toast.LENGTH_LONG).show();
+                } else {
+                    mRef.push().setValue(groceryItem.getText().toString());
+                }
             }
         });
 
@@ -157,6 +162,7 @@ public class GroceryFragment extends Fragment {
         recyclerView = view.findViewById(R.id.grocery_recycler);
         recyclerViewLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
+        recyclerView.setNestedScrollingEnabled(false);
 
         groceryListAdapter = new GroceryListAdapter(context, userID, itemNames, itemIDs);
         recyclerView.setAdapter(groceryListAdapter);
