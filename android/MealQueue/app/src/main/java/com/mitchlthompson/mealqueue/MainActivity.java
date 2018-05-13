@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private Context context;
+
+    private BottomNavigationView mMainNav;
+    private FrameLayout mMainFrame;
+    private HomeFragment homeFragment;
+    private RecipesFragment recipesFragment;
+    private GroceryFragment groceryFragment;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
@@ -75,12 +83,6 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
-        Calendar c = Calendar.getInstance();
-        //Log.d(TAG, String.valueOf(c.get(Calendar.MONTH)) + " " + String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
-        //todaysDate = getDate(c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-        todaysDate = (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DAY_OF_MONTH) + "-" + c.get(Calendar.YEAR);
-        Log.d(TAG, "Date: " + todaysDate);
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -95,58 +97,41 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        dateTextView = findViewById(R.id.date_tv);
-        dateTextView.setText(formatDate(todaysDate));
-        mealsTextView = findViewById(R.id.meals_tv);
-        addPlanBtn = findViewById(R.id.add_plan_btn);
-        addPlanBtn.setOnClickListener(new View.OnClickListener() {
+        mMainFrame = findViewById(R.id.main_frame);
+        mMainNav = findViewById(R.id.main_nav);
+
+        homeFragment = new HomeFragment();
+        recipesFragment = new RecipesFragment();
+        groceryFragment = new GroceryFragment();
+
+        setFragment(homeFragment);
+
+        mMainNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, MealPlanDayActivity.class)
-                        .putExtra("Date", todaysDate));
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch(item.getItemId()){
+                    case R.id.nav_home:
+                        //mMainNav.setItemBackgroundResource(R.color.colorPrimary);
+                        setFragment(homeFragment);
+                        return true;
+
+                    case R.id.nav_recipes:
+                        //mMainNav.setItemBackgroundResource(R.color.colorAccent);
+                        setFragment(recipesFragment);
+                        //startActivity(new Intent(context, RecipesActivity.class));
+                        return true;
+
+                    case R.id.nav_grocery:
+                        //mMainNav.setItemBackgroundResource(R.color.colorPrimaryDark);
+                        //startActivity(new Intent(context, GroceryActivity.class));
+                        setFragment(groceryFragment);
+                        return true;
+
+                    default:
+                        return false;
+                }
             }
         });
-
-        getMeals(todaysDate);
-
-        calenderView = findViewById(R.id.calendarView);
-        calenderView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-
-            @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month,
-                                            int dayOfMonth) {
-                todaysDate = (month + 1) + "-" + dayOfMonth + "-" + year;
-                Log.d(TAG, "Date: " + todaysDate);
-                dateTextView.setText(formatDate(todaysDate));
-                mealsTextView.setText("");
-
-                mRefMealPlan2 = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(todaysDate);
-
-                mRefMealPlan2.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        mealPlanData = (HashMap<String,Object>) dataSnapshot.getValue();
-                        String meals = "";
-                        if(mealPlanData!=null) {
-                            for (String key : mealPlanData.keySet()) {
-                                Log.d(TAG, key);
-                                meals = meals + key + "\n\n";
-                            }
-                            if (meals != "") {
-                                mealsTextView.setText(meals);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-            }
-        });
-
 
     }
 
@@ -193,8 +178,13 @@ public class MainActivity extends AppCompatActivity {
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
+    }
+
+    private void setFragment(Fragment fragment){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_frame, fragment);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -210,90 +200,5 @@ public class MainActivity extends AppCompatActivity {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-
-    public String formatDate(String oldDate) {
-        String date = "";
-        String[] splitArray = oldDate.split("-");
-        switch (Integer.parseInt(splitArray[0])) {
-            case 1:
-                date = "Jan";
-                break;
-
-            case 2:
-                date = "Feb";
-                break;
-
-            case 3:
-                date = "Mar";
-                break;
-
-            case 4:
-                date = "Apr";
-                break;
-
-            case 5:
-                date = "May";
-                break;
-
-            case 6:
-                date = "June";
-                break;
-
-            case 7:
-                date = "July";
-                break;
-
-            case 8:
-                date = "Aug";
-                break;
-
-            case 9:
-                date = "Sep";
-                break;
-
-            case 10:
-                date = "Oct";
-                break;
-
-            case 11:
-                date = "Nov";
-                break;
-
-            case 12:
-                date = "Dec";
-                break;
-
-
-        }
-        date = date + " " + splitArray[1];
-        return date;
-    }
-
-    public void getMeals(String date) {
-        mRefMealPlan = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(date);
-
-        mRefMealPlan.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mealPlanData = (HashMap<String,Object>) dataSnapshot.getValue();
-                String meals = "";
-                if(mealPlanData!=null) {
-                    for (String key : mealPlanData.keySet()) {
-                        Log.d(TAG, key);
-                        meals = meals + key + "\n\n";
-                    }
-                    if (meals != "") {
-                        mealsTextView.setText(meals);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
 
 }
