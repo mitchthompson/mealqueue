@@ -37,42 +37,64 @@
             app:layout_constraintStart_toEndOf="@+id/grocery_sync_btn"
             app:layout_constraintTop_toTopOf="parent" />
 
-
-        <Button
-            android:id="@+id/add_item_btn"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
+        <android.support.v7.widget.CardView
+            android:id="@+id/grocery_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:text="Add"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/grocery_item_amount"
-            app:layout_constraintTop_toBottomOf="@+id/grocery_item" />
-
-        <EditText
-            android:id="@+id/grocery_item"
-            style="@style/Widget.AppCompat.AutoCompleteTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:ems="10"
-            android:hint="Item Name"
-            android:text=""
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view" />
-
-        <View
-            android:id="@+id/view"
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="16dp"
-            android:background="#FF00FF00"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/grocery_sync_btn" />
+            app:layout_constraintTop_toBottomOf="@+id/grocery_sync_btn">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <EditText
+                    android:id="@+id/grocery_item"
+                    style="@style/Widget.AppCompat.AutoCompleteTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:ems="10"
+                    android:hint="Item Name"
+                    android:text=""
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/grocery_item_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:ems="10"
+                    android:hint="Item Amount"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/grocery_item" />
+
+                <Button
+                    android:id="@+id/add_item_btn"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Add"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/grocery_item_amount"
+                    app:layout_constraintTop_toBottomOf="@+id/grocery_item" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
 
 
         <android.support.v7.widget.RecyclerView
@@ -86,20 +108,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/grocery_item_amount"
+            app:layout_constraintTop_toBottomOf="@+id/grocery_cardview"
             tools:listitem="@layout/grocery_items" />
 
-        <EditText
-            android:id="@+id/grocery_item_amount"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:hint="Item Amount"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/grocery_item"
-            />
 
     </android.support.constraint.ConstraintLayout>
 

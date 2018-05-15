@@ -8,8 +8,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -86,6 +89,9 @@ public class AddIngredientsActivity extends AppCompatActivity {
             startActivity(new Intent(AddIngredientsActivity.this, AddRecipeActivity.class));
         }
 
+        //prevent keyboard from popping up on activity start
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         ingredientItem = findViewById(R.id.ingredient_item_EditText);
         ingredientAmount = findViewById(R.id.ingredient_amount_EditText);
 
@@ -99,9 +105,21 @@ public class AddIngredientsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, ingredientItem.getText().toString());
-                itemNames.add(ingredientItem.getText().toString());
-                itemAmounts.add(ingredientAmount.getText().toString());
-                ingredientsAdapter.notifyDataSetChanged();
+                InputMethodManager imm=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+
+                if(TextUtils.isEmpty(ingredientItem.getText())) {
+                    Toast.makeText(context, "Enter an item to add to the ingredients list", Toast.LENGTH_LONG).show();
+                }else if(TextUtils.isEmpty(ingredientAmount.getText())){
+                    Toast.makeText(context, "Enter the item amount", Toast.LENGTH_LONG).show();
+                } else {
+                    itemNames.add(ingredientItem.getText().toString());
+                    itemAmounts.add(ingredientAmount.getText().toString());
+                    ingredientsAdapter.notifyDataSetChanged();
+                    ingredientAmount.setText("");
+                    ingredientItem.setText("");
+                }
             }
         });
 

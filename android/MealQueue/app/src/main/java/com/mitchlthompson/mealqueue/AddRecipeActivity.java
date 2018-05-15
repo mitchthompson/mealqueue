@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,6 +77,9 @@ public class AddRecipeActivity extends AppCompatActivity {
                 }
             }
         };
+
+        //prevent keyboard from popping up on activity start
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         recipeNameInput = findViewById(R.id.recipe_name_input);
         directionsInput = findViewById(R.id.directions_input);
