@@ -42,21 +42,24 @@
             android:id="@+id/add_item_btn"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="100dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:text="Add"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view" />
+            app:layout_constraintStart_toEndOf="@+id/grocery_item_amount"
+            app:layout_constraintTop_toBottomOf="@+id/grocery_item" />
 
         <EditText
             android:id="@+id/grocery_item"
+            style="@style/Widget.AppCompat.AutoCompleteTextView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:ems="10"
-            android:inputType="textPersonName"
+            android:hint="Item Name"
             android:text=""
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view" />
@@ -79,11 +82,24 @@
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:paddingBottom="50dp"
+            android:paddingBottom="65dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/grocery_item_amount"
+            tools:listitem="@layout/grocery_items" />
+
+        <EditText
+            android:id="@+id/grocery_item_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="Item Amount"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/grocery_item"
-            tools:listitem="@layout/grocery_items" />
+            />
 
     </android.support.constraint.ConstraintLayout>
 

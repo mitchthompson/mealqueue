@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,6 +48,7 @@ public class GroceryFragment extends Fragment {
     private ArrayList<String> itemNames;
     private ArrayList<String> itemIDs;
     private EditText groceryItem;
+    private EditText groceryItemAmount;
     private Button addItemBtn;
     private Button clearItemsBtn;
     private Button grocerySyncBtn;
@@ -103,14 +105,25 @@ public class GroceryFragment extends Fragment {
         });
 
         groceryItem = view.findViewById(R.id.grocery_item);
+        groceryItemAmount = view.findViewById(R.id.grocery_item_amount);
+        groceryItem.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        groceryItemAmount.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         addItemBtn = view.findViewById(R.id.add_item_btn);
         addItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(TextUtils.isEmpty(groceryItem.getText())){
+                InputMethodManager imm=(InputMethodManager)view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(),0);
+
+                if(TextUtils.isEmpty(groceryItem.getText())) {
                     Toast.makeText(context, "Enter an item to add to the grocery list", Toast.LENGTH_LONG).show();
+                }else if(TextUtils.isEmpty(groceryItemAmount.getText())){
+                    Toast.makeText(context, "Enter the item amount", Toast.LENGTH_LONG).show();
                 } else {
-                    mRef.push().setValue(groceryItem.getText().toString());
+                    mRef.push().setValue(groceryItem.getText().toString()
+                            + "\n" + groceryItemAmount.getText().toString());
+                    groceryItem.setText("");
+                    groceryItemAmount.setText("");
                 }
             }
         });

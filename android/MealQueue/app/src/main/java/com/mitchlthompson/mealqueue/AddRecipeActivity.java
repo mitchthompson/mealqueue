@@ -6,10 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -53,6 +55,8 @@ public class AddRecipeActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(myToolbar);
 
+        context = getApplicationContext();
+
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -77,24 +81,28 @@ public class AddRecipeActivity extends AppCompatActivity {
         directionsInput = findViewById(R.id.directions_input);
 
         ingredients = new HashMap<>();
-        ingredients.put("Salt", "1 teaspoon");
-        ingredients.put("Pepper", "1/4 teaspoon");
 
         nextBtn = findViewById(R.id.add_to_recipes);
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recipeName = recipeNameInput.getText().toString();
-                directions = directionsInput.getText().toString();
-                Log.d(TAG, "Recipe name: " + recipeName + " Directions: " + directions);
-                //String key = mRef.push().getKey();
-                //mRef.child(key).child("Recipe Name").setValue(recipeName);
-                //mRef.child(key).child("Directions").setValue(directions);
-                //mRef.child(key).child("Ingredients").setValue(ingredients);
-                //mRef.child(key).child("Recipe ID").setValue(key);
-                startActivity(new Intent(AddRecipeActivity.this, AddIngredientsActivity.class)
-                        .putExtra("Recipe Name", recipeName)
-                        .putExtra("Directions", directions));
+                if(TextUtils.isEmpty(recipeNameInput.getText())) {
+                    Toast.makeText(context, "Enter the name of the recipe", Toast.LENGTH_LONG).show();
+                }else if(TextUtils.isEmpty(directionsInput.getText())){
+                    Toast.makeText(context, "Enter directions for the recipe", Toast.LENGTH_LONG).show();
+                } else {
+                    recipeName = recipeNameInput.getText().toString();
+                    directions = directionsInput.getText().toString();
+                    Log.d(TAG, "Recipe name: " + recipeName + " Directions: " + directions);
+                    //String key = mRef.push().getKey();
+                    //mRef.child(key).child("Recipe Name").setValue(recipeName);
+                    //mRef.child(key).child("Directions").setValue(directions);
+                    //mRef.child(key).child("Ingredients").setValue(ingredients);
+                    //mRef.child(key).child("Recipe ID").setValue(key);
+                    startActivity(new Intent(AddRecipeActivity.this, AddIngredientsActivity.class)
+                            .putExtra("Recipe Name", recipeName)
+                            .putExtra("Directions", directions));
+                }
 
 
             }
