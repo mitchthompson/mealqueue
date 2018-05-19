@@ -158,18 +158,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 return true;
 
-            case R.id.action_calendar:
-                startActivity(new Intent(MainActivity.this, CalendarActivity.class));
-                return true;
-
-            case R.id.action_recipes:
-                startActivity(new Intent(MainActivity.this, RecipesActivity.class));
-                return true;
-
-            case R.id.action_grocery:
-                startActivity(new Intent(MainActivity.this, GroceryActivity.class));
-                return true;
-
             case R.id.action_settings:
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 return true;
@@ -185,6 +173,17 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_frame, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
     }
 
     @Override

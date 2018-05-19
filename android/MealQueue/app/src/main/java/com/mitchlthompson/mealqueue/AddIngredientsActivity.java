@@ -144,7 +144,7 @@ public class AddIngredientsActivity extends AppCompatActivity {
                 mRef.child(key).child("Directions").setValue(directions);
                 mRef.child(key).child("Ingredients").setValue(ingredients);
                 mRef.child(key).child("Recipe ID").setValue(key);
-                startActivity(new Intent(AddIngredientsActivity.this, RecipesActivity.class));
+                startActivity(new Intent(AddIngredientsActivity.this, RecipesFragment.class));
             }
         });
     }

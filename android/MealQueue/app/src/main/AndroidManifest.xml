@@ -10,7 +10,10 @@
         android:supportsRtl="true"
         android:windowSoftInputMode="stateHidden"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+
 
             <!--
             <intent-filter>
@@ -20,10 +23,9 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".CalendarActivity" />
-        <activity android:name=".RecipesActivity" />
-        <activity android:name=".GroceryActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".LoginActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,14 +33,28 @@
             </intent-filter>
         </activity>
         <activity android:name=".SignupActivity" />
-        <activity android:name=".ResetPasswordActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".AddRecipeActivity" />
-        <activity android:name=".RecipeActivity" />
-        <activity android:name=".AddIngredientsActivity" />
+        <activity android:name=".ResetPasswordActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SettingsActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AddRecipeActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".RecipeActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AddIngredientsActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".MealPlanDayActivity" />
-        <activity android:name=".SyncActivity" />
-        <activity android:name=".SyncHelperActivity"></activity>
+        <activity android:name=".SyncActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SyncHelperActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
