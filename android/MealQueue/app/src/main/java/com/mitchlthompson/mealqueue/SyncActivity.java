@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.mitchlthompson.mealqueue.helpers.GrocerySync;
 
 import java.util.Calendar;
 
@@ -153,10 +154,9 @@ public class SyncActivity extends AppCompatActivity {
                 if(TextUtils.isEmpty(startDateInput) || TextUtils.isEmpty(endDateInput)){
                     Toast.makeText(context, "Please select a sync start and end date", Toast.LENGTH_SHORT).show();
                 } else {
-                    startActivity(new Intent(SyncActivity.this, SyncHelperActivity.class)
-                            .putExtra("Start", startDateInput)
-                            .putExtra("End", endDateInput)
-                    );
+                    GrocerySync gSync = new GrocerySync();
+                    gSync.getData(startDateInput, endDateInput);
+
                 }
             }
         });

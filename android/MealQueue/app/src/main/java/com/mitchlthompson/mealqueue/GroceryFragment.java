@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mitchlthompson.mealqueue.adapters.GroceryListAdapter;
+import com.mitchlthompson.mealqueue.helpers.GrocerySync;
 
 import java.util.ArrayList;
 
@@ -58,6 +59,10 @@ public class GroceryFragment extends Fragment {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mRef;
     private String userID;
+
+    private GrocerySync gSync;
+    private ArrayList<String> recipeIDs;
+    private ArrayList<String> groceryItems;
 
 
     public GroceryFragment() {
@@ -95,12 +100,14 @@ public class GroceryFragment extends Fragment {
 
         itemNames = new ArrayList<>();
         itemIDs = new ArrayList<>();
+        gSync = new GrocerySync();
 
         grocerySyncBtn = view.findViewById(R.id.grocery_sync_btn);
         grocerySyncBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                gSync.getData("test", "test2");
+                //startActivity(new Intent(context, SyncActivity.class));
             }
         });
 
@@ -171,7 +178,7 @@ public class GroceryFragment extends Fragment {
             }
         });
 
-        relativeLayout = view.findViewById(R.id.action_grocery);
+        relativeLayout = view.findViewById(R.id.nav_grocery);
         recyclerView = view.findViewById(R.id.grocery_recycler);
         recyclerViewLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(recyclerViewLayoutManager);

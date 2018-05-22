@@ -14,24 +14,5 @@
         android:orderInCategory="100"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/action_calendar"
-        android:title="Calendar"
-        android:orderInCategory="100"
-        app:showAsAction="never"/>
-
-    <item android:id="@+id/action_recipes"
-        android:title="Recipes"
-        android:orderInCategory="100"
-        app:showAsAction="never"/>
-
-    <item android:id="@+id/action_grocery"
-        android:title="Grocery"
-        android:orderInCategory="100"
-        app:showAsAction="never"/>
-
-    <item android:id="@+id/action_login"
-        android:title="Login"
-        android:orderInCategory="100"
-        app:showAsAction="never"/>
 
 </menu>

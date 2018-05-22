@@ -110,12 +110,12 @@ public class RecipesFragment extends Fragment {
                         //Get user map
                         Map singleRecipe = (Map) entry.getValue();
                         //Get recipe name field and append to list
-                        recipeNames.add((singleRecipe.get("Recipe Name").toString()));
-                        recipeIDs.add(singleRecipe.get("Recipe ID").toString());
-                        Log.d(TAG, " recipe name: " + singleRecipe.get("Recipe Name").toString()
-                                + " recipeID: " + singleRecipe.get("Recipe ID").toString());
+                        recipeNames.add((singleRecipe.get("GrocerySync Name").toString()));
+                        recipeIDs.add(singleRecipe.get("GrocerySync ID").toString());
+                        Log.d(TAG, " recipe name: " + singleRecipe.get("GrocerySync Name").toString()
+                                + " recipeID: " + singleRecipe.get("GrocerySync ID").toString());
 
-                        relativeLayout = view.findViewById(R.id.action_recipes);
+                        relativeLayout = view.findViewById(R.id.nav_recipes);
                         recyclerView = view.findViewById(R.id.recipe_recycler);
                         recyclerViewLayoutManager = new LinearLayoutManager(context);
                         recyclerView.setLayoutManager(recyclerViewLayoutManager);

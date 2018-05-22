@@ -44,7 +44,6 @@ public class MealPlanDayActivity extends AppCompatActivity {
     private ArrayList<String> recipeNames;
     private ArrayList<String> recipeIDs;
     private String date;
-    private Button addRecipeBtn;
 
     private Map<String,Object> recipes;
 
@@ -99,8 +98,8 @@ public class MealPlanDayActivity extends AppCompatActivity {
                     //Get user map
                     Map singleRecipe = (Map) entry.getValue();
                     //Get recipe name field and append to list
-                    recipeNames.add((singleRecipe.get("Recipe Name").toString()));
-                    recipeIDs.add(singleRecipe.get("Recipe ID").toString());
+                    recipeNames.add((singleRecipe.get("GrocerySync Name").toString()));
+                    recipeIDs.add(singleRecipe.get("GrocerySync ID").toString());
 
                     recyclerView = findViewById(R.id.recipe_recycler);
                     recyclerViewLayoutManager = new LinearLayoutManager(context);

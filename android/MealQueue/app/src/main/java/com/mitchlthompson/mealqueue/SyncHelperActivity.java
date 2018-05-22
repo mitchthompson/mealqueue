@@ -15,7 +15,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.mitchlthompson.mealqueue.helpers.Recipe;
+import com.mitchlthompson.mealqueue.helpers.GrocerySync;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,39 +70,9 @@ public class SyncHelperActivity extends AppCompatActivity {
             startActivity(new Intent(SyncHelperActivity.this, SyncActivity.class));
         }
 
-        mRefMealPlan = mFirebaseDatabase.getReference("/mealplans/" + userID);
+        GrocerySync gSync = new GrocerySync();
+        gSync.getData(syncStartDate,syncEndDate);
 
-        mRefMealPlan.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mealPlanData = (HashMap<String,Object>) dataSnapshot.getValue();
-
-                if(mealPlanData!=null) {
-                    for (Object value : mealPlanData.values()) {
-                        Log.d(TAG, "Whole value: " + value.toString());
-
-                    }
-
-
-//                    for (Map.Entry<String, Object> entry : mealPlanData.entrySet()) {
-//                        String key = entry.getKey();
-//                        Object value = entry.getValue();
-//                        //Log.d(TAG, "Sync Start: " + syncStartDate + " key: " + key);
-//                        if (key.equals(syncStartDate) || key.equals(syncEndDate)) {
-//                            Log.d(TAG, "Whole value: " + value.toString());
-//
-//                        } else {
-//                            Log.d(TAG, "Datasnapshot key did not match");
-//                        }
-//                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
 
 

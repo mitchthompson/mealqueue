@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -152,11 +153,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 return true;
 
-            // TODO Remove following action items from actionbar here and in res/main_menu.xml
-
-            case R.id.action_login:
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
                 return true;
+
 
             case R.id.action_settings:
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));

@@ -53,10 +53,10 @@ public class RecipeActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         context = getApplicationContext();
 
-        if(getIntent().hasExtra("Recipe ID")) {
+        if(getIntent().hasExtra("GrocerySync ID")) {
             Bundle bundle = getIntent().getExtras();
-            recipeID = bundle.getString("Recipe ID");
-            recipeName = bundle.getString("Recipe Name");
+            recipeID = bundle.getString("GrocerySync ID");
+            recipeName = bundle.getString("GrocerySync Name");
         }
         else {
             Log.d(TAG, "Nothing in intent bundle");
@@ -100,7 +100,7 @@ public class RecipeActivity extends AppCompatActivity {
 
                 recipe = (HashMap<String,Object>) dataSnapshot.getValue();
 
-                recipeNameTextView.setText(recipe.get("Recipe Name").toString());
+                recipeNameTextView.setText(recipe.get("GrocerySync Name").toString());
                 directionsTextview.setText(recipe.get("Directions").toString());
 
                 //Get ingredients map
@@ -114,8 +114,8 @@ public class RecipeActivity extends AppCompatActivity {
 
 
 
-                    Log.d(TAG, " recipe name: " + recipe.get("Recipe Name").toString()
-                            + " recipeID: " + recipe.get("Recipe ID").toString()
+                    Log.d(TAG, " recipe name: " + recipe.get("GrocerySync Name").toString()
+                            + " recipeID: " + recipe.get("GrocerySync ID").toString()
                     + " directions: " + directions + " ingredients: " + ingredientsMap.toString());
             }
 

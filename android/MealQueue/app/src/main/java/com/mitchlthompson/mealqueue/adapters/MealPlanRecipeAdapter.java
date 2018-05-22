@@ -13,9 +13,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.mitchlthompson.mealqueue.MainActivity;
 import com.mitchlthompson.mealqueue.R;
-import com.mitchlthompson.mealqueue.RecipeActivity;
-import com.mitchlthompson.mealqueue.helpers.Recipe;
 
 import java.util.ArrayList;
 
@@ -64,8 +63,7 @@ public class MealPlanRecipeAdapter extends RecyclerView.Adapter<MealPlanRecipeAd
             public void onClick(View v) {
                 Toast.makeText(context, recipeNames.get(position), Toast.LENGTH_SHORT).show();
                 mRef.child(recipeNames.get(position)).setValue(recipeIDs.get(position));
-                //mRef.child(recipeIDs.get(position));
-                //mRef.push().setValue(recipeIDs.get(position));
+                context.startActivity(new Intent(context, MainActivity.class));
             }
         });
     }

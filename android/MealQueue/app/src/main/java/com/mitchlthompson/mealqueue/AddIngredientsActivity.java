@@ -79,9 +79,9 @@ public class AddIngredientsActivity extends AppCompatActivity {
         };
 
 
-        if(getIntent().hasExtra("Recipe Name")) {
+        if(getIntent().hasExtra("GrocerySync Name")) {
             Bundle bundle = getIntent().getExtras();
-            recipeName = bundle.getString("Recipe Name");
+            recipeName = bundle.getString("GrocerySync Name");
             directions = bundle.getString("Directions");
         }
         else {
@@ -135,15 +135,15 @@ public class AddIngredientsActivity extends AppCompatActivity {
         addRecipeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "Recipe name: " + recipeName + " Directions: " + directions);
+                Log.d(TAG, "GrocerySync name: " + recipeName + " Directions: " + directions);
                 for(int i=0;i<itemNames.size()-1;i++){
                     ingredients.put(itemNames.get(i), itemAmounts.get(i));
                 }
                 String key = mRef.push().getKey();
-                mRef.child(key).child("Recipe Name").setValue(recipeName);
+                mRef.child(key).child("GrocerySync Name").setValue(recipeName);
                 mRef.child(key).child("Directions").setValue(directions);
                 mRef.child(key).child("Ingredients").setValue(ingredients);
-                mRef.child(key).child("Recipe ID").setValue(key);
+                mRef.child(key).child("GrocerySync ID").setValue(key);
                 startActivity(new Intent(AddIngredientsActivity.this, RecipesFragment.class));
             }
         });
