@@ -155,7 +155,7 @@ public class SyncActivity extends AppCompatActivity {
                     Toast.makeText(context, "Please select a sync start and end date", Toast.LENGTH_SHORT).show();
                 } else {
                     GrocerySync gSync = new GrocerySync();
-                    gSync.getData(startDateInput, endDateInput);
+                    //gSync.getData(startDateInput, endDateInput);
 
                 }
             }

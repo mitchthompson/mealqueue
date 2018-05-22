@@ -10,14 +10,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-
-import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GrocerySync implements Serializable {
+public class GrocerySync {
     private static final String TAG = "GrocerySync";
 
     private FirebaseDatabase mFirebaseDatabase;
@@ -31,10 +28,9 @@ public class GrocerySync implements Serializable {
     private Map<String,Object> firebaseData;
     private ArrayList<String> recipeIDs;
     private ArrayList<String> groceryItems;
+    private ArrayList<String> ingredients;
 
     public GrocerySync(){
-        groceryItems = new ArrayList<>();
-        recipeIDs = new ArrayList<>();
     }
 
     public void getData(String start, String end){
@@ -51,6 +47,7 @@ public class GrocerySync implements Serializable {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 firebaseData = (Map<String, Object>) dataSnapshot.getValue();
+                recipeIDs = new ArrayList<>();
                 if(firebaseData != null) {
                     for (Map.Entry<String, Object> entry : firebaseData.entrySet()) {
                         if(startDate.equals(entry.getKey().toString())){
@@ -84,7 +81,6 @@ public class GrocerySync implements Serializable {
         userID = user.getUid();
         mRef = mFirebaseDatabase.getReference("/recipes/" + userID + "/" + recipeID);
 
-        final ArrayList<String> ingredients = new ArrayList<>();
 
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -92,11 +88,11 @@ public class GrocerySync implements Serializable {
 
                 HashMap<String,Object> recipe = (HashMap<String,Object>) dataSnapshot.getValue();
 
+                ingredients = new ArrayList<>();
                 //Get ingredients map
                 Map<String,String> ingredientsMap = (HashMap) recipe.get("Ingredients");
                 for (String key : ingredientsMap.keySet()){
-                    //iterate over key
-                    //Log.d(TAG,ingredientsMap.get(key)+" "+key);
+                    Log.d(TAG,ingredientsMap.get(key)+" "+key);
                     ingredients.add(ingredientsMap.get(key)+" "+key);
                 }
 
@@ -110,26 +106,17 @@ public class GrocerySync implements Serializable {
         });
     }
 
-    private void addIngredientsToFirebase(ArrayList<String> ingredients){
+    private void addIngredientsToFirebase(ArrayList<String> items){
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
         mRef = mFirebaseDatabase.getReference("/grocery/" + userID);
-        Log.d(TAG, "testing");
 
-        for(int i=0;i <ingredients.size();i++){
+        for(int i=0;i <items.size();i++){
             //Log.d(TAG, "addIngredients: " + groceryItems.get(i));
-            mRef.push().setValue(ingredients.get(i));
+            mRef.push().setValue(items.get(i));
         }
 
-    }
-
-    public ArrayList<String> getGroceryItems(){
-        return groceryItems;
-    }
-
-    public ArrayList<String> getRecipeIDs(){
-        return recipeIDs;
     }
 }

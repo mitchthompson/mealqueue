@@ -84,8 +84,8 @@ public class RecipesFragment extends Fragment {
 
         mRef = mFirebaseDatabase.getReference("/recipes/" + userID);
 
-        Log.d(TAG, "Firebase URL: " + mRef);
-        Log.d(TAG, "User ID: " + userID);
+//        Log.d(TAG, "Firebase URL: " + mRef);
+//        Log.d(TAG, "User ID: " + userID);
 
 
         addRecipeBtn = view.findViewById(R.id.launch_addrecipe_btn);
