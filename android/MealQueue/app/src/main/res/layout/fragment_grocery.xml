@@ -19,7 +19,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Sync"
+            android:text="@string/grocery_sync_btn"
             app:layout_constraintEnd_toStartOf="@+id/grocery_clear"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,7 +32,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Clear All"
+            android:text="@string/greocery_clear_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/grocery_sync_btn"
             app:layout_constraintTop_toTopOf="parent" />
@@ -61,7 +61,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:ems="10"
-                    android:hint="Item Name"
+                    android:hint="@string/grocery_item_name_hint"
                     android:text=""
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -74,7 +74,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:ems="10"
-                    android:hint="Item Amount"
+                    android:hint="@string/grocery_item_amount_hint"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/grocery_item" />
@@ -87,7 +87,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="Add"
+                    android:text="@string/grocery_add_item_btn"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/grocery_item_amount"
                     app:layout_constraintTop_toBottomOf="@+id/grocery_item" />

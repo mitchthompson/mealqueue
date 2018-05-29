@@ -69,10 +69,10 @@ public class AddRecipeActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if(user != null){
                     Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
-                    Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
                 }else{
                     Log.d(TAG, "onAuthStateChanged:signed_out");
-                    Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -96,14 +96,14 @@ public class AddRecipeActivity extends AppCompatActivity {
                 } else {
                     recipeName = recipeNameInput.getText().toString();
                     directions = directionsInput.getText().toString();
-                    Log.d(TAG, "GrocerySync name: " + recipeName + " Directions: " + directions);
+                    Log.d(TAG, "Recipe name: " + recipeName + " Directions: " + directions);
                     //String key = mRef.push().getKey();
                     //mRef.child(key).child("GrocerySync Name").setValue(recipeName);
                     //mRef.child(key).child("Directions").setValue(directions);
                     //mRef.child(key).child("Ingredients").setValue(ingredients);
                     //mRef.child(key).child("GrocerySync ID").setValue(key);
                     startActivity(new Intent(AddRecipeActivity.this, AddIngredientsActivity.class)
-                            .putExtra("GrocerySync Name", recipeName)
+                            .putExtra("Recipe Name", recipeName)
                             .putExtra("Directions", directions));
                 }
 

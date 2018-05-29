@@ -57,10 +57,10 @@ public class SyncActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if(user != null){
                     Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
-                    Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
                 }else{
                     Log.d(TAG, "onAuthStateChanged:signed_out");
-                    Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
                 }
             }
         };

@@ -53,10 +53,10 @@ public class RecipeActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         context = getApplicationContext();
 
-        if(getIntent().hasExtra("GrocerySync ID")) {
+        if(getIntent().hasExtra("Recipe ID")) {
             Bundle bundle = getIntent().getExtras();
-            recipeID = bundle.getString("GrocerySync ID");
-            recipeName = bundle.getString("GrocerySync Name");
+            recipeID = bundle.getString("Recipe ID");
+            recipeName = bundle.getString("Recipe Name");
         }
         else {
             Log.d(TAG, "Nothing in intent bundle");
@@ -74,11 +74,11 @@ public class RecipeActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if(user != null){
                     Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
-                    Toast.makeText(context,"Successfully signing in with: " + user.getEmail(),
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context,"Successfully signing in with: " + user.getEmail(),
+//                            Toast.LENGTH_SHORT).show();
                 }else{
                     Log.d(TAG, "onAuthStateChanged:signed_out");
-                    Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -99,24 +99,25 @@ public class RecipeActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 recipe = (HashMap<String,Object>) dataSnapshot.getValue();
+                if(recipe!=null) {
 
-                recipeNameTextView.setText(recipe.get("GrocerySync Name").toString());
-                directionsTextview.setText(recipe.get("Directions").toString());
+                    recipeNameTextView.setText(recipe.get("Recipe Name").toString());
+                    directionsTextview.setText(recipe.get("Directions").toString());
 
-                //Get ingredients map
-                ingredientsMap = (HashMap) recipe.get("Ingredients");
-                for (String key : ingredientsMap.keySet()){
-                    //iterate over key
-                    Log.d(TAG,ingredientsMap.get(key)+" "+key);
-                    ingredients.add(ingredientsMap.get(key)+" "+key);
+                    //Get ingredients map
+                    ingredientsMap = (HashMap) recipe.get("Ingredients");
+                    for (String key : ingredientsMap.keySet()) {
+                        //iterate over key
+                        Log.d(TAG, ingredientsMap.get(key) + " " + key);
+                        ingredients.add(ingredientsMap.get(key) + " " + key);
+                    }
+                    itemsAdapter.notifyDataSetChanged();
+
+
+//                    Log.d(TAG, " recipe name: " + recipe.get("Recipe Name").toString()
+//                            + " recipeID: " + recipe.get("Recipe ID").toString()
+//                            + " directions: " + directions + " ingredients: " + ingredientsMap.toString());
                 }
-                itemsAdapter.notifyDataSetChanged();
-
-
-
-                    Log.d(TAG, " recipe name: " + recipe.get("GrocerySync Name").toString()
-                            + " recipeID: " + recipe.get("GrocerySync ID").toString()
-                    + " directions: " + directions + " ingredients: " + ingredientsMap.toString());
             }
 
             @Override

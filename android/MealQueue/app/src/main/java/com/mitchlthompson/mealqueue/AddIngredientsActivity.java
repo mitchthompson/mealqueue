@@ -1,8 +1,11 @@
 package com.mitchlthompson.mealqueue;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +18,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -37,6 +41,8 @@ public class AddIngredientsActivity extends AppCompatActivity {
     private IngredientsAdapter ingredientsAdapter;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
 
+    private FrameLayout mMainFrame;
+
     private String recipeName, directions;
     private Map<String, String> ingredients;
     private Button addRecipeBtn, addIngredientBtn;
@@ -57,6 +63,7 @@ public class AddIngredientsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_ingredients);
         Toolbar myToolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(myToolbar);
+        context = getApplicationContext();
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -70,18 +77,18 @@ public class AddIngredientsActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if(user != null){
                     Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
-                    Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
                 }else{
                     Log.d(TAG, "onAuthStateChanged:signed_out");
-                    Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
                 }
             }
         };
 
 
-        if(getIntent().hasExtra("GrocerySync Name")) {
+        if(getIntent().hasExtra("Recipe Name")) {
             Bundle bundle = getIntent().getExtras();
-            recipeName = bundle.getString("GrocerySync Name");
+            recipeName = bundle.getString("Recipe Name");
             directions = bundle.getString("Directions");
         }
         else {
@@ -104,7 +111,7 @@ public class AddIngredientsActivity extends AppCompatActivity {
         addIngredientBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, ingredientItem.getText().toString());
+                //Log.d(TAG, ingredientItem.getText().toString());
                 InputMethodManager imm=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
@@ -116,6 +123,7 @@ public class AddIngredientsActivity extends AppCompatActivity {
                 } else {
                     itemNames.add(ingredientItem.getText().toString());
                     itemAmounts.add(ingredientAmount.getText().toString());
+                    Log.d(TAG, "Add ingredient: " + ingredientItem.getText().toString() + " " + ingredientAmount.getText().toString());
                     ingredientsAdapter.notifyDataSetChanged();
                     ingredientAmount.setText("");
                     ingredientItem.setText("");
@@ -135,17 +143,30 @@ public class AddIngredientsActivity extends AppCompatActivity {
         addRecipeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "GrocerySync name: " + recipeName + " Directions: " + directions);
-                for(int i=0;i<itemNames.size()-1;i++){
-                    ingredients.put(itemNames.get(i), itemAmounts.get(i));
+                if(itemNames.isEmpty() || itemAmounts.isEmpty()){
+                    Toast.makeText(context, "Add the ingredients to finish the recipe", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "No ingredients entered");
+                }else{
+                    AddRecipe();
+                    startActivity(new Intent(AddIngredientsActivity.this, MainActivity.class)
+                            .putExtra("New Recipe", recipeName));
                 }
-                String key = mRef.push().getKey();
-                mRef.child(key).child("GrocerySync Name").setValue(recipeName);
-                mRef.child(key).child("Directions").setValue(directions);
-                mRef.child(key).child("Ingredients").setValue(ingredients);
-                mRef.child(key).child("GrocerySync ID").setValue(key);
-                startActivity(new Intent(AddIngredientsActivity.this, RecipesFragment.class));
+
             }
         });
+    }
+
+    private void AddRecipe(){
+        Log.d(TAG, "Recipe name: " + recipeName + " Directions: " + directions);
+        for(int i=0;i<itemNames.size();i++){
+            ingredients.put(itemNames.get(i), itemAmounts.get(i));
+            Log.d(TAG, "Add to Ingredients List: " + itemNames.get(i) + " " + itemAmounts.get(i));
+        }
+        Log.d(TAG, ingredients.toString());
+        String key = mRef.push().getKey();
+        mRef.child(key).child("Recipe Name").setValue(recipeName);
+        mRef.child(key).child("Directions").setValue(directions);
+        mRef.child(key).child("Ingredients").setValue(ingredients);
+        mRef.child(key).child("Recipe ID").setValue(key);
     }
 }

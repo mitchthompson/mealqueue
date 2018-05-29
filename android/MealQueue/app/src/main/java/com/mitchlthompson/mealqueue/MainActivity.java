@@ -58,25 +58,14 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String userID;
-    private DatabaseReference mRefMealPlan;
-    private DatabaseReference mRefMealPlan2;
-
-    private String todaysDate;
-    private CalendarView calenderView;
-
-    private Map<String,Object> mealPlanData;
-
-    private TextView dateTextView;
-    private TextView mealsTextView;
-    private Button addPlanBtn;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar myToolbar = findViewById(R.id.myToolbar);
-        setSupportActionBar(myToolbar);
+        //Toolbar myToolbar = findViewById(R.id.myToolbar);
+        //setSupportActionBar(myToolbar);
         context = getApplicationContext();
 
         mAuth = FirebaseAuth.getInstance();
@@ -100,12 +89,20 @@ public class MainActivity extends AppCompatActivity {
 
         mMainFrame = findViewById(R.id.main_frame);
         mMainNav = findViewById(R.id.main_nav);
+        //mMainNav.setItemIconTintList(null);
 
         homeFragment = new HomeFragment();
         recipesFragment = new RecipesFragment();
         groceryFragment = new GroceryFragment();
 
-        setFragment(homeFragment);
+        if(getIntent().hasExtra("New Recipe")) {
+            Bundle bundle = getIntent().getExtras();
+            String recipeName = bundle.getString("New Recipe");
+            Log.d(TAG, "New recipe: " + recipeName);
+            setFragment(recipesFragment);
+        } else {
+            setFragment(homeFragment);
+        }
 
         mMainNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

@@ -4,9 +4,9 @@
     <!--<color name="colorPrimaryDark">#303F9F</color>-->
     <!--<color name="colorAccent">#FF4081</color>-->
 
-    <color name="colorPrimary">#00bcd4</color>
-    <color name="colorPrimaryDark">#0097a7</color>
-    <color name="colorAccent">#f2fe71</color>
+    <color name="colorPrimary">#6cc3d1</color>
+    <color name="colorPrimaryDark">#496282</color>
+    <color name="colorAccent">#f2ebd4</color>
 
     <color name="bg_login">#26ae90</color>
     <color name="bg_register">#2e3237</color>
@@ -21,4 +21,9 @@
     <color name="btn_login_bg">#eceef1</color>
     <color name="lbl_name">#333333</color>
     <color name="btn_logut_bg">#ff6861</color>
+    <color name="Dark">#496282</color>
+    <color name="background_material_light">#ffffff</color>
+    <color name="foreground_material_light">#496282</color>
+    <color name="mealQ_ColorPrimary">#6cc3d1</color>
+    <color name="mealQ_colorAccent">#6cc3d1</color>
 </resources>

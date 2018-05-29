@@ -63,7 +63,7 @@ public class MealPlanRecipeAdapter extends RecyclerView.Adapter<MealPlanRecipeAd
             public void onClick(View v) {
                 Toast.makeText(context, recipeNames.get(position), Toast.LENGTH_SHORT).show();
                 mRef.child(recipeNames.get(position)).setValue(recipeIDs.get(position));
-                context.startActivity(new Intent(context, MainActivity.class));
+                context.startActivity(new Intent(context, MainActivity.class).putExtra("Date", date));
             }
         });
     }

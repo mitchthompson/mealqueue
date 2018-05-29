@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -67,10 +68,10 @@ public class MealPlanDayActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if(user != null){
                     Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
-                    Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
                 }else{
                     Log.d(TAG, "onAuthStateChanged:signed_out");
-                    Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -94,19 +95,22 @@ public class MealPlanDayActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 recipes = (Map<String,Object>) dataSnapshot.getValue();
-                for (Map.Entry<String, Object> entry : recipes.entrySet()){
-                    //Get user map
-                    Map singleRecipe = (Map) entry.getValue();
-                    //Get recipe name field and append to list
-                    recipeNames.add((singleRecipe.get("GrocerySync Name").toString()));
-                    recipeIDs.add(singleRecipe.get("GrocerySync ID").toString());
+                if(recipes!=null){
+                    for (Map.Entry<String, Object> entry : recipes.entrySet()){
+                        //Get user map
+                        Map singleRecipe = (Map) entry.getValue();
+                        //Get recipe name field and append to list
+                        recipeNames.add((singleRecipe.get("Recipe Name").toString()));
+                        recipeIDs.add(singleRecipe.get("Recipe ID").toString());
 
-                    recyclerView = findViewById(R.id.recipe_recycler);
-                    recyclerViewLayoutManager = new LinearLayoutManager(context);
-                    recyclerView.setLayoutManager(recyclerViewLayoutManager);
+                        recyclerView = findViewById(R.id.recipe_recycler);
+                        recyclerViewLayoutManager = new LinearLayoutManager(context);
+                        recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
-                    mealPlanRecipeAdapter = new MealPlanRecipeAdapter(context, date, recipeNames, recipeIDs);
-                    recyclerView.setAdapter(mealPlanRecipeAdapter);
+                        mealPlanRecipeAdapter = new MealPlanRecipeAdapter(context, date, recipeNames, recipeIDs);
+                        recyclerView.setAdapter(mealPlanRecipeAdapter);
+                    }
+                }else{
 
                 }
 

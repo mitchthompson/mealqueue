@@ -67,6 +67,7 @@ public class HomeFragment extends Fragment {
 
         Calendar c = Calendar.getInstance();
         todaysDate = (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DAY_OF_MONTH) + "-" + c.get(Calendar.YEAR);
+
         Log.d(TAG, "Date: " + todaysDate);
 
         dateTextView = view.findViewById(R.id.date_tv);

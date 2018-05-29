@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:drawableEnd="@drawable/ic_chevron_right_black_24dp"
             android:paddingBottom="16dp"
-            android:text="Recipe Name"
+            android:text="@string/recipe_name_btn"
             android:textAlignment="textStart"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintBottom_toBottomOf="parent"

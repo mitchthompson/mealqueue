@@ -38,14 +38,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     @Override
     public void onBindViewHolder(RecipeViewHolder holder, final int position) {
-        holder.recipeBtn.setText(recipeNames.get(position).toString());
+        holder.recipeBtn.setText(recipeNames.get(position));
         holder.recipeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(context, newHireID.get(position), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(v.getContext(), RecipeActivity.class);
-                intent.putExtra("GrocerySync ID",  recipeIDs.get(position));
-                intent.putExtra("GrocerySync Name", recipeNames.get(position).toString());
+                intent.putExtra("Recipe ID",  recipeIDs.get(position));
+                intent.putExtra("Recipe Name", recipeNames.get(position));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 v.getContext().startActivity(intent);
             }
