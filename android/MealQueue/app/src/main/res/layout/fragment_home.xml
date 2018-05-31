@@ -31,12 +31,13 @@
 
                     <TextView
                         android:id="@+id/date_tv"
-                        android:layout_width="96dp"
-                        android:layout_height="52dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:text=""
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="17dp"
+                        android:fontFamily="sans-serif-condensed"
+                        android:text="Date"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textSize="24sp" />
@@ -44,11 +45,12 @@
                     <Button
                         android:id="@+id/add_plan_btn"
                         style="@style/Widget.AppCompat.Button.Colored"
-                        android:layout_width="98dp"
-                        android:layout_height="40dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_below="@+id/date_tv"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="17dp"
+                        android:fontFamily="sans-serif-condensed"
                         android:text="@string/mealplan_addmeal" />
 
                 </RelativeLayout>
@@ -61,6 +63,7 @@
                 android:layout_alignTop="@+id/remove_meal_1"
                 android:layout_marginStart="11dp"
                 android:layout_toEndOf="@+id/remove_meal_1"
+                android:fontFamily="sans-serif-condensed"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textSize="16sp" />
 
@@ -70,6 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/meals_tv_1"
                 android:layout_centerVertical="true"
+                android:fontFamily="sans-serif-condensed"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textSize="16sp" />
 
@@ -80,6 +84,7 @@
                 android:layout_alignStart="@+id/meals_tv_2"
                 android:layout_below="@+id/meals_tv_2"
                 android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif-condensed"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textSize="16sp" />
 

@@ -113,10 +113,6 @@ public class RecipeActivity extends AppCompatActivity {
                     }
                     itemsAdapter.notifyDataSetChanged();
 
-
-//                    Log.d(TAG, " recipe name: " + recipe.get("Recipe Name").toString()
-//                            + " recipeID: " + recipe.get("Recipe ID").toString()
-//                            + " directions: " + directions + " ingredients: " + ingredientsMap.toString());
                 }
             }
 

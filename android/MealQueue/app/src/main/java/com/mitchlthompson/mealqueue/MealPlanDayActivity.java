@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,8 @@ public class MealPlanDayActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MealPlanRecipeAdapter mealPlanRecipeAdapter;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
+
+    private SearchView searchView;
 
     private ArrayList<String> recipeNames;
     private ArrayList<String> recipeIDs;
@@ -85,7 +88,7 @@ public class MealPlanDayActivity extends AppCompatActivity {
             startActivity(new Intent(MealPlanDayActivity.this, MainActivity.class));
         }
 
-
+        searchView = findViewById(R.id.mealday_recipe_searchview);
 
         recipeIDs = new ArrayList<>();
         recipeNames = new ArrayList<>();
@@ -109,6 +112,19 @@ public class MealPlanDayActivity extends AppCompatActivity {
 
                         mealPlanRecipeAdapter = new MealPlanRecipeAdapter(context, date, recipeNames, recipeIDs);
                         recyclerView.setAdapter(mealPlanRecipeAdapter);
+
+                        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                            @Override
+                            public boolean onQueryTextSubmit(String query) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onQueryTextChange(String newText) {
+                                mealPlanRecipeAdapter.getFilter().filter(newText);
+                                return false;
+                            }
+                        });
                     }
                 }else{
 

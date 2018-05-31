@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +41,8 @@ public class RecipesFragment extends Fragment {
     private RelativeLayout relativeLayout;
     private RecipeAdapter recipeAdapter;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
+
+    private SearchView searchView;
 
     private ArrayList<String> recipeNames;
     private ArrayList<String> recipeIDs;
@@ -85,6 +88,8 @@ public class RecipesFragment extends Fragment {
             }
         };
 
+        searchView = view.findViewById(R.id.recipes_searchView);
+
         mRef = mFirebaseDatabase.getReference("/recipes/" + userID);
 
         addRecipeBtn = view.findViewById(R.id.launch_addrecipe_btn);
@@ -123,6 +128,19 @@ public class RecipesFragment extends Fragment {
 
                                 recipeAdapter = new RecipeAdapter(context, recipeNames, recipeIDs);
                                 recyclerView.setAdapter(recipeAdapter);
+
+                                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                                    @Override
+                                    public boolean onQueryTextSubmit(String query) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onQueryTextChange(String newText) {
+                                        recipeAdapter.getFilter().filter(newText);
+                                        return false;
+                                    }
+                                });
                             }
                     }else{
                         Log.d(TAG, "No Recipes found.");

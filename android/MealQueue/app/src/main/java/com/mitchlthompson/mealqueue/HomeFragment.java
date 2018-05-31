@@ -89,6 +89,7 @@ public class HomeFragment extends Fragment {
         addPlanBtn = view.findViewById(R.id.add_plan_btn);
 
         calenderView = view.findViewById(R.id.calendarView);
+        threeMeals = true;
 
         addPlanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,7 +210,6 @@ public class HomeFragment extends Fragment {
             public void onSelectedDayChange(CalendarView view, int year, int month,
                                             int dayOfMonth) {
                 todaysDate = (month + 1) + "-" + dayOfMonth + "-" + year;
-                //Log.d(TAG, "Date: " + todaysDate);
                 dateTextView.setText(formatDate(todaysDate));
                 mealsTextView1.setText("");
                 mealsTextView2.setText("");
@@ -270,11 +270,6 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     public String formatDate(String oldDate) {
         String date = "";
@@ -446,9 +441,26 @@ public class HomeFragment extends Fragment {
             }
         }
 
-        public int numOfMeals(){
-            return names.size();
-        }
+    }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 }
