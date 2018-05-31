@@ -1,19 +1,16 @@
 package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,7 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.mitchlthompson.mealqueue.adapters.RecipeAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +40,8 @@ public class RecipeActivity extends AppCompatActivity {
     private ArrayList<String> ingredients;
     private String recipeID, recipeName, directions, ingredientName, ingredientAmount;
     private TextView recipeNameTextView, directionsTextview;
+    private Button recipeDelete, recipeEdit, recipeAddToMealPlan;
+    private String removeMealDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +120,40 @@ public class RecipeActivity extends AppCompatActivity {
             }
         });
 
-
+        recipeDelete = findViewById(R.id.recipe_delete);
+        recipeDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    deleteRecipe();
+            }
+        });
 
     }
+
+    private void deleteRecipe(){
+        mFirebaseDatabase.getReference("/recipes/" + userID).child(recipeID).removeValue();
+        final DatabaseReference removeFromMealPlan = mFirebaseDatabase.getReference("/mealplans/" + userID);
+        removeFromMealPlan.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    //Log.d(TAG, snapshot.getKey().toString());
+                    removeMealDate = snapshot.getKey().toString();
+                    for(DataSnapshot child: snapshot.getChildren()){
+                        //Log.d(TAG, child.getValue().toString() + " " + child.getKey().toString());
+                        if(child.getValue().toString().equals(recipeID)){
+                            removeFromMealPlan.child(removeMealDate).child(child.getKey().toString()).removeValue();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 }
