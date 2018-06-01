@@ -54,9 +54,9 @@
     <string name="recipe_directions_textview">Directions</string>
     <string name="recipe_driections_textview_placeholder">Make Yummy!</string>
     <string name="recipe_delete_textview">DELETE</string>
-    <string name="select_sync_start_date">Select Sync start date</string>
-    <string name="select_sync_end_date">Select Sync end date</string>
-    <string name="sync_helper_btn">SYNC</string>
+    <string name="select_sync_start_date">Select Sync Start Date</string>
+    <string name="select_sync_end_date">Select Sync End Date</string>
+    <string name="sync_helper_btn">Finish SYNC</string>
     <string name="grocery_sync_btn">Sync</string>
     <string name="greocery_clear_btn">Clear All</string>
     <string name="grocery_item_name_hint">Item Name</string>

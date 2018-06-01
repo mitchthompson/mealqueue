@@ -2,6 +2,9 @@ package com.mitchlthompson.mealqueue.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.widget.Filterable;
 
 import com.mitchlthompson.mealqueue.R;
 import com.mitchlthompson.mealqueue.RecipeActivity;
+import com.mitchlthompson.mealqueue.RecipeFragment;
 import com.mitchlthompson.mealqueue.helpers.RecipesFilterHelper;
 
 import java.util.ArrayList;
@@ -49,12 +53,20 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.recipeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(context, newHireID.get(position), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(v.getContext(), RecipeActivity.class);
-                intent.putExtra("Recipe ID",  recipeIDs.get(position));
-                intent.putExtra("Recipe Name", recipeNames.get(position));
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                v.getContext().startActivity(intent);
+                RecipeFragment recipeFragment = new RecipeFragment();
+                Bundle recipeFragmentBundle = new Bundle();
+                recipeFragmentBundle.putString("Recipe ID",  recipeIDs.get(position));
+                recipeFragmentBundle.putString("Recipe Name", recipeNames.get(position));
+                recipeFragment.setArguments(recipeFragmentBundle);
+
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+
+                FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.main_frame, recipeFragment);
+                fragmentTransaction.commit();
+
+
+
             }
         });
     }

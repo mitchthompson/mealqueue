@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/MealQTheme"
+    android:id="@+id/activity_sync"
     tools:context="com.mitchlthompson.mealqueue.SyncActivity">
 
     <android.support.v7.widget.Toolbar
@@ -23,9 +24,9 @@
         android:id="@+id/sync_start_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
         android:focusable="false"
         android:hint="@string/select_sync_start_date"
         android:inputType="date"
@@ -38,8 +39,8 @@
         android:id="@+id/sync_end_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:focusable="false"
         android:hint="@string/select_sync_end_date"
@@ -50,11 +51,12 @@
 
     <Button
         android:id="@+id/sync_helper_btn"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="92dp"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="32dp"
+        android:fontFamily="sans-serif-condensed"
         android:text="@string/sync_helper_btn"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,16 +64,20 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="360dp"
-        android:layout_height="68dp"
+        android:layout_width="302dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Select the dates that you would like to sync to your grocery list. This will add all ingredients from the meal plan for those dates. "
+        android:layout_marginTop="32dp"
+        android:fontFamily="sans-serif-condensed"
+        android:text="Select the date range below to add all ingredients from the meal plan for these dates to the grocery list. "
+        android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/myToolbar" />
+
 
 </android.support.constraint.ConstraintLayout>

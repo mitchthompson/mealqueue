@@ -2,7 +2,6 @@ package com.mitchlthompson.mealqueue;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -106,10 +105,15 @@ public class GroceryFragment extends Fragment {
         grocerySyncBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gSync.getData("test", "test2");
-                //startActivity(new Intent(context, SyncActivity.class));
+
+                CalendarFragment calendarFragment = new CalendarFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main_frame, calendarFragment)
+                        .commit();
+
             }
         });
+
 
         groceryItem = view.findViewById(R.id.grocery_item);
         groceryItemAmount = view.findViewById(R.id.grocery_item_amount);

@@ -30,28 +30,38 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/date_tv"
+                        android:id="@+id/date_day_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="17dp"
                         android:fontFamily="sans-serif-condensed"
-                        android:text="Date"
+                        android:layout_marginTop="8dp"
+                        android:text="Day"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                        android:textSize="24sp" />
+                        android:textSize="18sp" />
 
                     <Button
                         android:id="@+id/add_plan_btn"
                         style="@style/Widget.AppCompat.Button.Colored"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/date_tv"
+                        android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="17dp"
+                        android:layout_marginBottom="11dp"
                         android:fontFamily="sans-serif-condensed"
                         android:text="@string/mealplan_addmeal" />
+
+                    <TextView
+                        android:id="@+id/date_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/date_day_tv"
+                        android:layout_centerHorizontal="true"
+                        android:fontFamily="sans-serif-condensed"
+                        android:text="Date"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
@@ -125,15 +135,19 @@
 
     </android.support.v7.widget.CardView>
 
-    <CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/mealplan_cardview"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="2dp"
-        android:elevation="10dp"/>
+        <com.squareup.timessquare.CalendarPickerView
+            android:id="@+id/meal_plan_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/mealplan_cardview"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:scrollbarStyle="outsideOverlay" />
 
     </RelativeLayout>
 

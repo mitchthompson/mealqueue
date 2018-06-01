@@ -1,6 +1,8 @@
 package com.mitchlthompson.mealqueue;
 
 import android.app.DatePickerDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -66,6 +68,7 @@ public class SyncActivity extends AppCompatActivity {
         };
 
         syncStartDateEditText = findViewById(R.id.sync_start_date);
+
 
         // Add calendar settings for date picker
         syncStartDateEditText.setOnClickListener(new View.OnClickListener() {

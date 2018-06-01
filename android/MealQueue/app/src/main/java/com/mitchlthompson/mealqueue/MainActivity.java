@@ -34,11 +34,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.mitchlthompson.mealqueue.adapters.MealPlanRecipeAdapter;
 import com.mitchlthompson.mealqueue.adapters.WeekPlanAdapter;
 import com.mitchlthompson.mealqueue.helpers.myCalendar;
+import com.squareup.timessquare.CalendarPickerView;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String userID;
+
+    private String date;
 
 
     @Override
@@ -89,9 +94,19 @@ public class MainActivity extends AppCompatActivity {
 
         mMainFrame = findViewById(R.id.main_frame);
         mMainNav = findViewById(R.id.main_nav);
-        //mMainNav.setItemIconTintList(null);
 
         homeFragment = new HomeFragment();
+        if(getIntent().hasExtra("Date")) {
+            Bundle bundle = getIntent().getExtras();
+            date = bundle.getString("Date");
+        }else{
+            Date today = new Date();
+            date = DateFormat.getDateInstance(DateFormat.FULL).format(today);
+        }
+        Bundle homeFragmentBundle = new Bundle();
+        homeFragmentBundle.putString("Date", date);
+        homeFragment.setArguments(homeFragmentBundle);
+
         recipesFragment = new RecipesFragment();
         groceryFragment = new GroceryFragment();
 
@@ -103,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             setFragment(homeFragment);
         }
+
 
         mMainNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

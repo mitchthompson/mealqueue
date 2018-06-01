@@ -3,18 +3,12 @@ package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,9 +23,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.timessquare.CalendarPickerView;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,16 +47,18 @@ public class HomeFragment extends Fragment {
     private DatabaseReference mRemoveMeal;
 
     private String todaysDate;
-    private CalendarView calenderView;
+    private CalendarPickerView calendar;
 
     private Map<String,Object> mealPlanData;
     private Boolean threeMeals;
 
-    private TextView dateTextView;
+    private TextView dateTextView, dayDateTextView;
     private Button addPlanBtn;
     private TextView mealsTextView1, mealsTextView2, mealsTextView3;
     private CardView mealPlanCardView;
     private Button removeMeal1, removeMeal2, removeMeal3;
+
+    private RecipeFragment recipeFragment;
 
 
     public HomeFragment() {
@@ -79,17 +78,96 @@ public class HomeFragment extends Fragment {
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
-        Calendar c = Calendar.getInstance();
-        todaysDate = (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DAY_OF_MONTH) + "-" + c.get(Calendar.YEAR);
 
-        Log.d(TAG, "Date: " + todaysDate);
+        if (getArguments() != null) {
+            todaysDate = getArguments().getString("Date");
+        }
 
         dateTextView = view.findViewById(R.id.date_tv);
-        dateTextView.setText(formatDate(todaysDate));
-        addPlanBtn = view.findViewById(R.id.add_plan_btn);
+        dayDateTextView = view.findViewById(R.id.date_day_tv);
 
-        calenderView = view.findViewById(R.id.calendarView);
+        String[] dateSplitArray = todaysDate.split(",");
+        dayDateTextView.setText(dateSplitArray[0]);
+        dateTextView.setText(dateSplitArray[1]);
+
+        addPlanBtn = view.findViewById(R.id.add_plan_btn);
         threeMeals = true;
+
+        Calendar nextYear = Calendar.getInstance();
+        nextYear.add(Calendar.YEAR, 1);
+        Date today = new Date();
+        calendar = view.findViewById(R.id.meal_plan_calendar);
+        calendar.init(today, nextYear.getTime())
+                .withSelectedDate(today);
+
+        calendar.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(Date date) {
+                todaysDate = DateFormat.getDateInstance(DateFormat.FULL).format(date);
+                String[] dateSplitArray = todaysDate.split(",");
+
+                dayDateTextView.setText(dateSplitArray[0]);
+                dateTextView.setText(dateSplitArray[1]);
+                mealsTextView1.setText("");
+                mealsTextView2.setText("");
+                mealsTextView3.setText("");
+
+                if (removeMeal1.getVisibility() == View.VISIBLE){
+                    removeMeal1.setVisibility(View.INVISIBLE);
+                }
+                if (removeMeal2.getVisibility() == View.VISIBLE){
+                    removeMeal2.setVisibility(View.INVISIBLE);
+                }
+                if (removeMeal3.getVisibility() == View.VISIBLE){
+                    removeMeal3.setVisibility(View.INVISIBLE);
+                }
+
+
+                mRefMealPlan2 = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(todaysDate);
+
+                mRefMealPlan2.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mealPlanData = (HashMap<String,Object>) dataSnapshot.getValue();
+                        if(mealPlanData!=null) {
+                            //Log.d(TAG, String.valueOf(mealPlanData.size()));
+                            if(mealPlanData.size() >= 3){
+                                threeMeals = false;
+                            }else{
+                                threeMeals = true;
+                            }
+
+                            Meals meals2 = new Meals();
+                            for (Map.Entry<String, Object> entry : mealPlanData.entrySet()) {
+                                String key = entry.getKey();
+                                Object value = entry.getValue();
+                                //Log.d(TAG, "Meal: " + key + " ID: " + value);
+                                meals2.addMeal(value.toString(), key);
+                            }
+                            mealsTextView1.setText(meals2.getMealName(0));
+                            mealsTextView1.setTag(meals2.getMealID(0));
+
+                            mealsTextView2.setText(meals2.getMealName(1));
+                            mealsTextView2.setTag(meals2.getMealID(1));
+
+                            mealsTextView3.setText(meals2.getMealName(2));
+                            mealsTextView3.setTag(meals2.getMealID(2));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onDateUnselected(Date date) {
+
+           }
+       });
 
         addPlanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,8 +190,6 @@ public class HomeFragment extends Fragment {
         removeMeal2 = view.findViewById(R.id.remove_meal_2);
         removeMeal3 = view.findViewById(R.id.remove_meal_3);
 
-
-
         registerForContextMenu(mealsTextView1);
 
         mealsTextView1.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +197,20 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 startActivity(new Intent(context, RecipeActivity.class)
                         .putExtra("Recipe Name", mealsTextView1.getText())
-                        .putExtra("Recipe ID",  mealsTextView1.getTag().toString()));
+                        .putExtra("Recipe ID",  mealsTextView1.getTag().toString())
+                        .putExtra("Date", todaysDate));
+
+                RecipeFragment recipeFragment = new RecipeFragment();
+                Bundle recipeFragmentBundle = new Bundle();
+                recipeFragmentBundle.putString("Recipe ID",  mealsTextView1.getTag().toString());
+                recipeFragmentBundle.putString("Recipe Name", mealsTextView1.getText().toString());
+                recipeFragmentBundle.putString("Date", todaysDate);
+                recipeFragment.setArguments(recipeFragmentBundle);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main_frame, recipeFragment)
+                        .commit();
+
             }
         });
 
@@ -130,7 +219,19 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 startActivity(new Intent(context, RecipeActivity.class)
                         .putExtra("Recipe Name", mealsTextView2.getText())
-                        .putExtra("Recipe ID",  mealsTextView2.getTag().toString()));
+                        .putExtra("Recipe ID",  mealsTextView2.getTag().toString())
+                        .putExtra("Date", todaysDate));
+
+                RecipeFragment recipeFragment = new RecipeFragment();
+                Bundle recipeFragmentBundle = new Bundle();
+                recipeFragmentBundle.putString("Recipe ID",  mealsTextView2.getTag().toString());
+                recipeFragmentBundle.putString("Recipe Name", mealsTextView2.getText().toString());
+                recipeFragmentBundle.putString("Date", todaysDate);
+                recipeFragment.setArguments(recipeFragmentBundle);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main_frame, recipeFragment)
+                        .commit();
             }
         });
 
@@ -139,7 +240,19 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 startActivity(new Intent(context, RecipeActivity.class)
                         .putExtra("Recipe Name", mealsTextView3.getText())
-                        .putExtra("Recipe ID",  mealsTextView3.getTag().toString()));
+                        .putExtra("Recipe ID",  mealsTextView3.getTag().toString())
+                        .putExtra("Date", todaysDate));
+
+                RecipeFragment recipeFragment = new RecipeFragment();
+                Bundle recipeFragmentBundle = new Bundle();
+                recipeFragmentBundle.putString("Recipe ID",  mealsTextView3.getTag().toString());
+                recipeFragmentBundle.putString("Recipe Name", mealsTextView3.getText().toString());
+                recipeFragmentBundle.putString("Date", todaysDate);
+                recipeFragment.setArguments(recipeFragmentBundle);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main_frame, recipeFragment)
+                        .commit();
             }
         });
 
@@ -204,69 +317,6 @@ public class HomeFragment extends Fragment {
 
         getMeals(todaysDate);
 
-        calenderView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-
-            @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month,
-                                            int dayOfMonth) {
-                todaysDate = (month + 1) + "-" + dayOfMonth + "-" + year;
-                dateTextView.setText(formatDate(todaysDate));
-                mealsTextView1.setText("");
-                mealsTextView2.setText("");
-                mealsTextView3.setText("");
-
-                if (removeMeal1.getVisibility() == View.VISIBLE){
-                    removeMeal1.setVisibility(View.INVISIBLE);
-                }
-                if (removeMeal2.getVisibility() == View.VISIBLE){
-                    removeMeal2.setVisibility(View.INVISIBLE);
-                }
-                if (removeMeal3.getVisibility() == View.VISIBLE){
-                    removeMeal3.setVisibility(View.INVISIBLE);
-                }
-
-
-                mRefMealPlan2 = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(todaysDate);
-
-                mRefMealPlan2.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        mealPlanData = (HashMap<String,Object>) dataSnapshot.getValue();
-                        String meals = "";
-                        if(mealPlanData!=null) {
-                            Log.d(TAG, String.valueOf(mealPlanData.size()));
-                            if(mealPlanData.size() >= 3){
-                                threeMeals = false;
-                            }else{
-                                threeMeals = true;
-                            }
-
-                            Meals meals2 = new Meals();
-                            for (Map.Entry<String, Object> entry : mealPlanData.entrySet()) {
-                                String key = entry.getKey();
-                                Object value = entry.getValue();
-                                Log.d(TAG, "Meal: " + key + " ID: " + value);
-                                meals2.addMeal(value.toString(), key);
-                            }
-                            mealsTextView1.setText(meals2.getMealName(0));
-                            mealsTextView1.setTag(meals2.getMealID(0));
-
-                            mealsTextView2.setText(meals2.getMealName(1));
-                            mealsTextView2.setTag(meals2.getMealID(1));
-
-                            mealsTextView3.setText(meals2.getMealName(2));
-                            mealsTextView3.setTag(meals2.getMealID(2));
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-            }
-        });
         return view;
     }
 
@@ -443,24 +493,4 @@ public class HomeFragment extends Fragment {
 
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
 }

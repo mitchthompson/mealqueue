@@ -2,13 +2,12 @@ package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -26,8 +25,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RecipeActivity extends AppCompatActivity {
-    private static final String TAG = "RecipeActivity";
+
+public class RecipeFragment extends Fragment {
+    private static final String TAG = "RecipeFragment";
+
+    View view;
 
     private Context context;
 
@@ -40,27 +42,30 @@ public class RecipeActivity extends AppCompatActivity {
     private HashMap<String,Object> recipe;
     private Map<String,String> ingredientsMap;
     private ArrayList<String> ingredients;
+    private ArrayAdapter<String> itemsAdapter;
     private String recipeID, recipeName, directions, ingredientName, ingredientAmount;
     private TextView recipeNameTextView, directionsTextview;
     private Button recipeDelete, recipeEdit, recipeAddToMealPlan;
     private String removeMealDate, date;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe);
-        Toolbar myToolbar = findViewById(R.id.myToolbar);
-        setSupportActionBar(myToolbar);
-        context = getApplicationContext();
 
-        if(getIntent().hasExtra("Recipe ID")) {
-            Bundle bundle = getIntent().getExtras();
-            recipeID = bundle.getString("Recipe ID");
-            recipeName = bundle.getString("Recipe Name");
-            date = bundle.getString("Date");
-        }
-        else {
-            Log.d(TAG, "Nothing in intent bundle");
+    public RecipeFragment() {
+        // Required empty public constructor
+    }
+
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_recipe, container, false);
+
+        context = getActivity();
+
+        if (getArguments() != null) {
+            recipeID = getArguments().getString("Recipe ID");
+            recipeName = getArguments().getString("Recipe Name");
+            date = getArguments().getString("Date");
         }
 
         mAuth = FirebaseAuth.getInstance();
@@ -69,30 +74,13 @@ public class RecipeActivity extends AppCompatActivity {
         userID = user.getUid();
         mRef = mFirebaseDatabase.getReference("/recipes/" + userID + "/" + recipeID);
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = mAuth.getCurrentUser();
-                if(user != null){
-                    Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
-//                    Toast.makeText(context,"Successfully signing in with: " + user.getEmail(),
-//                            Toast.LENGTH_SHORT).show();
-                }else{
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
-
-
-        recipeNameTextView = findViewById(R.id.recipe_name_textView);
-        directionsTextview = findViewById(R.id.recipe_directions_textView);
+        recipeNameTextView = view.findViewById(R.id.recipe_name_textView);
+        directionsTextview = view.findViewById(R.id.recipe_directions_textView);
 
         ingredientsMap = new HashMap<>();
         ingredients = new ArrayList<>();
-        final ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>
-                (this, android.R.layout.simple_list_item_1, ingredients);
-        ListView listView = findViewById(R.id.ingredients_listView);
+        itemsAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, ingredients);
+        ListView listView = view.findViewById(R.id.ingredients_listView);
         listView.setAdapter(itemsAdapter);
 
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -123,27 +111,37 @@ public class RecipeActivity extends AppCompatActivity {
             }
         });
 
-        recipeDelete = findViewById(R.id.recipe_delete);
+        recipeDelete = view.findViewById(R.id.recipe_delete);
         recipeDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    deleteRecipe();
-                    startActivity(new Intent(context, MainActivity.class)
-                            .putExtra("Date", date));
+                deleteRecipe();
+                startActivity(new Intent(context, MainActivity.class)
+                        .putExtra("Date", date));
             }
         });
 
-        recipeAddToMealPlan = findViewById(R.id.recipe_add_meal);
+        recipeAddToMealPlan = view.findViewById(R.id.recipe_add_meal);
         recipeAddToMealPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RecipeCalendarFragment newFragment = new RecipeCalendarFragment();
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.main_frame, newFragment);
-                fragmentTransaction.commit();
+
+                Bundle bundle = new Bundle();
+                bundle.putString("Recipe ID", recipeID);
+                bundle.putString("Recipe Name", recipeName);
+                newFragment.setArguments(bundle);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main_frame, newFragment)
+                        .commit();
             }
         });
 
+
+
+
+        return view;
     }
 
     private void deleteRecipe(){
