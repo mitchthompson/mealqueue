@@ -36,7 +36,7 @@ public class RecipeCalendarFragment extends Fragment {
     private String userID;
 
     private CalendarPickerView calendarPickerView;
-    private Button addToMealPlanBtn;
+    private Button addToMealPlanBtn, addCancelBtn;
     private String selectedDate, recipeID, recipeName;
 
     public RecipeCalendarFragment() {
@@ -98,6 +98,22 @@ public class RecipeCalendarFragment extends Fragment {
 
 
 
+            }
+        });
+
+        addCancelBtn = viewer.findViewById(R.id.recipe_add_meal_cancel_btn);
+        addCancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RecipeFragment newFragment = new RecipeFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("Recipe ID", recipeID);
+                bundle.putString("Recipe Name", recipeName);
+                newFragment.setArguments(bundle);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main_frame, newFragment)
+                        .commit();
             }
         });
         return viewer;

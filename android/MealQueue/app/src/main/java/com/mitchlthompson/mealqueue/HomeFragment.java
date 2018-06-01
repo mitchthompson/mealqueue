@@ -53,7 +53,7 @@ public class HomeFragment extends Fragment {
     private Boolean threeMeals;
 
     private TextView dateTextView, dayDateTextView;
-    private Button addPlanBtn;
+    private Button addPlanBtn, editMealPlanBtn;
     private TextView mealsTextView1, mealsTextView2, mealsTextView3;
     private CardView mealPlanCardView;
     private Button removeMeal1, removeMeal2, removeMeal3;
@@ -195,11 +195,6 @@ public class HomeFragment extends Fragment {
         mealsTextView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, RecipeActivity.class)
-                        .putExtra("Recipe Name", mealsTextView1.getText())
-                        .putExtra("Recipe ID",  mealsTextView1.getTag().toString())
-                        .putExtra("Date", todaysDate));
-
                 RecipeFragment recipeFragment = new RecipeFragment();
                 Bundle recipeFragmentBundle = new Bundle();
                 recipeFragmentBundle.putString("Recipe ID",  mealsTextView1.getTag().toString());
@@ -217,11 +212,6 @@ public class HomeFragment extends Fragment {
         mealsTextView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, RecipeActivity.class)
-                        .putExtra("Recipe Name", mealsTextView2.getText())
-                        .putExtra("Recipe ID",  mealsTextView2.getTag().toString())
-                        .putExtra("Date", todaysDate));
-
                 RecipeFragment recipeFragment = new RecipeFragment();
                 Bundle recipeFragmentBundle = new Bundle();
                 recipeFragmentBundle.putString("Recipe ID",  mealsTextView2.getTag().toString());
@@ -238,11 +228,6 @@ public class HomeFragment extends Fragment {
         mealsTextView3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, RecipeActivity.class)
-                        .putExtra("Recipe Name", mealsTextView3.getText())
-                        .putExtra("Recipe ID",  mealsTextView3.getTag().toString())
-                        .putExtra("Date", todaysDate));
-
                 RecipeFragment recipeFragment = new RecipeFragment();
                 Bundle recipeFragmentBundle = new Bundle();
                 recipeFragmentBundle.putString("Recipe ID",  mealsTextView3.getTag().toString());
@@ -256,44 +241,44 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        mealPlanCardView.setOnLongClickListener(new View.OnLongClickListener() {
+        editMealPlanBtn = view.findViewById(R.id.edit_meal_plan_btn);
 
-            @Override
-            public boolean onLongClick(View v) {
-                if(removeMeal1.getVisibility() == View.INVISIBLE &&
-                        mealsTextView1.getText() != ""){
-                    removeMeal1.setVisibility(View.VISIBLE);
-                }else if (removeMeal1.getVisibility() == View.VISIBLE){
-                    removeMeal1.setVisibility(View.INVISIBLE);
-                }
-
-                if(removeMeal2.getVisibility() == View.INVISIBLE &&
-                        mealsTextView2.getText() != ""){
-                    removeMeal2.setVisibility(View.VISIBLE);
-                }else if (removeMeal2.getVisibility() == View.VISIBLE){
-                    removeMeal2.setVisibility(View.INVISIBLE);
-                }
-
-                if(removeMeal3.getVisibility() == View.INVISIBLE &&
-                        mealsTextView3.getText() != ""){
-                    removeMeal3.setVisibility(View.VISIBLE);
-                }else if (removeMeal3.getVisibility() == View.VISIBLE){
-                    removeMeal3.setVisibility(View.INVISIBLE);
-                }
-
-                return false;
-            }
-        });
-
-        removeMeal1.setOnClickListener(new View.OnClickListener() {
+        editMealPlanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = mealsTextView1.getText().toString();
-                removeMeal(name, todaysDate);
-                updateRemoveMealBtns();
-                mealsTextView1.setText("");
+                    if(removeMeal1.getVisibility() == View.INVISIBLE &&
+                            mealsTextView1.getText() != ""){
+                        removeMeal1.setVisibility(View.VISIBLE);
+                    }else if (removeMeal1.getVisibility() == View.VISIBLE){
+                        removeMeal1.setVisibility(View.INVISIBLE);
+                    }
+
+                    if(removeMeal2.getVisibility() == View.INVISIBLE &&
+                            mealsTextView2.getText() != ""){
+                        removeMeal2.setVisibility(View.VISIBLE);
+                    }else if (removeMeal2.getVisibility() == View.VISIBLE){
+                        removeMeal2.setVisibility(View.INVISIBLE);
+                    }
+
+                    if(removeMeal3.getVisibility() == View.INVISIBLE &&
+                            mealsTextView3.getText() != ""){
+                        removeMeal3.setVisibility(View.VISIBLE);
+                    }else if (removeMeal3.getVisibility() == View.VISIBLE){
+                        removeMeal3.setVisibility(View.INVISIBLE);
+                    }
+
             }
         });
+
+                removeMeal1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String name = mealsTextView1.getText().toString();
+                        removeMeal(name, todaysDate);
+                        updateRemoveMealBtns();
+                        mealsTextView1.setText("");
+                    }
+                });
 
         removeMeal2.setOnClickListener(new View.OnClickListener() {
             @Override

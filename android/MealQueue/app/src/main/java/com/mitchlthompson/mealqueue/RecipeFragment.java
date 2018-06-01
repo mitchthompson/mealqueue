@@ -44,7 +44,7 @@ public class RecipeFragment extends Fragment {
     private ArrayList<String> ingredients;
     private ArrayAdapter<String> itemsAdapter;
     private String recipeID, recipeName, directions, ingredientName, ingredientAmount;
-    private TextView recipeNameTextView, directionsTextview;
+    private TextView recipeNameTextView, directionsTextview, ingredientsList;
     private Button recipeDelete, recipeEdit, recipeAddToMealPlan;
     private String removeMealDate, date;
 
@@ -76,12 +76,13 @@ public class RecipeFragment extends Fragment {
 
         recipeNameTextView = view.findViewById(R.id.recipe_name_textView);
         directionsTextview = view.findViewById(R.id.recipe_directions_textView);
+        ingredientsList = view.findViewById(R.id.ingredients_list);
 
         ingredientsMap = new HashMap<>();
         ingredients = new ArrayList<>();
-        itemsAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, ingredients);
-        ListView listView = view.findViewById(R.id.ingredients_listView);
-        listView.setAdapter(itemsAdapter);
+//        itemsAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, ingredients);
+//        ListView listView = view.findViewById(R.id.ingredients_listView);
+//        listView.setAdapter(itemsAdapter);
 
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -92,15 +93,17 @@ public class RecipeFragment extends Fragment {
 
                     recipeNameTextView.setText(recipe.get("Recipe Name").toString());
                     directionsTextview.setText(recipe.get("Directions").toString());
-
+                    String ingredientsString = "";
                     //Get ingredients map
                     ingredientsMap = (HashMap) recipe.get("Ingredients");
                     for (String key : ingredientsMap.keySet()) {
                         //iterate over key
                         //Log.d(TAG, ingredientsMap.get(key) + " " + key);
-                        ingredients.add(ingredientsMap.get(key) + " " + key);
+                        ingredientsString += ingredientsMap.get(key) + "  " + key + "\n\n";
+//                        ingredients.add(ingredientsMap.get(key) + " " + key);
                     }
-                    itemsAdapter.notifyDataSetChanged();
+                    ingredientsList.setText(ingredientsString);
+//                    itemsAdapter.notifyDataSetChanged();
 
                 }
             }
@@ -126,10 +129,10 @@ public class RecipeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 RecipeCalendarFragment newFragment = new RecipeCalendarFragment();
-
                 Bundle bundle = new Bundle();
                 bundle.putString("Recipe ID", recipeID);
                 bundle.putString("Recipe Name", recipeName);
+                bundle.putString("Date", date);
                 newFragment.setArguments(bundle);
 
                 getActivity().getSupportFragmentManager().beginTransaction()

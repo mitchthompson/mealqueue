@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.mitchlthompson.mealqueue.helpers.GrocerySync;
 import com.squareup.timessquare.CalendarPickerView;
 
 import java.text.DateFormat;
@@ -27,7 +28,7 @@ public class CalendarFragment extends Fragment {
     View viewer;
     private Context context;
 
-    private Button doneBtn;
+    private Button doneBtn, cancelBtn;
     private List selectedDates;
     private ArrayList<String> formattedDates;
 
@@ -73,13 +74,34 @@ public class CalendarFragment extends Fragment {
                     for(int i=0;i<selectedDates.size();i++){
                         formattedDates.add(DateFormat.getDateInstance(DateFormat.FULL).format(selectedDates.get(i)));
                     }
+                    Log.d(TAG, formattedDates.toString());
 
+                    GrocerySync grocerySync = new GrocerySync();
+                    grocerySync.getData(formattedDates);
 
+                    GroceryFragment newFragment = new GroceryFragment();
+
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.main_frame, newFragment)
+                            .commit();
 
                 }
 
             }
         });
+
+        cancelBtn = viewer.findViewById(R.id.sync_cancel_btn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GroceryFragment newFragment = new GroceryFragment();
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main_frame, newFragment)
+                        .commit();
+            }
+        });
+
         return viewer;
 
     }

@@ -12,6 +12,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GrocerySync {
@@ -23,25 +24,20 @@ public class GrocerySync {
     private DatabaseReference mRef;
     private String userID;
 
-    private String startDate;
-    private String endDate;
     private Map<String,Object> firebaseData;
-    private ArrayList<String> recipeIDs;
-    private ArrayList<String> groceryItems;
-    private ArrayList<String> ingredients;
+    private ArrayList<String> recipeIDs, groceryItems, ingredients, syncDates;
 
     public GrocerySync(){
     }
 
-    public void getData(String start, String end){
+    public void getData(ArrayList<String> selectedDates){
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
         mRef = mFirebaseDatabase.getReference("/mealplans/" + userID);
 
-        startDate = "5-19-2018";
-        endDate = "5-20-2018";
+        syncDates = selectedDates;
 
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -50,10 +46,12 @@ public class GrocerySync {
                 recipeIDs = new ArrayList<>();
                 if(firebaseData != null) {
                     for (Map.Entry<String, Object> entry : firebaseData.entrySet()) {
-                        if(startDate.equals(entry.getKey().toString())){
-                            Map<String,String> singleDay = (HashMap) entry.getValue();
-                            for(String key : singleDay.keySet()){
-                                recipeIDs.add(singleDay.get(key));
+                        for(int i=0;i<syncDates.size();i++){
+                            if(syncDates.get(i).equals(entry.getKey().toString())){
+                                Map<String,String> singleDay = (HashMap) entry.getValue();
+                                for(String key : singleDay.keySet()){
+                                    recipeIDs.add(singleDay.get(key));
+                                }
                             }
                         }
                     }
@@ -92,8 +90,8 @@ public class GrocerySync {
                 //Get ingredients map
                 Map<String,String> ingredientsMap = (HashMap) recipe.get("Ingredients");
                 for (String key : ingredientsMap.keySet()){
-                    Log.d(TAG,ingredientsMap.get(key)+" "+key);
-                    ingredients.add(ingredientsMap.get(key)+" "+key);
+                    //Log.d(TAG,ingredientsMap.get(key)+" "+key);
+                    ingredients.add(key+" \n    "+ ingredientsMap.get(key));
                 }
 
                 addIngredientsToFirebase(ingredients);

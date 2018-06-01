@@ -70,8 +70,6 @@ public class SyncHelperActivity extends AppCompatActivity {
             startActivity(new Intent(SyncHelperActivity.this, SyncActivity.class));
         }
 
-        GrocerySync gSync = new GrocerySync();
-        gSync.getData(syncStartDate,syncEndDate);
 
 
 

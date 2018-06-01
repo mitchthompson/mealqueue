@@ -11,12 +11,24 @@
         android:layout_height="fill_parent"
         android:gravity="center"
         android:orientation="vertical"
+        android:background="@color/colorAccent"
         android:padding="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:id="@+id/login_welcome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:text="Meal Queue"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="36sp" />
 
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
 
             <EditText
                 android:id="@+id/email"
@@ -24,7 +36,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/hint_email"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:textColorHint="@color/bg_register"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -37,7 +51,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/hint_password"
-                android:inputType="textPassword" />
+                android:textColorHint="@color/bg_register"
+                android:inputType="textPassword"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Login Button -->
@@ -47,6 +63,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
+            android:fontFamily="sans-serif-condensed"
             android:text="@string/btn_login" />
 
         <Button
@@ -55,8 +72,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
             android:background="@null"
+            android:fontFamily="sans-serif-condensed"
             android:text="@string/btn_forgot_password"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textColor="@color/bg_register" />
 
         <!-- Link to Login Screen -->
 
@@ -66,9 +85,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
             android:background="@null"
+            android:fontFamily="sans-serif-condensed"
             android:text="@string/sign_up_btn"
             android:textAllCaps="false"
+            android:textColor="@color/bg_register"
             android:textSize="15dp" />
+
     </LinearLayout>
 
     <ProgressBar
