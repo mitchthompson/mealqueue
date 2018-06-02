@@ -1,19 +1,16 @@
 package com.mitchlthompson.mealqueue;
 
+
 import android.content.Context;
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.SearchView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,14 +20,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mitchlthompson.mealqueue.adapters.MealPlanRecipeAdapter;
-import com.mitchlthompson.mealqueue.adapters.RecipeAdapter;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
-public class MealPlanDayActivity extends AppCompatActivity {
 
-    private static final String TAG = "MealPlanDayActivity";
+public class MealPlanDayFragment extends Fragment {
+    private static final String TAG = "MealPlanDayFragment";
+    private View view;
+    private Context context;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
@@ -38,7 +40,6 @@ public class MealPlanDayActivity extends AppCompatActivity {
     private String userID;
     private DatabaseReference mRef;
 
-    private Context context;
     private RecyclerView recyclerView;
     private MealPlanRecipeAdapter mealPlanRecipeAdapter;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
@@ -48,16 +49,21 @@ public class MealPlanDayActivity extends AppCompatActivity {
     private ArrayList<String> recipeNames;
     private ArrayList<String> recipeIDs;
     private String date;
+    private Button cancelBtn;
 
     private Map<String,Object> recipes;
 
+
+    public MealPlanDayFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_meal_plan_day);
-        Toolbar myToolbar = findViewById(R.id.myToolbar);
-        setSupportActionBar(myToolbar);
-        context = getApplicationContext();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_meal_plan_day, container, false);
+        context = getActivity();
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -65,30 +71,35 @@ public class MealPlanDayActivity extends AppCompatActivity {
         userID = user.getUid();
         mRef = mFirebaseDatabase.getReference("/recipes/" + userID);
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+        if (getArguments() != null) {
+            date = getArguments().getString("Date");
+
+        } else {
+            Date today = new Date();
+            date = DateFormat.getDateInstance(DateFormat.FULL).format(today);
+            HomeFragment newFragment = new HomeFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("Date", date);
+            newFragment.setArguments(bundle);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_frame, newFragment)
+                    .commit();
+        }
+
+        cancelBtn = view.findViewById(R.id.meal_plan_day_cancel_btn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = mAuth.getCurrentUser();
-                if(user != null){
-                    Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
-                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
-                }else{
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
-                }
+            public void onClick(View v) {
+                HomeFragment newFragment = new HomeFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("Date", date);
+                newFragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main_frame, newFragment)
+                        .commit();
             }
-        };
-
-        if(getIntent().hasExtra("Date")) {
-            Bundle bundle = getIntent().getExtras();
-            date = bundle.getString("Date");
-        }
-        else {
-            Log.d(TAG, "Nothing in intent bundle");
-            startActivity(new Intent(MealPlanDayActivity.this, MainActivity.class));
-        }
-
-        searchView = findViewById(R.id.mealday_recipe_searchview);
+        });
+        searchView = view.findViewById(R.id.mealday_recipe_searchview);
 
         recipeIDs = new ArrayList<>();
         recipeNames = new ArrayList<>();
@@ -106,7 +117,7 @@ public class MealPlanDayActivity extends AppCompatActivity {
                         recipeNames.add((singleRecipe.get("Recipe Name").toString()));
                         recipeIDs.add(singleRecipe.get("Recipe ID").toString());
 
-                        recyclerView = findViewById(R.id.recipe_recycler);
+                        recyclerView = view.findViewById(R.id.recipe_recycler);
                         recyclerViewLayoutManager = new LinearLayoutManager(context);
                         recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
@@ -136,5 +147,8 @@ public class MealPlanDayActivity extends AppCompatActivity {
 
             }
         });
+
+        return view;
     }
+
 }

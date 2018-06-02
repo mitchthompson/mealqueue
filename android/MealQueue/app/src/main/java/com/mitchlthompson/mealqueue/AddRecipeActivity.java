@@ -98,10 +98,10 @@ public class AddRecipeActivity extends AppCompatActivity {
                     directions = directionsInput.getText().toString();
                     Log.d(TAG, "Recipe name: " + recipeName + " Directions: " + directions);
                     //String key = mRef.push().getKey();
-                    //mRef.child(key).child("GrocerySync Name").setValue(recipeName);
+                    //mRef.child(key).child("GrocerySyncHelper Name").setValue(recipeName);
                     //mRef.child(key).child("Directions").setValue(directions);
                     //mRef.child(key).child("Ingredients").setValue(ingredients);
-                    //mRef.child(key).child("GrocerySync ID").setValue(key);
+                    //mRef.child(key).child("GrocerySyncHelper ID").setValue(key);
                     startActivity(new Intent(AddRecipeActivity.this, AddIngredientsActivity.class)
                             .putExtra("Recipe Name", recipeName)
                             .putExtra("Directions", directions));

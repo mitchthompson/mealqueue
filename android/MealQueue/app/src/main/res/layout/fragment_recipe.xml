@@ -22,6 +22,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/recipe_name_textview"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/Dark"
             android:textSize="30sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recipe_imageView" />
@@ -45,6 +46,7 @@
             android:layout_marginTop="24dp"
             android:text="@string/recipe_ingredients_textview"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/Dark"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recipe_view" />
@@ -68,6 +70,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/recipe_directions_textview"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/Dark"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ingredients_list" />
@@ -82,6 +85,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/recipe_driections_textview_placeholder"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/Dark"
             android:textSize="14dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -107,6 +111,7 @@
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-condensed"
             android:text="@string/recipe_delete_textview"
+            android:textColor="@color/Dark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -120,6 +125,7 @@
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-condensed"
             android:text="EDIT"
+            android:textColor="@color/Dark"
             app:layout_constraintEnd_toStartOf="@+id/recipe_delete"
             app:layout_constraintHorizontal_bias="0.75"
             app:layout_constraintStart_toEndOf="@+id/recipe_add_meal"
@@ -144,8 +150,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-condensed"
-            android:text="TextView"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/Dark"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ingredients_title_textview" />
 

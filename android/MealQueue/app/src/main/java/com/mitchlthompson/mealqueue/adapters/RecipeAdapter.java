@@ -1,7 +1,6 @@
 package com.mitchlthompson.mealqueue.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +13,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import com.mitchlthompson.mealqueue.R;
-import com.mitchlthompson.mealqueue.RecipeActivity;
 import com.mitchlthompson.mealqueue.RecipeFragment;
 import com.mitchlthompson.mealqueue.helpers.RecipesFilterHelper;
 

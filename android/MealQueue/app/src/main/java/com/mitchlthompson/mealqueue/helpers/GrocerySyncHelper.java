@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GrocerySync {
-    private static final String TAG = "GrocerySync";
+public class GrocerySyncHelper {
+    private static final String TAG = "GrocerySyncHelper";
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
@@ -27,7 +27,7 @@ public class GrocerySync {
     private Map<String,Object> firebaseData;
     private ArrayList<String> recipeIDs, groceryItems, ingredients, syncDates;
 
-    public GrocerySync(){
+    public GrocerySyncHelper(){
     }
 
     public void getData(ArrayList<String> selectedDates){

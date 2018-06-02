@@ -31,7 +31,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:fontFamily="sans-serif-condensed"
-            android:text="@string/greocery_clear_btn"
+            android:text="@string/grocery_clear_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -104,8 +104,9 @@
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
             android:background="@color/colorPrimary"
-            app:layout_constraintTop_toBottomOf="@+id/grocery_cardview"
-            tools:layout_editor_absoluteX="0dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/grocery_cardview" />
 
 
         <android.support.v7.widget.RecyclerView

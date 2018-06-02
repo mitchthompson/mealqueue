@@ -5,14 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.timessquare.CalendarPickerView;
 
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,6 +47,7 @@ public class HomeFragment extends Fragment {
     private DatabaseReference mRemoveMeal;
 
     private String todaysDate;
+    private Date today;
     private CalendarPickerView calendar;
 
     private Map<String,Object> mealPlanData;
@@ -81,6 +82,17 @@ public class HomeFragment extends Fragment {
 
         if (getArguments() != null) {
             todaysDate = getArguments().getString("Date");
+
+            String expectedPattern = "EEE, MMM d, yyyy";
+            SimpleDateFormat formatter = new SimpleDateFormat(expectedPattern);
+            try {
+                today = formatter.parse(todaysDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            today = new Date();
         }
 
         dateTextView = view.findViewById(R.id.date_tv);
@@ -95,7 +107,6 @@ public class HomeFragment extends Fragment {
 
         Calendar nextYear = Calendar.getInstance();
         nextYear.add(Calendar.YEAR, 1);
-        Date today = new Date();
         calendar = view.findViewById(R.id.meal_plan_calendar);
         calendar.init(today, nextYear.getTime())
                 .withSelectedDate(today);
@@ -173,8 +184,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(threeMeals) {
-                    context.startActivity(new Intent(context, MealPlanDayActivity.class)
-                            .putExtra("Date", todaysDate));
+                    MealPlanDayFragment newFragment = new MealPlanDayFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("Date", todaysDate);
+                    newFragment.setArguments(bundle);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.main_frame, newFragment)
+                            .commit();
                 }else{
                     Toast.makeText(context,"Only three meals per day allowed. Please remove one before adding a new one.", Toast.LENGTH_SHORT).show();
 
@@ -190,7 +206,7 @@ public class HomeFragment extends Fragment {
         removeMeal2 = view.findViewById(R.id.remove_meal_2);
         removeMeal3 = view.findViewById(R.id.remove_meal_3);
 
-        registerForContextMenu(mealsTextView1);
+        //registerForContextMenu(mealsTextView1);
 
         mealsTextView1.setOnClickListener(new View.OnClickListener() {
             @Override

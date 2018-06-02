@@ -12,7 +12,7 @@
         <android.support.v7.widget.CardView
             android:id="@+id/mealplan_cardview"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="142dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp">
@@ -105,7 +105,8 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-condensed"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textSize="16sp"
+                    android:textColor="@color/Dark"
+                    android:textSize="18sp"
                     app:layout_constraintStart_toEndOf="@+id/remove_meal_1"
                     app:layout_constraintTop_toBottomOf="@+id/mealplan_cardview2" />
 
@@ -117,7 +118,8 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-condensed"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textSize="16sp"
+                    android:textColor="@color/Dark"
+                    android:textSize="18sp"
                     app:layout_constraintStart_toEndOf="@+id/remove_meal_2"
                     app:layout_constraintTop_toBottomOf="@+id/meals_tv_1" />
 
@@ -129,7 +131,8 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-condensed"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textSize="16sp"
+                    android:textColor="@color/Dark"
+                    android:textSize="18sp"
                     app:layout_constraintStart_toEndOf="@+id/remove_meal_3"
                     app:layout_constraintTop_toBottomOf="@+id/meals_tv_2" />
 
@@ -141,6 +144,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/ic_remove_black_24dp"
+                    android:backgroundTint="@color/Dark"
                     android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/mealplan_cardview2" />
@@ -153,6 +157,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/ic_remove_black_24dp"
+                    android:backgroundTint="@color/Dark"
                     android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/remove_meal_1" />
@@ -165,6 +170,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/ic_remove_black_24dp"
+                    android:backgroundTint="@color/Dark"
                     android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/remove_meal_2" />

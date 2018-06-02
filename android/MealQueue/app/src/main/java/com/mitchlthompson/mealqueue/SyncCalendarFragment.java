@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.mitchlthompson.mealqueue.helpers.GrocerySync;
+import com.mitchlthompson.mealqueue.helpers.GrocerySyncHelper;
 import com.squareup.timessquare.CalendarPickerView;
 
 import java.text.DateFormat;
@@ -22,8 +22,8 @@ import java.util.List;
 
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.RANGE;
 
-public class CalendarFragment extends Fragment {
-    private static final String TAG = "CalendarFragment";
+public class SyncCalendarFragment extends Fragment {
+    private static final String TAG = "SyncCalendarFragment";
 
     View viewer;
     private Context context;
@@ -32,7 +32,7 @@ public class CalendarFragment extends Fragment {
     private List selectedDates;
     private ArrayList<String> formattedDates;
 
-    public CalendarFragment(){
+    public SyncCalendarFragment(){
 
     }
 
@@ -76,8 +76,8 @@ public class CalendarFragment extends Fragment {
                     }
                     Log.d(TAG, formattedDates.toString());
 
-                    GrocerySync grocerySync = new GrocerySync();
-                    grocerySync.getData(formattedDates);
+                    GrocerySyncHelper grocerySyncHelper = new GrocerySyncHelper();
+                    grocerySyncHelper.getData(formattedDates);
 
                     GroceryFragment newFragment = new GroceryFragment();
 

@@ -37,19 +37,9 @@
         <activity android:name=".AddRecipeActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".RecipeActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
         <activity android:name=".AddIngredientsActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".MealPlanDayActivity" />
-        <activity android:name=".SyncActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".SyncHelperActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

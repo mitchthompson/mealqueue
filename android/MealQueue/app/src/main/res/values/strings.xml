@@ -58,7 +58,7 @@
     <string name="select_sync_end_date">Select Sync End Date</string>
     <string name="sync_helper_btn">Finish SYNC</string>
     <string name="grocery_sync_btn">Sync</string>
-    <string name="greocery_clear_btn">Clear All</string>
+    <string name="grocery_clear_btn">Remove All</string>
     <string name="grocery_item_name_hint">Item Name</string>
     <string name="grocery_item_amount_hint">Item Amount</string>
     <string name="grocery_add_item_btn">Add</string>

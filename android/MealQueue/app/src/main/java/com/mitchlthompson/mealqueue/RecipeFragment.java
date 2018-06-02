@@ -1,10 +1,13 @@
 package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,9 +121,37 @@ public class RecipeFragment extends Fragment {
         recipeDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteRecipe();
-                startActivity(new Intent(context, MainActivity.class)
-                        .putExtra("Date", date));
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
+                mBuilder.setIcon(R.drawable.ic_remove_circle_outline_black_24dp);
+                mBuilder.setTitle("Delete " + recipeName);
+                mBuilder.setMessage("Are you sure you want to delete this recipe? It cannot be undone.");
+                mBuilder.setPositiveButton("YES, delete recipe", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteRecipe();
+
+                        RecipesFragment newFragment = new RecipesFragment();
+                        if(date!=null){
+                            Bundle bundle = new Bundle();
+                            bundle.putString("Date", date);
+                            newFragment.setArguments(bundle);
+                        }
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.main_frame, newFragment)
+                                .commit();
+                        dialog.dismiss();
+                    }
+                });
+                mBuilder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alertDialog = mBuilder.create();
+                alertDialog.show();
+
             }
         });
 

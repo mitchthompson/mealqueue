@@ -2,9 +2,10 @@ package com.mitchlthompson.mealqueue;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -27,7 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mitchlthompson.mealqueue.adapters.GroceryListAdapter;
-import com.mitchlthompson.mealqueue.helpers.GrocerySync;
+import com.mitchlthompson.mealqueue.helpers.GrocerySyncHelper;
 
 import java.util.ArrayList;
 
@@ -59,7 +60,7 @@ public class GroceryFragment extends Fragment {
     private DatabaseReference mRef;
     private String userID;
 
-    private GrocerySync gSync;
+    private GrocerySyncHelper gSync;
     private ArrayList<String> recipeIDs;
     private ArrayList<String> groceryItems;
 
@@ -81,34 +82,34 @@ public class GroceryFragment extends Fragment {
         userID = user.getUid();
         mRef = mFirebaseDatabase.getReference("/grocery/" + userID);
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = mAuth.getCurrentUser();
-                if(user != null){
-                    Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
-                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
-                }else{
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
+//        mAuthListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                FirebaseUser user = mAuth.getCurrentUser();
+//                if(user != null){
+//                    Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
+//                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+//                }else{
+//                    Log.d(TAG, "onAuthStateChanged:signed_out");
+//                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        };
 
         Log.d(TAG, userID);
 
         itemNames = new ArrayList<>();
         itemIDs = new ArrayList<>();
-        gSync = new GrocerySync();
+        gSync = new GrocerySyncHelper();
 
         grocerySyncBtn = view.findViewById(R.id.grocery_sync_btn);
         grocerySyncBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                CalendarFragment calendarFragment = new CalendarFragment();
+                SyncCalendarFragment syncCalendarFragment = new SyncCalendarFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.main_frame, calendarFragment)
+                        .replace(R.id.main_frame, syncCalendarFragment)
                         .commit();
 
             }
@@ -143,10 +144,31 @@ public class GroceryFragment extends Fragment {
         clearItemsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRef.removeValue();
-                itemIDs.clear();
-                itemNames.clear();
-                groceryListAdapter.notifyDataSetChanged();
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
+                mBuilder.setIcon(R.drawable.ic_remove_circle_outline_black_24dp);
+                mBuilder.setTitle("Clear Grocery List");
+                mBuilder.setMessage("Are you sure you want to remove all items from the grocery list?");
+                mBuilder.setPositiveButton("YES, remove all items", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mRef.removeValue();
+                        itemIDs.clear();
+                        itemNames.clear();
+                        groceryListAdapter.notifyDataSetChanged();
+                        dialog.dismiss();
+                    }
+                });
+                mBuilder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alertDialog = mBuilder.create();
+                alertDialog.show();
+
+
             }
 
         });

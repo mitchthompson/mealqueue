@@ -2,7 +2,6 @@ package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,41 +9,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.mitchlthompson.mealqueue.adapters.MealPlanRecipeAdapter;
-import com.mitchlthompson.mealqueue.adapters.WeekPlanAdapter;
-import com.mitchlthompson.mealqueue.helpers.myCalendar;
-import com.squareup.timessquare.CalendarPickerView;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -84,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if(user != null){
                     Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
-                    Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
                 }else{
                     Log.d(TAG, "onAuthStateChanged:signed_out");
-                    Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -103,9 +80,9 @@ public class MainActivity extends AppCompatActivity {
             Date today = new Date();
             date = DateFormat.getDateInstance(DateFormat.FULL).format(today);
         }
-        Bundle homeFragmentBundle = new Bundle();
-        homeFragmentBundle.putString("Date", date);
-        homeFragment.setArguments(homeFragmentBundle);
+        Bundle fragmentBundle = new Bundle();
+        fragmentBundle.putString("Date", date);
+        homeFragment.setArguments(fragmentBundle);
 
         recipesFragment = new RecipesFragment();
         groceryFragment = new GroceryFragment();
@@ -125,19 +102,14 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch(item.getItemId()){
                     case R.id.nav_home:
-                        //mMainNav.setItemBackgroundResource(R.color.colorPrimary);
                         setFragment(homeFragment);
                         return true;
 
                     case R.id.nav_recipes:
-                        //mMainNav.setItemBackgroundResource(R.color.colorAccent);
                         setFragment(recipesFragment);
-                        //startActivity(new Intent(context, RecipesActivity.class));
                         return true;
 
                     case R.id.nav_grocery:
-                        //mMainNav.setItemBackgroundResource(R.color.colorPrimaryDark);
-                        //startActivity(new Intent(context, GroceryActivity.class));
                         setFragment(groceryFragment);
                         return true;
 
