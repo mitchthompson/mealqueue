@@ -23,6 +23,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.timessquare.CalendarPickerView;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,6 +33,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class HomeFragment extends Fragment {
@@ -47,7 +51,7 @@ public class HomeFragment extends Fragment {
     private DatabaseReference mRemoveMeal;
 
     private String todaysDate;
-    private Date today;
+    private Date today, dateSelected;
     private CalendarPickerView calendar;
 
     private Map<String,Object> mealPlanData;
@@ -80,19 +84,23 @@ public class HomeFragment extends Fragment {
         userID = user.getUid();
 
 
+        Calendar nextYear = Calendar.getInstance();
+        nextYear.add(Calendar.MONTH, 6);
+        calendar = view.findViewById(R.id.meal_plan_calendar);
+        today = new Date();
+
         if (getArguments() != null) {
             todaysDate = getArguments().getString("Date");
 
             String expectedPattern = "EEE, MMM d, yyyy";
             SimpleDateFormat formatter = new SimpleDateFormat(expectedPattern);
             try {
-                today = formatter.parse(todaysDate);
+                dateSelected = formatter.parse(todaysDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-
         } else {
-            today = new Date();
+            dateSelected = today;
         }
 
         dateTextView = view.findViewById(R.id.date_tv);
@@ -103,19 +111,18 @@ public class HomeFragment extends Fragment {
         dateTextView.setText(dateSplitArray[1]);
 
         addPlanBtn = view.findViewById(R.id.add_plan_btn);
-        threeMeals = true;
+        getMeals(todaysDate);
 
-        Calendar nextYear = Calendar.getInstance();
-        nextYear.add(Calendar.YEAR, 1);
-        calendar = view.findViewById(R.id.meal_plan_calendar);
         calendar.init(today, nextYear.getTime())
-                .withSelectedDate(today);
+                .withSelectedDate(dateSelected);
 
         calendar.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
             @Override
             public void onDateSelected(Date date) {
                 todaysDate = DateFormat.getDateInstance(DateFormat.FULL).format(date);
                 String[] dateSplitArray = todaysDate.split(",");
+
+                //Log.d(TAG, todaysDate + " " + threeMeals.toString());
 
                 dayDateTextView.setText(dateSplitArray[0]);
                 dateTextView.setText(dateSplitArray[1]);
@@ -143,9 +150,9 @@ public class HomeFragment extends Fragment {
                         if(mealPlanData!=null) {
                             //Log.d(TAG, String.valueOf(mealPlanData.size()));
                             if(mealPlanData.size() >= 3){
-                                threeMeals = false;
-                            }else{
                                 threeMeals = true;
+                            }else{
+                                threeMeals = false;
                             }
 
                             Meals meals2 = new Meals();
@@ -183,7 +190,7 @@ public class HomeFragment extends Fragment {
         addPlanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(threeMeals) {
+                if(mealsTextView3.getText().equals("")) {
                     MealPlanDayFragment newFragment = new MealPlanDayFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("Date", todaysDate);
@@ -205,8 +212,6 @@ public class HomeFragment extends Fragment {
         removeMeal1 = view.findViewById(R.id.remove_meal_1);
         removeMeal2 = view.findViewById(R.id.remove_meal_2);
         removeMeal3 = view.findViewById(R.id.remove_meal_3);
-
-        //registerForContextMenu(mealsTextView1);
 
         mealsTextView1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,7 +263,6 @@ public class HomeFragment extends Fragment {
         });
 
         editMealPlanBtn = view.findViewById(R.id.edit_meal_plan_btn);
-
         editMealPlanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -286,7 +290,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-                removeMeal1.setOnClickListener(new View.OnClickListener() {
+        removeMeal1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         String name = mealsTextView1.getText().toString();
@@ -316,69 +320,9 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        getMeals(todaysDate);
-
         return view;
     }
 
-
-    public String formatDate(String oldDate) {
-        String date = "";
-        String[] splitArray = oldDate.split("-");
-        switch (Integer.parseInt(splitArray[0])) {
-            case 1:
-                date = "Jan";
-                break;
-
-            case 2:
-                date = "Feb";
-                break;
-
-            case 3:
-                date = "Mar";
-                break;
-
-            case 4:
-                date = "Apr";
-                break;
-
-            case 5:
-                date = "May";
-                break;
-
-            case 6:
-                date = "June";
-                break;
-
-            case 7:
-                date = "July";
-                break;
-
-            case 8:
-                date = "Aug";
-                break;
-
-            case 9:
-                date = "Sep";
-                break;
-
-            case 10:
-                date = "Oct";
-                break;
-
-            case 11:
-                date = "Nov";
-                break;
-
-            case 12:
-                date = "Dec";
-                break;
-
-
-        }
-        date = date + " " + splitArray[1];
-        return date;
-    }
 
     public void getMeals(String date) {
         mRefMealPlan = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(date);
@@ -389,16 +333,15 @@ public class HomeFragment extends Fragment {
                 mealPlanData = (HashMap<String,Object>) dataSnapshot.getValue();
                 if(mealPlanData!=null) {
                     if(mealPlanData.size() >= 3){
-                        threeMeals = false;
-                    }else{
                         threeMeals = true;
+                    }else{
+                        threeMeals = false;
                     }
 
                     Meals meals = new Meals();
                     for (Map.Entry<String, Object> entry : mealPlanData.entrySet()) {
                         String key = entry.getKey();
                         Object value = entry.getValue();
-                        Log.d(TAG, "Meal: " + key + " ID: " + value);
                         meals.addMeal(value.toString(), key);
                     }
 

@@ -28,9 +28,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mitchlthompson.mealqueue.adapters.IngredientsAdapter;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.apache.commons.lang3.text.WordUtils.capitalizeFully;
 
 public class AddIngredientsActivity extends AppCompatActivity {
 
@@ -121,7 +125,7 @@ public class AddIngredientsActivity extends AppCompatActivity {
                 }else if(TextUtils.isEmpty(ingredientAmount.getText())){
                     Toast.makeText(context, "Enter the item amount", Toast.LENGTH_LONG).show();
                 } else {
-                    itemNames.add(ingredientItem.getText().toString());
+                    itemNames.add(capitalizeFully(ingredientItem.getText().toString()));
                     itemAmounts.add(ingredientAmount.getText().toString());
                     Log.d(TAG, "Add ingredient: " + ingredientItem.getText().toString() + " " + ingredientAmount.getText().toString());
                     ingredientsAdapter.notifyDataSetChanged();
@@ -164,7 +168,7 @@ public class AddIngredientsActivity extends AppCompatActivity {
         }
         Log.d(TAG, ingredients.toString());
         String key = mRef.push().getKey();
-        mRef.child(key).child("Recipe Name").setValue(recipeName);
+        mRef.child(key).child("Recipe Name").setValue(capitalizeFully(recipeName));
         mRef.child(key).child("Directions").setValue(directions);
         mRef.child(key).child("Ingredients").setValue(ingredients);
         mRef.child(key).child("Recipe ID").setValue(key);

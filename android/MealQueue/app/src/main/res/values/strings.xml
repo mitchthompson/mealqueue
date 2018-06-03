@@ -42,7 +42,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="final_add_recipe_btn">ADD RECIPE</string>
-    <string name="final_add_recipe_instructions">After all ingredients are added finish by tapping \'ADD RECIPE\'</string>
+    <string name="final_add_recipe_instructions">Add ingredients then tap \'ADD RECIPE\' to finish.</string>
     <string name="add_ingredients_amount_hint">Amount</string>
     <string name="add_ingredients_name_hint">Ingredient Name</string>
     <string name="add_recipe_next_btn">NEXT</string>

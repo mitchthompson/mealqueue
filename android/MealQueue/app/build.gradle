@@ -28,6 +28,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:11.0.4'
     implementation 'com.android.support:support-v4:26.1.0'
     implementation 'com.squareup:android-times-square:1.6.5@aar'
+    implementation 'org.apache.commons:commons-lang3:3.6'
 }
 
 

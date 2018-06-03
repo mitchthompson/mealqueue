@@ -15,12 +15,17 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.timessquare.CalendarPickerView;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class RecipeCalendarFragment extends Fragment {
@@ -64,6 +69,7 @@ public class RecipeCalendarFragment extends Fragment {
         Date today = new Date();
         Calendar nextYear = Calendar.getInstance();
         nextYear.add(Calendar.YEAR, 1);
+        selectedDate = DateFormat.getDateInstance(DateFormat.FULL).format(today);
 
         calendarPickerView = viewer.findViewById(R.id.recipe_add_meal_calendar);
         calendarPickerView.init(today, nextYear.getTime())
@@ -86,19 +92,30 @@ public class RecipeCalendarFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                mRef = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(selectedDate);
-                if(selectedDate == null){
-                    Toast.makeText(context, "Please select a date", Toast.LENGTH_LONG).show();
-                } else {
                     mRef = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(selectedDate);
-                    mRef.child(recipeName).setValue(recipeID);
-                    startActivity(new Intent(context, MainActivity.class)
-                            .putExtra("Date", selectedDate));
+                    mRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            HashMap<String,Object> mealPlanData = (HashMap<String,Object>) dataSnapshot.getValue();
+                            if(mealPlanData!=null) {
+                                if(mealPlanData.size() >= 3){
+                                    Toast.makeText(context, selectedDate + " already has three meals planned.", Toast.LENGTH_LONG).show();
+                                }else{
+                                    mRef.child(recipeName).setValue(recipeID);
+                                    startActivity(new Intent(context, MainActivity.class)
+                                            .putExtra("Date", selectedDate));
+                                }
+
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
-
-
-
-            }
         });
 
         addCancelBtn = viewer.findViewById(R.id.recipe_add_meal_cancel_btn);

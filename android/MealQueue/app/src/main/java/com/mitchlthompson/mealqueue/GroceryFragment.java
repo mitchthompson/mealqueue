@@ -32,6 +32,8 @@ import com.mitchlthompson.mealqueue.helpers.GrocerySyncHelper;
 
 import java.util.ArrayList;
 
+import static org.apache.commons.lang3.text.WordUtils.capitalizeFully;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -82,21 +84,7 @@ public class GroceryFragment extends Fragment {
         userID = user.getUid();
         mRef = mFirebaseDatabase.getReference("/grocery/" + userID);
 
-//        mAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = mAuth.getCurrentUser();
-//                if(user != null){
-//                    Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
-//                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
-//                }else{
-//                    Log.d(TAG, "onAuthStateChanged:signed_out");
-//                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        };
-
-        Log.d(TAG, userID);
+        //Log.d(TAG, userID);
 
         itemNames = new ArrayList<>();
         itemIDs = new ArrayList<>();
@@ -132,7 +120,7 @@ public class GroceryFragment extends Fragment {
                 }else if(TextUtils.isEmpty(groceryItemAmount.getText())){
                     Toast.makeText(context, "Enter the item amount", Toast.LENGTH_LONG).show();
                 } else {
-                    mRef.push().setValue(groceryItem.getText().toString()
+                    mRef.push().setValue(capitalizeFully(groceryItem.getText().toString())
                             + "\n" + groceryItemAmount.getText().toString());
                     groceryItem.setText("");
                     groceryItemAmount.setText("");
