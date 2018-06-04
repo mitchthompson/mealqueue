@@ -27,9 +27,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mitchlthompson.mealqueue.adapters.RecipeAdapter;
+import com.mitchlthompson.mealqueue.helpers.Recipe;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class RecipesFragment extends Fragment {
@@ -44,8 +48,7 @@ public class RecipesFragment extends Fragment {
 
     private SearchView searchView;
 
-    private ArrayList<String> recipeNames;
-    private ArrayList<String> recipeIDs;
+    private ArrayList<Recipe> recipesList;
     private Button addRecipeBtn;
 
     private Map<String,Object> recipes;
@@ -106,8 +109,7 @@ public class RecipesFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-                    recipeIDs = new ArrayList<>();
-                    recipeNames = new ArrayList<>();
+                    recipesList = new ArrayList<>();
                     recipes = (Map<String,Object>) dataSnapshot.getValue();
                     if(recipes!= null) {
                         for (Map.Entry<String, Object> entry : recipes.entrySet()) {
@@ -116,35 +118,41 @@ public class RecipesFragment extends Fragment {
                                 Object name = singleRecipe.get("Recipe Name");
                                 Object id = singleRecipe.get("Recipe ID");
                                 if(name!=null && id !=null){
-                                    recipeNames.add(name.toString());
-                                    recipeIDs.add(id.toString());
+                                    recipesList.add(new Recipe(name.toString(), id.toString()));
                                 }
 
-
-                                relativeLayout = view.findViewById(R.id.nav_recipes);
-                                recyclerView = view.findViewById(R.id.recipe_recycler);
-                                recyclerViewLayoutManager = new LinearLayoutManager(context);
-                                recyclerView.setLayoutManager(recyclerViewLayoutManager);
-
-                                recipeAdapter = new RecipeAdapter(context, recipeNames, recipeIDs);
-                                recyclerView.setAdapter(recipeAdapter);
-
-                                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                                    @Override
-                                    public boolean onQueryTextSubmit(String query) {
-                                        return false;
-                                    }
-
-                                    @Override
-                                    public boolean onQueryTextChange(String newText) {
-                                        recipeAdapter.getFilter().filter(newText);
-                                        return false;
-                                    }
-                                });
                             }
+
+                        Collections.sort(recipesList, new Comparator<Recipe>() {
+                            public int compare(Recipe r1, Recipe r2) {
+                                return r1.getName().compareTo(r2.getName());
+                            }
+                        });
+
+                        relativeLayout = view.findViewById(R.id.nav_recipes);
+                        recyclerView = view.findViewById(R.id.recipe_recycler);
+                        recyclerViewLayoutManager = new LinearLayoutManager(context);
+                        recyclerView.setLayoutManager(recyclerViewLayoutManager);
+
+                        recipeAdapter = new RecipeAdapter(context, recipesList);
+                        recyclerView.setAdapter(recipeAdapter);
+
+                        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                            @Override
+                            public boolean onQueryTextSubmit(String query) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onQueryTextChange(String newText) {
+                                recipeAdapter.getFilter().filter(newText);
+                                return false;
+                            }
+                        });
                     }else{
                         Log.d(TAG, "No Recipes found.");
                     }
+
                 }
 
 

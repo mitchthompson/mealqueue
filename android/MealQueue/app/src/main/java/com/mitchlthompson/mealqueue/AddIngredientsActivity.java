@@ -164,7 +164,7 @@ public class AddIngredientsActivity extends AppCompatActivity {
         Log.d(TAG, "Recipe name: " + recipeName + " Directions: " + directions);
         for(int i=0;i<itemNames.size();i++){
             ingredients.put(itemNames.get(i), itemAmounts.get(i));
-            Log.d(TAG, "Add to Ingredients List: " + itemNames.get(i) + " " + itemAmounts.get(i));
+            //Log.d(TAG, "Add to Ingredients List: " + itemNames.get(i) + " " + itemAmounts.get(i));
         }
         Log.d(TAG, ingredients.toString());
         String key = mRef.push().getKey();

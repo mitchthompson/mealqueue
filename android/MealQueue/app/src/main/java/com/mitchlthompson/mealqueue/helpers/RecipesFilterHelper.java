@@ -1,10 +1,12 @@
 package com.mitchlthompson.mealqueue.helpers;
 
+import android.util.Log;
 import android.widget.Filter;
 
 import com.mitchlthompson.mealqueue.adapters.RecipeAdapter;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by mitch on 5/30/2018.
@@ -12,12 +14,12 @@ import java.util.ArrayList;
 
 public class RecipesFilterHelper extends Filter {
 
-    static ArrayList<String> currentList;
+    static ArrayList<Recipe> currentList;
     static RecipeAdapter adapter;
 
-    public static RecipesFilterHelper newInstance(ArrayList<String> currentList, RecipeAdapter adapter){
+    public static RecipesFilterHelper newInstance(ArrayList<Recipe> newCurrentList, RecipeAdapter adapter){
         RecipesFilterHelper.adapter = adapter;
-        RecipesFilterHelper.currentList = currentList;
+        RecipesFilterHelper.currentList = newCurrentList;
         return new RecipesFilterHelper();
     }
 
@@ -36,21 +38,22 @@ public class RecipesFilterHelper extends Filter {
             constraint = constraint.toString().toUpperCase();
 
             //hold filters we find
-            ArrayList<String> foundFilters = new ArrayList<>();
+            ArrayList<Recipe> foundFilters = new ArrayList<>();
 
             String recipeName;
+            String recipeID;
 
-            //iterate through current list
-            for (int i = 0; i < currentList.size(); i++){
-
-                recipeName = currentList.get(i);
+            for(Recipe r: currentList){
+                recipeName = r.getName();
+                recipeID = r.getId();
 
                 //search
                 if (recipeName.toUpperCase().contains(constraint)){
 
                     //add to new array if found
-                    foundFilters.add(recipeName);
+                    foundFilters.add(new Recipe(recipeName, recipeID));
                 }
+
             }
 
             //set results to filter list
@@ -71,8 +74,10 @@ public class RecipesFilterHelper extends Filter {
     @Override
     protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
 
-        adapter.setRecipeName((ArrayList<String>) filterResults.values);
-        adapter.notifyDataSetChanged();
+        if(filterResults != null && filterResults.values != null){
+            adapter.setRecipeName((ArrayList<Recipe>) filterResults.values);
+            adapter.notifyDataSetChanged();
+        }
 
     }
 }

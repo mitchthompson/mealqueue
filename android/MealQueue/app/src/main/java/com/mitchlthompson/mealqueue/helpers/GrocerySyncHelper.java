@@ -20,17 +20,16 @@ public class GrocerySyncHelper {
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mRef;
     private String userID;
 
     private Map<String,Object> firebaseData;
-    private ArrayList<String> recipeIDs, groceryItems, ingredients, syncDates;
+    private ArrayList<String> recipeIDs, ingredients, syncDates;
 
     public GrocerySyncHelper(){
     }
 
-    public void getData(ArrayList<String> selectedDates){
+    private void getData(ArrayList<String> selectedDates){
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();

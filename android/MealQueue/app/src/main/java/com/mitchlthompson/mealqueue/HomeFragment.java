@@ -2,11 +2,9 @@ package com.mitchlthompson.mealqueue;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.timessquare.CalendarPickerView;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,8 +29,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class HomeFragment extends Fragment {
@@ -121,8 +115,6 @@ public class HomeFragment extends Fragment {
             public void onDateSelected(Date date) {
                 todaysDate = DateFormat.getDateInstance(DateFormat.FULL).format(date);
                 String[] dateSplitArray = todaysDate.split(",");
-
-                //Log.d(TAG, todaysDate + " " + threeMeals.toString());
 
                 dayDateTextView.setText(dateSplitArray[0]);
                 dateTextView.setText(dateSplitArray[1]);

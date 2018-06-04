@@ -58,11 +58,9 @@ public class GroceryFragment extends Fragment {
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mRef;
     private String userID;
 
-    private GrocerySyncHelper gSync;
     private ArrayList<String> recipeIDs;
     private ArrayList<String> groceryItems;
 
@@ -88,13 +86,11 @@ public class GroceryFragment extends Fragment {
 
         itemNames = new ArrayList<>();
         itemIDs = new ArrayList<>();
-        gSync = new GrocerySyncHelper();
 
         grocerySyncBtn = view.findViewById(R.id.grocery_sync_btn);
         grocerySyncBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 SyncCalendarFragment syncCalendarFragment = new SyncCalendarFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.main_frame, syncCalendarFragment)

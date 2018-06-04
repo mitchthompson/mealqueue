@@ -20,11 +20,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mitchlthompson.mealqueue.adapters.MealPlanRecipeAdapter;
+import com.mitchlthompson.mealqueue.helpers.Recipe;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 
@@ -36,7 +39,6 @@ public class MealPlanDayFragment extends Fragment {
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private String userID;
     private DatabaseReference mRef;
 
@@ -46,8 +48,7 @@ public class MealPlanDayFragment extends Fragment {
 
     private SearchView searchView;
 
-    private ArrayList<String> recipeNames;
-    private ArrayList<String> recipeIDs;
+    private ArrayList<Recipe> recipesList;
     private String date;
     private Button cancelBtn;
 
@@ -101,42 +102,47 @@ public class MealPlanDayFragment extends Fragment {
         });
         searchView = view.findViewById(R.id.mealday_recipe_searchview);
 
-        recipeIDs = new ArrayList<>();
-        recipeNames = new ArrayList<>();
+        recipesList = new ArrayList<>();
 
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 recipes = (Map<String,Object>) dataSnapshot.getValue();
                 if(recipes!=null){
                     for (Map.Entry<String, Object> entry : recipes.entrySet()){
                         //Get user map
                         Map singleRecipe = (Map) entry.getValue();
                         //Get recipe name field and append to list
-                        recipeNames.add((singleRecipe.get("Recipe Name").toString()));
-                        recipeIDs.add(singleRecipe.get("Recipe ID").toString());
-
-                        recyclerView = view.findViewById(R.id.recipe_recycler);
-                        recyclerViewLayoutManager = new LinearLayoutManager(context);
-                        recyclerView.setLayoutManager(recyclerViewLayoutManager);
-
-                        mealPlanRecipeAdapter = new MealPlanRecipeAdapter(context, date, recipeNames, recipeIDs);
-                        recyclerView.setAdapter(mealPlanRecipeAdapter);
-
-                        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                            @Override
-                            public boolean onQueryTextSubmit(String query) {
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onQueryTextChange(String newText) {
-                                mealPlanRecipeAdapter.getFilter().filter(newText);
-                                return false;
-                            }
-                        });
+                        recipesList.add(new Recipe(singleRecipe.get("Recipe Name").toString(), singleRecipe.get("Recipe ID").toString()));
                     }
+                    //sort recipeList alphabetically
+                    Collections.sort(recipesList, new Comparator<Recipe>() {
+                        public int compare(Recipe r1, Recipe r2) {
+                            return r1.getName().compareTo(r2.getName());
+                        }
+                    });
+
+                    recyclerView = view.findViewById(R.id.recipe_recycler);
+                    recyclerViewLayoutManager = new LinearLayoutManager(context);
+                    recyclerView.setLayoutManager(recyclerViewLayoutManager);
+
+                    mealPlanRecipeAdapter = new MealPlanRecipeAdapter(context, date, recipesList);
+                    recyclerView.setAdapter(mealPlanRecipeAdapter);
+
+                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String query) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onQueryTextChange(String newText) {
+                            mealPlanRecipeAdapter.getFilter().filter(newText);
+                            return false;
+                        }
+                    });
+
+
                 }else{
 
                 }
