@@ -62,6 +62,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
 
                 FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 fragmentTransaction.replace(R.id.main_frame, recipeFragment);
                 fragmentTransaction.commit();
 

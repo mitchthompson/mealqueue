@@ -136,9 +136,17 @@ public class RecipeFragment extends Fragment {
                             bundle.putString("Date", date);
                             newFragment.setArguments(bundle);
                         }
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.main_frame, newFragment)
-                                .commit();
+
+
+                        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.setCustomAnimations(R.animator.slide_up,
+                                R.animator.slide_down,
+                                R.animator.slide_up,
+                                R.animator.slide_down);
+
+                        fragmentTransaction.replace(R.id.main_frame, newFragment);
+                        fragmentTransaction.commit();
+
                         dialog.dismiss();
                     }
                 });
@@ -165,10 +173,14 @@ public class RecipeFragment extends Fragment {
                 bundle.putString("Recipe Name", recipeName);
                 bundle.putString("Date", date);
                 newFragment.setArguments(bundle);
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.animator.slide_up,
+                        R.animator.slide_down,
+                        R.animator.slide_up,
+                        R.animator.slide_down);
 
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.main_frame, newFragment)
-                        .commit();
+                fragmentTransaction.replace(R.id.main_frame, newFragment);
+                fragmentTransaction.commit();
             }
         });
 

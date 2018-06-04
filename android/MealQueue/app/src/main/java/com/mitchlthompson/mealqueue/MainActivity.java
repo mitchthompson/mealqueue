@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.nav_grocery:
                         setFragment(groceryFragment);
-                        return true;
 
                     default:
                         return false;
@@ -156,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.animator.slide_up,
+                R.animator.slide_down);
         fragmentTransaction.replace(R.id.main_frame, fragment);
         fragmentTransaction.commit();
     }

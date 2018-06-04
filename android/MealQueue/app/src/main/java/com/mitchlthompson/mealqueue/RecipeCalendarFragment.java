@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,12 +99,22 @@ public class RecipeCalendarFragment extends Fragment {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             HashMap<String,Object> mealPlanData = (HashMap<String,Object>) dataSnapshot.getValue();
                             if(mealPlanData!=null) {
+                                Log.d(TAG, String.valueOf(mealPlanData.size()));
                                 if(mealPlanData.size() >= 3){
                                     Toast.makeText(context, selectedDate + " already has three meals planned.", Toast.LENGTH_LONG).show();
                                 }else{
+                                    Log.d(TAG, "else");
                                     mRef.child(recipeName).setValue(recipeID);
-                                    startActivity(new Intent(context, MainActivity.class)
-                                            .putExtra("Date", selectedDate));
+
+                                    HomeFragment newFragment = new HomeFragment();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("Date", selectedDate);
+                                    newFragment.setArguments(bundle);
+                                    FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                                    fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+
+                                    fragmentTransaction.replace(R.id.main_frame, newFragment);
+                                    fragmentTransaction.commit();
                                 }
 
 
@@ -128,8 +139,10 @@ public class RecipeCalendarFragment extends Fragment {
                 bundle.putString("Recipe Name", recipeName);
                 newFragment.setArguments(bundle);
 
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.main_frame, newFragment)
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+
+                fragmentTransaction.replace(R.id.main_frame, newFragment)
                         .commit();
             }
         });

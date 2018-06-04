@@ -16,8 +16,8 @@
         <Button
             android:id="@+id/launch_addrecipe_btn"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="45dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
             android:layout_alignParentStart="true"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="16dp"
@@ -36,7 +36,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recipes_view"
+            app:layout_constraintTop_toBottomOf="@+id/mealday_view"
             tools:listitem="@layout/recipe_items" />
 
         <SearchView
@@ -50,9 +50,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
         <View
-            android:id="@+id/recipes_view"
+            android:id="@+id/mealday_view"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
@@ -60,6 +59,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recipes_searchView" />
+
 
     </android.support.constraint.ConstraintLayout>
 

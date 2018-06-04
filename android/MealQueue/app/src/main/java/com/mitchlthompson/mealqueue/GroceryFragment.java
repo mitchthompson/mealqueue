@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -91,10 +92,13 @@ public class GroceryFragment extends Fragment {
         grocerySyncBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SyncCalendarFragment syncCalendarFragment = new SyncCalendarFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.main_frame, syncCalendarFragment)
-                        .commit();
+
+                SyncCalendarFragment newFragment = new SyncCalendarFragment();;
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                fragmentTransaction.replace(R.id.main_frame, newFragment);
+                fragmentTransaction.commit();
+
 
             }
         });

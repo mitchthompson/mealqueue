@@ -5,6 +5,7 @@ import android.content.Context;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -95,9 +96,11 @@ public class SyncCalendarFragment extends Fragment {
                     getData(formattedDates);
 
                     GroceryFragment newFragment = new GroceryFragment();
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.main_frame, newFragment)
-                            .commit();
+
+                    FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    fragmentTransaction.replace(R.id.main_frame, newFragment);
+                    fragmentTransaction.commit();
 
                 }
 
@@ -109,10 +112,18 @@ public class SyncCalendarFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 GroceryFragment newFragment = new GroceryFragment();
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.main_frame, newFragment)
-                        .commit();
+                fragmentTransaction.replace(R.id.main_frame, newFragment);
+                fragmentTransaction.commit();
+
+
+//                GroceryFragment newFragment = new GroceryFragment();
+//
+//                getActivity().getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.main_frame, newFragment)
+//                        .commit();
             }
         });
 

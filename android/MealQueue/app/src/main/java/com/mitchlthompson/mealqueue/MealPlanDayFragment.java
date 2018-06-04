@@ -4,6 +4,7 @@ package com.mitchlthompson.mealqueue;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -95,9 +96,12 @@ public class MealPlanDayFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("Date", date);
                 newFragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.main_frame, newFragment)
-                        .commit();
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+
+                fragmentTransaction.replace(R.id.main_frame, newFragment);
+                fragmentTransaction.commit();
+
             }
         });
         searchView = view.findViewById(R.id.mealday_recipe_searchview);
