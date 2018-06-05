@@ -142,16 +142,6 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/change_password_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="sans-serif-condensed"
-            android:text="@string/change_password"
-            android:textColor="@color/Dark"
-            android:textStyle="bold" />
-
-        <Button
             android:id="@+id/sending_pass_reset_button"
             style="?android:textAppearanceSmall"
             android:layout_width="match_parent"

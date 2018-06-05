@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -107,7 +108,7 @@ public class MealPlanRecipeAdapter extends RecyclerView.Adapter<MealPlanRecipeAd
     }
 
     public static class RecipeViewHolder extends RecyclerView.ViewHolder {
-        public Button recipeBtn;
+        public TextView recipeBtn;
         public RecipeViewHolder(View v) {
             super(v);
             recipeBtn = v.findViewById(R.id.recipe_btn);

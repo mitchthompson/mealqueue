@@ -14,12 +14,12 @@
             android:id="@+id/recipe_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:scrollbars="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mealday_recipe_searchview"
+            app:layout_constraintTop_toBottomOf="@+id/grocery_view"
             tools:listitem="@layout/recipe_items" />
 
         <SearchView
@@ -35,7 +35,7 @@
             app:layout_constraintTop_toBottomOf="@+id/meal_plan_day_cancel_btn" />
 
         <View
-            android:id="@+id/mealday_view"
+            android:id="@+id/grocery_view"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
@@ -51,7 +51,6 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:fontFamily="sans-serif-condensed"
             android:text="Cancel"
             android:textColor="@color/Dark"
             android:textSize="18sp"

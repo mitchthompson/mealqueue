@@ -3,15 +3,16 @@ package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +30,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mitchlthompson.mealqueue.adapters.GroceryListAdapter;
-import com.mitchlthompson.mealqueue.helpers.GrocerySyncHelper;
+import com.mitchlthompson.mealqueue.helpers.Ingredient;
+import com.mitchlthompson.mealqueue.helpers.Recipe;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static org.apache.commons.lang3.text.WordUtils.capitalizeFully;
 
@@ -62,9 +66,7 @@ public class GroceryFragment extends Fragment {
     private DatabaseReference mRef;
     private String userID;
 
-    private ArrayList<String> recipeIDs;
-    private ArrayList<String> groceryItems;
-
+    private ArrayList<Ingredient> ingredients;
 
     public GroceryFragment() {
         // Required empty public constructor
@@ -83,10 +85,7 @@ public class GroceryFragment extends Fragment {
         userID = user.getUid();
         mRef = mFirebaseDatabase.getReference("/grocery/" + userID);
 
-        //Log.d(TAG, userID);
-
-        itemNames = new ArrayList<>();
-        itemIDs = new ArrayList<>();
+        ingredients = new ArrayList<>();
 
         grocerySyncBtn = view.findViewById(R.id.grocery_sync_btn);
         grocerySyncBtn.setOnClickListener(new View.OnClickListener() {
@@ -120,8 +119,11 @@ public class GroceryFragment extends Fragment {
                 }else if(TextUtils.isEmpty(groceryItemAmount.getText())){
                     Toast.makeText(context, "Enter the item amount", Toast.LENGTH_LONG).show();
                 } else {
-                    mRef.push().setValue(capitalizeFully(groceryItem.getText().toString())
-                            + "\n" + groceryItemAmount.getText().toString());
+                    String key = mRef.push().getKey();
+                    mRef.child(key).child("Ingredient Name").setValue(capitalizeFully(groceryItem.getText().toString()));
+                    mRef.child(key).child("Ingredient Amount").setValue(groceryItemAmount.getText().toString());
+//                    mRef.push().setValue(capitalizeFully(groceryItem.getText().toString())
+//                            + "\n" + groceryItemAmount.getText().toString());
                     groceryItem.setText("");
                     groceryItemAmount.setText("");
                 }
@@ -140,8 +142,7 @@ public class GroceryFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mRef.removeValue();
-                        itemIDs.clear();
-                        itemNames.clear();
+                        ingredients.clear();
                         groceryListAdapter.notifyDataSetChanged();
                         dialog.dismiss();
                     }
@@ -164,11 +165,17 @@ public class GroceryFragment extends Fragment {
         mRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                String value = dataSnapshot.getValue(String.class);
-                String key = dataSnapshot.getKey();
-                itemIDs.add(key);
-                itemNames.add(value);
+                String name = dataSnapshot.child("Ingredient Name").getValue(String.class);
+                String amount = dataSnapshot.child("Ingredient Amount").getValue(String.class);
+                String id = dataSnapshot.getKey();
+                ingredients.add(new Ingredient(name, amount, id));
+                Collections.sort(ingredients, new Comparator<Ingredient>() {
+                    public int compare(Ingredient r1, Ingredient r2) {
+                        return r1.getName().compareTo(r2.getName());
+                    }
+                });
                 groceryListAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -178,7 +185,7 @@ public class GroceryFragment extends Fragment {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                groceryListAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -198,10 +205,29 @@ public class GroceryFragment extends Fragment {
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
         recyclerView.setNestedScrollingEnabled(false);
 
-        groceryListAdapter = new GroceryListAdapter(context, userID, itemNames, itemIDs);
+        groceryListAdapter = new GroceryListAdapter(context, userID, ingredients);
         recyclerView.setAdapter(groceryListAdapter);
 
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
 
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                // Row is swiped from recycler view
+                // remove it from adapter
+            }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                // view the background view
+            }
+        };
+
+// attaching the touch helper to recycler view
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 
         return view;
     }

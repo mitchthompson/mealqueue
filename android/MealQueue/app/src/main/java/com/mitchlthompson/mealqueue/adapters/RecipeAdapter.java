@@ -12,11 +12,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.TextView;
 
 import com.mitchlthompson.mealqueue.R;
 import com.mitchlthompson.mealqueue.RecipeFragment;
 import com.mitchlthompson.mealqueue.helpers.Recipe;
 import com.mitchlthompson.mealqueue.helpers.RecipesFilterHelper;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -87,7 +90,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     public static class RecipeViewHolder extends RecyclerView.ViewHolder {
-        public Button recipeBtn;
+        public TextView recipeBtn;
         public RecipeViewHolder(View v) {
             super(v);
             recipeBtn = v.findViewById(R.id.recipe_btn);

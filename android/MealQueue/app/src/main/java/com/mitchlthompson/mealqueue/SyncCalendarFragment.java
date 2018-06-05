@@ -20,7 +20,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.mitchlthompson.mealqueue.helpers.GrocerySyncHelper;
 import com.squareup.timessquare.CalendarPickerView;
 
 import java.text.DateFormat;
@@ -31,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.RANGE;
+import static org.apache.commons.lang3.text.WordUtils.capitalizeFully;
 
 public class SyncCalendarFragment extends Fragment {
     private static final String TAG = "SyncCalendarFragment";
@@ -48,7 +48,7 @@ public class SyncCalendarFragment extends Fragment {
     private String userID;
 
     private Map<String,Object> firebaseData;
-    private ArrayList<String> recipeIDs, ingredients, syncDates;
+    private ArrayList<String> recipeIDs, ingredients, ingredientAmounts, syncDates;
 
     public SyncCalendarFragment(){
 
@@ -95,13 +95,6 @@ public class SyncCalendarFragment extends Fragment {
 
                     getData(formattedDates);
 
-                    GroceryFragment newFragment = new GroceryFragment();
-
-                    FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                    fragmentTransaction.replace(R.id.main_frame, newFragment);
-                    fragmentTransaction.commit();
-
                 }
 
             }
@@ -117,13 +110,6 @@ public class SyncCalendarFragment extends Fragment {
 
                 fragmentTransaction.replace(R.id.main_frame, newFragment);
                 fragmentTransaction.commit();
-
-
-//                GroceryFragment newFragment = new GroceryFragment();
-//
-//                getActivity().getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.main_frame, newFragment)
-//                        .commit();
             }
         });
 
@@ -188,14 +174,17 @@ public class SyncCalendarFragment extends Fragment {
                 HashMap<String,Object> recipe = (HashMap<String,Object>) dataSnapshot.getValue();
 
                 ingredients = new ArrayList<>();
+                ingredientAmounts = new ArrayList<>();
                 //Get ingredients map
                 Map<String,String> ingredientsMap = (HashMap) recipe.get("Ingredients");
                 for (String key : ingredientsMap.keySet()){
                     //Log.d(TAG,ingredientsMap.get(key)+" "+key);
-                    ingredients.add(key+" \n    "+ ingredientsMap.get(key));
+                    //ingredients.add(key+"\n\n"+ ingredientsMap.get(key));
+                    ingredients.add(key);
+                    ingredientAmounts.add(ingredientsMap.get(key));
                 }
 
-                addIngredientsToGroceryList(ingredients);
+                addIngredientsToGroceryList(ingredients, ingredientAmounts);
             }
 
             @Override
@@ -205,16 +194,27 @@ public class SyncCalendarFragment extends Fragment {
         });
     }
 
-    private void addIngredientsToGroceryList(ArrayList<String> items){
+    private void addIngredientsToGroceryList(ArrayList<String> itemsNames, ArrayList<String> itemAmounts){
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
         mRef = mFirebaseDatabase.getReference("/grocery/" + userID);
 
-        for(int i=0;i <items.size();i++){
+        for(int i=0;i <itemsNames.size();i++){
             //Log.d(TAG, "addIngredients: " + groceryItems.get(i));
-            mRef.push().setValue(items.get(i));
+            //mRef.push().setValue(itemsNames.get(i));
+
+            String key = mRef.push().getKey();
+            mRef.child(key).child("Ingredient Name").setValue(capitalizeFully(itemsNames.get(i)));
+            mRef.child(key).child("Ingredient Amount").setValue(itemAmounts.get(i));
+            GroceryFragment newFragment = new GroceryFragment();
+
+            FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+            fragmentTransaction.replace(R.id.main_frame, newFragment);
+            fragmentTransaction.commit();
+
         }
 
     }

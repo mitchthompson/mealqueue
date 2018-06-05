@@ -17,6 +17,7 @@
     <style name="MealQTheme" parent="AppTheme" >
         <item name="colorPrimary">@color/mealQ_ColorPrimary</item>
         <item name="colorAccent">@color/mealQ_colorAccent</item>
+
     </style>
 
 </resources>

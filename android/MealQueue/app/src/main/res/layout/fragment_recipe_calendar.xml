@@ -23,6 +23,7 @@
             android:text="Select the date to add this recipe to the meal plan."
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="@color/Dark"
             android:textSize="16sp" />
 
         <com.squareup.timessquare.CalendarPickerView
@@ -48,19 +49,18 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
-            android:fontFamily="sans-serif-condensed"
             android:paddingTop="8dp"
             android:text="Done" />
 
         <Button
             android:id="@+id/recipe_add_meal_cancel_btn"
-            style="@android:style/Widget.Material.Button"
+            style="@android:style/Widget.Material.Button.Borderless.Colored"
             android:layout_width="155dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignStart="@+id/recipe_add_meal_textview"
-            android:layout_marginTop="8dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:text="Cancel" />
 
     </RelativeLayout>
