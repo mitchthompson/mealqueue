@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,76 +9,194 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/mealplan_cardview"
-        android:layout_width="match_parent"
-        android:layout_height="125dp"
-        android:layout_below="@+id/myToolbar"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp">
-
-        <RelativeLayout
+        <android.support.v7.widget.CardView
+            android:id="@+id/mealplan_cardview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="142dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp">
 
-            <android.support.v7.widget.CardView
-                android:layout_width="120dp"
-                android:layout_height="match_parent"
-                android:id="@+id/mealplan_cardview2">
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                <RelativeLayout
+                <android.support.v7.widget.CardView
+                    android:id="@+id/mealplan_cardview2"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="0.5dp"
+                    app:cardPreventCornerOverlap="false"
+                    android:layout_height="40dp">
 
-                    <TextView
-                        android:id="@+id/date_tv"
-                        android:layout_width="96dp"
-                        android:layout_height="52dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:textAlignment="center"
-                        android:textSize="24sp" />
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorPrimary">
 
-                    <Button
-                        android:id="@+id/add_plan_btn"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_width="98dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/mealplan_addmeal"
-                        android:textAlignment="center"
-                        android:layout_below="@+id/date_tv"/>
+                        <TextView
+                            android:id="@+id/date_day_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-condensed"
+                            android:text="DayDayDay"
+                            android:textAlignment="textStart"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/edit_meal_plan_btn"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
+                        <Button
+                            android:id="@+id/add_plan_btn"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="16dp"
+                            android:background="@drawable/ic_add_circle_outline_black_24dp"
+                            android:backgroundTint="@color/white"
+                            android:fontFamily="sans-serif-condensed"
+                            android:textAlignment="center"
+                            android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/meals_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                tools:text="No meals planned"
-                android:layout_toRightOf="@id/mealplan_cardview2"
-                />
+                        <TextView
+                            android:id="@+id/date_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-condensed"
+                            android:text="DateDateDate"
+                            android:textAlignment="textStart"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/date_day_tv"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <Button
+                            android:id="@+id/edit_meal_plan_btn"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="16dp"
+                            android:background="@drawable/ic_edit_black_24dp"
+                            android:backgroundTint="@color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </android.support.constraint.ConstraintLayout>
+                </android.support.v7.widget.CardView>
+
+                <TextView
+                    android:id="@+id/meals_tv_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="@color/Dark"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@+id/remove_meal_1"
+                    app:layout_constraintTop_toBottomOf="@+id/mealplan_cardview2" />
+
+                <TextView
+                    android:id="@+id/meals_tv_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="@color/Dark"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@+id/remove_meal_2"
+                    app:layout_constraintTop_toBottomOf="@+id/meals_tv_1" />
+
+                <TextView
+                    android:id="@+id/meals_tv_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="@color/Dark"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@+id/remove_meal_3"
+                    app:layout_constraintTop_toBottomOf="@+id/meals_tv_2" />
+
+                <Button
+                    android:id="@+id/remove_meal_1"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/ic_remove_black_24dp"
+                    android:backgroundTint="@color/Dark"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/mealplan_cardview2" />
+
+                <Button
+                    android:id="@+id/remove_meal_2"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/ic_remove_black_24dp"
+                    android:backgroundTint="@color/Dark"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/remove_meal_1" />
+
+                <Button
+                    android:id="@+id/remove_meal_3"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/ic_remove_black_24dp"
+                    android:backgroundTint="@color/Dark"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/remove_meal_2" />
 
 
-        </RelativeLayout>
+            </android.support.constraint.ConstraintLayout>
 
-    </android.support.v7.widget.CardView>
+        </android.support.v7.widget.CardView>
 
-    <CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/mealplan_cardview"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="2dp" />
+        <com.squareup.timessquare.CalendarPickerView
+            android:id="@+id/meal_plan_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/mealplan_cardview"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:clipToPadding="false"
+            android:paddingBottom="56dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:layout_marginTop="-8dp"
+            android:scrollbarStyle="outsideOverlay" />
 
     </RelativeLayout>
 

@@ -1,0 +1,68 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/recipe_calendar_container"
+    tools:context="com.mitchlthompson.mealqueue.RecipeCalendarFragment">
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        >
+
+        <TextView
+            android:id="@+id/recipe_add_meal_textview"
+            android:layout_width="375dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/recipe_add_meal_done_button"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Select the date to add this recipe to the meal plan."
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="@color/Dark"
+            android:textSize="16sp" />
+
+        <com.squareup.timessquare.CalendarPickerView
+            android:id="@+id/recipe_add_meal_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/recipe_add_meal_textview"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:scrollbarStyle="outsideOverlay" />
+
+        <Button
+            android:id="@+id/recipe_add_meal_done_button"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="155dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:paddingTop="8dp"
+            android:text="Done" />
+
+        <Button
+            android:id="@+id/recipe_add_meal_cancel_btn"
+            style="@android:style/Widget.Material.Button.Borderless.Colored"
+            android:layout_width="155dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/recipe_add_meal_textview"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Cancel" />
+
+    </RelativeLayout>
+
+</FrameLayout>

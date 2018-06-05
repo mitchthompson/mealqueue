@@ -1,12 +1,14 @@
 package com.mitchlthompson.mealqueue.helpers;
 
-public class Recipe {
+public class Ingredient {
     private String id;
     private String name;
+    private String amount;
 
-    public Recipe(String name, String id) {
+    public Ingredient(String name, String amount, String id) {
         this.id = id;
         this.name = name;
+        this.amount = amount;
     }
 
     public String getName(){
@@ -16,6 +18,8 @@ public class Recipe {
     public String getId(){
         return id;
     }
+
+    public String getAmount(){ return amount;}
 
 
     public String toString() {

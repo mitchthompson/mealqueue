@@ -4,14 +4,18 @@
 
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/nav_home" />
+        android:icon="@drawable/ic_import_contacts_black_24dp"
+        android:title="@string/nav_planner"
+        android:fontFamily="sans-serif-condensed"/>
     <item
         android:id="@+id/nav_recipes"
         android:icon="@drawable/ic_restaurant_black_24dp"
-        android:title="@string/nav_recipes" />
+        android:title="@string/nav_recipes"
+        android:fontFamily="sans-serif-condensed"/>
     <item
         android:id="@+id/nav_grocery"
         android:icon="@drawable/ic_local_grocery_store_black_24dp"
-        android:title="@string/nav_grocery" />
+        android:title="@string/nav_grocery"
+        android:fontFamily="sans-serif-condensed"/>
+
 </menu>

@@ -1,32 +1,45 @@
 package com.mitchlthompson.mealqueue.adapters;
 
 import android.content.Context;
-import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.TextView;
 
 import com.mitchlthompson.mealqueue.R;
-import com.mitchlthompson.mealqueue.RecipeActivity;
+import com.mitchlthompson.mealqueue.RecipeFragment;
+import com.mitchlthompson.mealqueue.helpers.Recipe;
+import com.mitchlthompson.mealqueue.helpers.RecipesFilterHelper;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
+public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> implements Filterable{
 
     private Context context;
     private View view;
     private RecipeViewHolder recipeViewHolder;
     private LayoutInflater inflater;
-    private ArrayList<String> recipeNames;
-    private ArrayList<String> recipeIDs;
+    private ArrayList<Recipe> recipesList;
 
-    public RecipeAdapter(Context newContext, ArrayList<String> newNameData, ArrayList<String> newIDData) {
+    //used for search & filter
+    ArrayList<Recipe> currentList;
+
+    public RecipeAdapter(Context newContext, ArrayList<Recipe> newRecipesList) {
         this.context = newContext;
         inflater = LayoutInflater.from(context);
-        this.recipeNames = newNameData;
-        this.recipeIDs = newIDData;
+        this.recipesList = newRecipesList;
+        this.currentList = recipesList;
     }
 
     @Override
@@ -38,27 +51,47 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     @Override
     public void onBindViewHolder(RecipeViewHolder holder, final int position) {
-        holder.recipeBtn.setText(recipeNames.get(position).toString());
+        holder.recipeBtn.setText(recipesList.get(position).getName());
+        //holder.recipeBtn.setText(recipeNames.get(position));
         holder.recipeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(context, newHireID.get(position), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(v.getContext(), RecipeActivity.class);
-                intent.putExtra("Recipe ID",  recipeIDs.get(position));
-                intent.putExtra("Recipe Name", recipeNames.get(position).toString());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                v.getContext().startActivity(intent);
+                RecipeFragment recipeFragment = new RecipeFragment();
+                Bundle recipeFragmentBundle = new Bundle();
+                recipeFragmentBundle.putString("Recipe ID",  recipesList.get(position).getId());
+                recipeFragmentBundle.putString("Recipe Name", recipesList.get(position).getName());
+                recipeFragment.setArguments(recipeFragmentBundle);
+
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+
+                FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                fragmentTransaction.replace(R.id.main_frame, recipeFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+
+
+
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return recipeNames.size();
+        return recipesList.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return RecipesFilterHelper.newInstance(currentList, this);
+    }
+
+    public void setRecipeName(ArrayList<Recipe> filteredRecipeName){
+        this.recipesList = filteredRecipeName;
     }
 
     public static class RecipeViewHolder extends RecyclerView.ViewHolder {
-        public Button recipeBtn;
+        public TextView recipeBtn;
         public RecipeViewHolder(View v) {
             super(v);
             recipeBtn = v.findViewById(R.id.recipe_btn);

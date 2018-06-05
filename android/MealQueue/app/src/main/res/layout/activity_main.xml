@@ -5,25 +5,15 @@
     android:id="@+id/activity_main"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:theme="@style/MealQTheme"
     tools:context="com.mitchlthompson.mealqueue.MainActivity">
-
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/myToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            android:layout_alignParentStart="true"/>
-
 
     <FrameLayout
         android:id="@+id/main_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/myToolbar"
+        android:background="@color/colorAccent"
         android:layout_alignParentStart="true">
 
 
@@ -35,7 +25,11 @@
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="8dp"
+        android:elevation="4dp"
+        android:fontFamily="sans-serif-smallcaps"
         app:itemBackground="@color/colorPrimary"
-        app:menu="@menu/nav_items"/>
+        app:itemIconTint="@drawable/nav_colors"
+        app:itemTextColor="@drawable/nav_colors"
+        app:menu="@menu/nav_items" />
 </RelativeLayout>
 

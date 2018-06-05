@@ -3,9 +3,11 @@ package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,8 +27,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mitchlthompson.mealqueue.adapters.RecipeAdapter;
+import com.mitchlthompson.mealqueue.helpers.Recipe;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class RecipesFragment extends Fragment {
@@ -38,8 +46,9 @@ public class RecipesFragment extends Fragment {
     private RecipeAdapter recipeAdapter;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
 
-    private ArrayList<String> recipeNames;
-    private ArrayList<String> recipeIDs;
+    private SearchView searchView;
+
+    private ArrayList<Recipe> recipesList;
     private Button addRecipeBtn;
 
     private Map<String,Object> recipes;
@@ -74,58 +83,79 @@ public class RecipesFragment extends Fragment {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if(user != null){
                     Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
-                    Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
                 }else{
                     Log.d(TAG, "onAuthStateChanged:signed_out");
-                    Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
                 }
             }
         };
 
+        searchView = view.findViewById(R.id.recipes_searchView);
+
         mRef = mFirebaseDatabase.getReference("/recipes/" + userID);
-
-        Log.d(TAG, "Firebase URL: " + mRef);
-        Log.d(TAG, "User ID: " + userID);
-
 
         addRecipeBtn = view.findViewById(R.id.launch_addrecipe_btn);
         addRecipeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, AddRecipeActivity.class));
+                startActivity(new Intent(context.getApplicationContext(), AddRecipeActivity.class));
 
             }
         });
 
-        recipeIDs = new ArrayList<>();
-        recipeNames = new ArrayList<>();
 
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    recipesList = new ArrayList<>();
+                    recipes = (Map<String,Object>) dataSnapshot.getValue();
+                    if(recipes!= null) {
+                        for (Map.Entry<String, Object> entry : recipes.entrySet()) {
+                            //Get user map
+                            Map singleRecipe = (Map) entry.getValue();
+                                Object name = singleRecipe.get("Recipe Name");
+                                Object id = singleRecipe.get("Recipe ID");
+                                if(name!=null && id !=null){
+                                    recipesList.add(new Recipe(name.toString(), id.toString()));
+                                }
 
-                recipes = (Map<String,Object>) dataSnapshot.getValue();
-                if(recipes!= null) {
-                    for (Map.Entry<String, Object> entry : recipes.entrySet()) {
-                        //Get user map
-                        Map singleRecipe = (Map) entry.getValue();
-                        //Get recipe name field and append to list
-                        recipeNames.add((singleRecipe.get("Recipe Name").toString()));
-                        recipeIDs.add(singleRecipe.get("Recipe ID").toString());
-                        Log.d(TAG, " recipe name: " + singleRecipe.get("Recipe Name").toString()
-                                + " recipeID: " + singleRecipe.get("Recipe ID").toString());
+                            }
 
-                        relativeLayout = view.findViewById(R.id.action_recipes);
+                        Collections.sort(recipesList, new Comparator<Recipe>() {
+                            public int compare(Recipe r1, Recipe r2) {
+                                return r1.getName().compareTo(r2.getName());
+                            }
+                        });
+
+                        relativeLayout = view.findViewById(R.id.nav_recipes);
                         recyclerView = view.findViewById(R.id.recipe_recycler);
                         recyclerViewLayoutManager = new LinearLayoutManager(context);
                         recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
-                        recipeAdapter = new RecipeAdapter(context, recipeNames, recipeIDs);
+                        recipeAdapter = new RecipeAdapter(context, recipesList);
                         recyclerView.setAdapter(recipeAdapter);
+
+                        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                            @Override
+                            public boolean onQueryTextSubmit(String query) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onQueryTextChange(String newText) {
+                                recipeAdapter.getFilter().filter(newText);
+                                return false;
+                            }
+                        });
+                    }else{
+                        Log.d(TAG, "No Recipes found.");
                     }
-                }else{
-                    Log.d(TAG, "No Recipes found.");
+
                 }
+
+
 
             }
 

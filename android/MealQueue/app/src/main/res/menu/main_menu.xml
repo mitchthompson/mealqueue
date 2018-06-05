@@ -6,32 +6,10 @@
 
     <item android:id="@+id/action_settings"
         android:title="Settings"
+        android:icon="@drawable/ic_settings_black_24dp"
         android:orderInCategory="100"
-        app:showAsAction="never"/>
+        app:showAsAction="always"
+        />
 
-    <item android:id="@+id/action_logout"
-        android:title="Log Out"
-        android:orderInCategory="100"
-        app:showAsAction="never"/>
-
-    <item android:id="@+id/action_calendar"
-        android:title="Calendar"
-        android:orderInCategory="100"
-        app:showAsAction="never"/>
-
-    <item android:id="@+id/action_recipes"
-        android:title="Recipes"
-        android:orderInCategory="100"
-        app:showAsAction="never"/>
-
-    <item android:id="@+id/action_grocery"
-        android:title="Grocery"
-        android:orderInCategory="100"
-        app:showAsAction="never"/>
-
-    <item android:id="@+id/action_login"
-        android:title="Login"
-        android:orderInCategory="100"
-        app:showAsAction="never"/>
 
 </menu>

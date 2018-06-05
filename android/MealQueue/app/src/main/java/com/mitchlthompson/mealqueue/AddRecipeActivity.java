@@ -2,14 +2,20 @@ package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -53,6 +59,8 @@ public class AddRecipeActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(myToolbar);
 
+        context = getApplicationContext();
+
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -65,46 +73,42 @@ public class AddRecipeActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if(user != null){
                     Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
-                    Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
                 }else{
                     Log.d(TAG, "onAuthStateChanged:signed_out");
-                    Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
                 }
             }
         };
+
+        //prevent keyboard from popping up on activity start
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         recipeNameInput = findViewById(R.id.recipe_name_input);
         directionsInput = findViewById(R.id.directions_input);
 
         ingredients = new HashMap<>();
-        ingredients.put("Salt", "1 teaspoon");
-        ingredients.put("Pepper", "1/4 teaspoon");
 
         nextBtn = findViewById(R.id.add_to_recipes);
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recipeName = recipeNameInput.getText().toString();
-                directions = directionsInput.getText().toString();
-                Log.d(TAG, "Recipe name: " + recipeName + " Directions: " + directions);
-                //String key = mRef.push().getKey();
-                //mRef.child(key).child("Recipe Name").setValue(recipeName);
-                //mRef.child(key).child("Directions").setValue(directions);
-                //mRef.child(key).child("Ingredients").setValue(ingredients);
-                //mRef.child(key).child("Recipe ID").setValue(key);
-                startActivity(new Intent(AddRecipeActivity.this, AddIngredientsActivity.class)
-                        .putExtra("Recipe Name", recipeName)
-                        .putExtra("Directions", directions));
+                if(TextUtils.isEmpty(recipeNameInput.getText())) {
+                    Toast.makeText(context, "Enter the name of the recipe", Toast.LENGTH_LONG).show();
+                }else if(TextUtils.isEmpty(directionsInput.getText())){
+                    Toast.makeText(context, "Enter directions for the recipe", Toast.LENGTH_LONG).show();
+                } else {
+                    recipeName = recipeNameInput.getText().toString();
+                    directions = directionsInput.getText().toString();
+                    Log.d(TAG, "Recipe name: " + recipeName + " Directions: " + directions);
+                    startActivity(new Intent(AddRecipeActivity.this, AddIngredientsActivity.class)
+                            .putExtra("Recipe Name", recipeName)
+                            .putExtra("Directions", directions));
+                }
 
 
             }
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 }

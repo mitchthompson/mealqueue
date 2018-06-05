@@ -2,45 +2,29 @@ package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.content.Intent;
-import android.nfc.Tag;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.mitchlthompson.mealqueue.adapters.MealPlanRecipeAdapter;
-import com.mitchlthompson.mealqueue.adapters.WeekPlanAdapter;
-import com.mitchlthompson.mealqueue.helpers.myCalendar;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,25 +41,16 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String userID;
-    private DatabaseReference mRefMealPlan;
-    private DatabaseReference mRefMealPlan2;
 
-    private String todaysDate;
-    private CalendarView calenderView;
-
-    private Map<String,Object> mealPlanData;
-
-    private TextView dateTextView;
-    private TextView mealsTextView;
-    private Button addPlanBtn;
+    private String date;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar myToolbar = findViewById(R.id.myToolbar);
-        setSupportActionBar(myToolbar);
+        //Toolbar myToolbar = findViewById(R.id.myToolbar);
+        //setSupportActionBar(myToolbar);
         context = getApplicationContext();
 
         mAuth = FirebaseAuth.getInstance();
@@ -89,10 +64,10 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if(user != null){
                     Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
-                    Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
                 }else{
                     Log.d(TAG, "onAuthStateChanged:signed_out");
-                    Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -101,29 +76,46 @@ public class MainActivity extends AppCompatActivity {
         mMainNav = findViewById(R.id.main_nav);
 
         homeFragment = new HomeFragment();
+        if(getIntent().hasExtra("Date")) {
+            Bundle bundle = getIntent().getExtras();
+            date = bundle.getString("Date");
+        }else{
+            Date today = new Date();
+            date = DateFormat.getDateInstance(DateFormat.FULL).format(today);
+        }
+        Bundle fragmentBundle = new Bundle();
+        fragmentBundle.putString("Date", date);
+        homeFragment.setArguments(fragmentBundle);
+
         recipesFragment = new RecipesFragment();
         groceryFragment = new GroceryFragment();
 
-        setFragment(homeFragment);
+        if(getIntent().hasExtra("New Recipe")) {
+            Bundle bundle = getIntent().getExtras();
+            String recipeName = bundle.getString("New Recipe");
+            Log.d(TAG, "New recipe: " + recipeName);
+            setFragment(recipesFragment);
+            mMainNav.setSelectedItemId(R.id.nav_recipes);
+        } else {
+            setFragment(homeFragment);
+            mMainNav.setSelectedItemId(R.id.nav_home);
+        }
+
 
         mMainNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                clearBackStack();
                 switch(item.getItemId()){
                     case R.id.nav_home:
-                        //mMainNav.setItemBackgroundResource(R.color.colorPrimary);
                         setFragment(homeFragment);
                         return true;
 
                     case R.id.nav_recipes:
-                        //mMainNav.setItemBackgroundResource(R.color.colorAccent);
                         setFragment(recipesFragment);
-                        //startActivity(new Intent(context, RecipesActivity.class));
                         return true;
 
                     case R.id.nav_grocery:
-                        //mMainNav.setItemBackgroundResource(R.color.colorPrimaryDark);
-                        //startActivity(new Intent(context, GroceryActivity.class));
                         setFragment(groceryFragment);
                         return true;
 
@@ -139,6 +131,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main_menu, menu);
+        Drawable yourdrawable = menu.getItem(0).getIcon(); // change 0 with 1,2 ...
+        yourdrawable.mutate();
+        yourdrawable.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -146,29 +141,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_logout:
-                // User chose the "Log Out" item...
-                mAuth.signOut();
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
                 return true;
 
-            // TODO Remove following action items from actionbar here and in res/main_menu.xml
-
-            case R.id.action_login:
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                return true;
-
-            case R.id.action_calendar:
-                startActivity(new Intent(MainActivity.this, CalendarActivity.class));
-                return true;
-
-            case R.id.action_recipes:
-                startActivity(new Intent(MainActivity.this, RecipesActivity.class));
-                return true;
-
-            case R.id.action_grocery:
-                startActivity(new Intent(MainActivity.this, GroceryActivity.class));
-                return true;
 
             case R.id.action_settings:
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
@@ -183,8 +160,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.animator.slide_up,
+                R.animator.slide_down);
         fragmentTransaction.replace(R.id.main_frame, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
     }
 
     @Override
@@ -198,6 +188,14 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    private void clearBackStack() {
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+            manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 
