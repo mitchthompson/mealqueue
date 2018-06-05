@@ -28,8 +28,8 @@
         android:elevation="4dp"
         android:fontFamily="sans-serif-smallcaps"
         app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/colorAccent"
-        app:itemTextColor="@color/colorPrimaryDark"
+        app:itemIconTint="@drawable/nav_colors"
+        app:itemTextColor="@drawable/nav_colors"
         app:menu="@menu/nav_items" />
 </RelativeLayout>
 

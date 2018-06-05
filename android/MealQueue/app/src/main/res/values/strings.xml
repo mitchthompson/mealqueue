@@ -66,4 +66,5 @@
     <string name="ingredients_item_name_hint">Item Name</string>
     <string name="ingredients_item_amount_hint">Item Amount</string>
     <string name="recipe_name_btn">Recipe Name</string>
+    <string name="nav_planner">Meal Plan</string>
 </resources>

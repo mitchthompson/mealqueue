@@ -180,6 +180,7 @@ public class RecipeFragment extends Fragment {
                         R.animator.slide_down);
 
                 fragmentTransaction.replace(R.id.main_frame, newFragment);
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
         });

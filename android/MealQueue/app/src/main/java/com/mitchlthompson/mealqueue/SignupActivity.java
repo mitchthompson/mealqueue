@@ -104,8 +104,9 @@ public class SignupActivity extends AppCompatActivity {
                                     Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
-                                    AddRecipes();
-                                    startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                                    //Add starter data to user then start MainActivity
+                                    AddStarterRecipes();
+                                    //startActivity(new Intent(SignupActivity.this, MainActivity.class));
                                     finish();
                                 }
                             }
@@ -121,7 +122,7 @@ public class SignupActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
     }
 
-    private void AddRecipes(){
+    private void AddStarterRecipes(){
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -175,7 +176,7 @@ public class SignupActivity extends AppCompatActivity {
         mRef.child(key2).child("Recipe ID").setValue(key2);
 
         String key4 = mRef.push().getKey();
-        mRef.child(key4).child("Recipe Name").setValue("Burrito Bowl ");
+        mRef.child(key4).child("Recipe Name").setValue("Burrito Bowl");
         mRef.child(key4).child("Directions").setValue("Microwave black beans with chicken broth, " +
                 "oregano, cumin, cayenne, and garlic powder on high for 30 to 45 seconds until heated. Set aside.\n\n" +
                 "Add red cabbage to your bowl, and spoon the black beans on top. Layer sliced chicken, " +
@@ -219,15 +220,15 @@ public class SignupActivity extends AppCompatActivity {
         HashMap<String, String> ingredients6 = new HashMap<>();
         ingredients6.put("honey", "1/2 cup");
         ingredients6.put("soy sauce", "1/4 cup");
-        ingredients6.put("1 tablespoon", "minced garlic");
-        ingredients6.put("1 teaspoon minced", "fresh ginger");
-        ingredients6.put("1 lb", "uncooked shrimp");
-        ingredients6.put("2 teaspoons", "olive oil");
+        ingredients6.put("minced garlic", "1 tablespoon");
+        ingredients6.put("fresh  minced ginger", "1 teaspoon");
+        ingredients6.put("uncooked shrimp", "1 lb");
+        ingredients6.put("olive oil", "2 teaspoons");
         mRef.child(key6).child("Ingredients").setValue(ingredients6);
         mRef.child(key6).child("Recipe ID").setValue(key6);
 
         String key7 = mRef.push().getKey();
-        mRef.child(key7).child("Recipe Name").setValue("Beef With Broccoli");
+        mRef.child(key7).child("Recipe Name").setValue("Beef and Broccoli");
         mRef.child(key7).child("Directions").setValue("Toss sliced beef in a large bowl with corn starch.\n\n" +
                 "Heat canola oil in a pan over medium heat for a few minutes. Add sliced beef and cook until it browns, a few minutes, stirring frequently. Transfer to a plate and set aside.\n\n" +
                 "Add broccoli and garlic to the pan, and stir. Add beef broth. Let simmer until the broccoli is tender, about 10 minutes, stirring occasionally.\n\n" +
@@ -236,7 +237,7 @@ public class SignupActivity extends AppCompatActivity {
                 "Serve beef and broccoli over cooked white rice.");
         HashMap<String, String> ingredients7 = new HashMap<>();
         ingredients7.put("flank steak", "1 pound");
-        ingredients7.put("3 cups", "broccoli florets");
+        ingredients7.put("broccoli florets", "3 cups");
         mRef.child(key7).child("Ingredients").setValue(ingredients7);
         mRef.child(key7).child("Recipe ID").setValue(key7);
 
@@ -311,13 +312,37 @@ public class SignupActivity extends AppCompatActivity {
         ingredients12.put("Shredded mozzarella", "170 g");
         ingredients12.put("almond flour", "85 g");
         ingredients12.put("cream cheese", "2 tablespoons");
-        ingredients12.put("egg", "1");
+        //ingredients12.put("egg", "1");
         ingredients12.put("salt", "A pinch");
         ingredients12.put("rosemary", "1/2 teaspoon");
         ingredients12.put("Pizza toppings", "your choice");
         mRef.child(key12).child("Ingredients").setValue(ingredients12);
         mRef.child(key12).child("Recipe ID").setValue(key12);
 
+        AddStarterGroceryList();
+
+    }
+
+    private void AddStarterGroceryList(){
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        userID = user.getUid();
+        mRef = mFirebaseDatabase.getReference("/grocery/" + userID);
+
+        String key1 = mRef.push().getKey();
+        mRef.child(key1).child("Ingredient Name").setValue(capitalizeFully("Milk"));
+        mRef.child(key1).child("Ingredient Amount").setValue("1 quart");
+
+        String key2 = mRef.push().getKey();
+        mRef.child(key2).child("Ingredient Name").setValue(capitalizeFully("Eggs"));
+        mRef.child(key2).child("Ingredient Amount").setValue("12");
+
+        String key3 = mRef.push().getKey();
+        mRef.child(key3).child("Ingredient Name").setValue(capitalizeFully("Chicken"));
+        mRef.child(key3).child("Ingredient Amount").setValue("1 lb");
+
+        startActivity(new Intent(SignupActivity.this, MainActivity.class));
     }
 
 }

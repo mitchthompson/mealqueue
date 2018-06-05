@@ -2,11 +2,13 @@ package com.mitchlthompson.mealqueue;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,27 +100,31 @@ public class RecipeCalendarFragment extends Fragment {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             HashMap<String,Object> mealPlanData = (HashMap<String,Object>) dataSnapshot.getValue();
-                            if(mealPlanData!=null) {
-                                Log.d(TAG, String.valueOf(mealPlanData.size()));
+                            if(dataSnapshot.exists()) {
                                 if(mealPlanData.size() >= 3){
                                     Toast.makeText(context, selectedDate + " already has three meals planned.", Toast.LENGTH_LONG).show();
                                 }else{
-                                    Log.d(TAG, "else");
                                     mRef.child(recipeName).setValue(recipeID);
-
-                                    HomeFragment newFragment = new HomeFragment();
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("Date", selectedDate);
-                                    newFragment.setArguments(bundle);
-                                    FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                                    fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-
-                                    fragmentTransaction.replace(R.id.main_frame, newFragment);
-                                    fragmentTransaction.commit();
                                 }
-
-
+                            }else{
+                                mRef.child(recipeName).setValue(recipeID);
                             }
+
+
+                            RecipeFragment newFragment = new RecipeFragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("Recipe ID", recipeID);
+                            bundle.putString("Recipe Name", recipeName);
+                            newFragment.setArguments(bundle);
+
+                            FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+
+                            fragmentTransaction.replace(R.id.main_frame, newFragment)
+                                    .commit();
+
+
+                            Toast.makeText(context, recipeName + " added to meal plan on " + selectedDate, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override

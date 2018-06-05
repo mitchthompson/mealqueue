@@ -3,6 +3,7 @@ package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
@@ -83,6 +84,7 @@ public class HomeFragment extends Fragment {
         nextYear.add(Calendar.MONTH, 6);
         calendar = view.findViewById(R.id.meal_plan_calendar);
         today = new Date();
+
 
         if (getArguments() != null) {
             todaysDate = getArguments().getString("Date");
@@ -192,6 +194,7 @@ public class HomeFragment extends Fragment {
                     fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
                     fragmentTransaction.replace(R.id.main_frame, newFragment);
+                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
 
                 }else{
@@ -433,4 +436,10 @@ public class HomeFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        today = new Date();
+        dateSelected = today;
+        super.onResume();
+    }
 }

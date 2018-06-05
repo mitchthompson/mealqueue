@@ -5,6 +5,7 @@ import android.content.Context;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -110,6 +111,9 @@ public class SyncCalendarFragment extends Fragment {
 
                 fragmentTransaction.replace(R.id.main_frame, newFragment);
                 fragmentTransaction.commit();
+
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                fm.popBackStack();
             }
         });
 
@@ -178,8 +182,6 @@ public class SyncCalendarFragment extends Fragment {
                 //Get ingredients map
                 Map<String,String> ingredientsMap = (HashMap) recipe.get("Ingredients");
                 for (String key : ingredientsMap.keySet()){
-                    //Log.d(TAG,ingredientsMap.get(key)+" "+key);
-                    //ingredients.add(key+"\n\n"+ ingredientsMap.get(key));
                     ingredients.add(key);
                     ingredientAmounts.add(ingredientsMap.get(key));
                 }
@@ -202,20 +204,17 @@ public class SyncCalendarFragment extends Fragment {
         mRef = mFirebaseDatabase.getReference("/grocery/" + userID);
 
         for(int i=0;i <itemsNames.size();i++){
-            //Log.d(TAG, "addIngredients: " + groceryItems.get(i));
-            //mRef.push().setValue(itemsNames.get(i));
-
             String key = mRef.push().getKey();
             mRef.child(key).child("Ingredient Name").setValue(capitalizeFully(itemsNames.get(i)));
             mRef.child(key).child("Ingredient Amount").setValue(itemAmounts.get(i));
-            GroceryFragment newFragment = new GroceryFragment();
-
-            FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-            fragmentTransaction.replace(R.id.main_frame, newFragment);
-            fragmentTransaction.commit();
 
         }
+
+        GroceryFragment newFragment = new GroceryFragment();
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        fragmentTransaction.replace(R.id.main_frame, newFragment);
+        fragmentTransaction.commit();
 
     }
 }

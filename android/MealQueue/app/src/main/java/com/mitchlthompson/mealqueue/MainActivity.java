@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -94,14 +95,17 @@ public class MainActivity extends AppCompatActivity {
             String recipeName = bundle.getString("New Recipe");
             Log.d(TAG, "New recipe: " + recipeName);
             setFragment(recipesFragment);
+            mMainNav.setSelectedItemId(R.id.nav_recipes);
         } else {
             setFragment(homeFragment);
+            mMainNav.setSelectedItemId(R.id.nav_home);
         }
 
 
         mMainNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                clearBackStack();
                 switch(item.getItemId()){
                     case R.id.nav_home:
                         setFragment(homeFragment);
@@ -113,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.nav_grocery:
                         setFragment(groceryFragment);
+                        return true;
 
                     default:
                         return false;
@@ -183,6 +188,14 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    private void clearBackStack() {
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+            manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 

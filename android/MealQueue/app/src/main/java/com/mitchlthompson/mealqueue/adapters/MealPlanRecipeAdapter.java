@@ -87,8 +87,6 @@ public class MealPlanRecipeAdapter extends RecyclerView.Adapter<MealPlanRecipeAd
                 fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 fragmentTransaction.replace(R.id.main_frame, homeFragment);
                 fragmentTransaction.commit();
-
-                //context.startActivity(new Intent(context, MainActivity.class).putExtra("Date", date));
             }
         });
     }

@@ -96,6 +96,7 @@ public class GroceryFragment extends Fragment {
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 fragmentTransaction.replace(R.id.main_frame, newFragment);
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
 
 
@@ -122,8 +123,6 @@ public class GroceryFragment extends Fragment {
                     String key = mRef.push().getKey();
                     mRef.child(key).child("Ingredient Name").setValue(capitalizeFully(groceryItem.getText().toString()));
                     mRef.child(key).child("Ingredient Amount").setValue(groceryItemAmount.getText().toString());
-//                    mRef.push().setValue(capitalizeFully(groceryItem.getText().toString())
-//                            + "\n" + groceryItemAmount.getText().toString());
                     groceryItem.setText("");
                     groceryItemAmount.setText("");
                 }
@@ -185,7 +184,7 @@ public class GroceryFragment extends Fragment {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                groceryListAdapter.notifyDataSetChanged();
+                //groceryListAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -207,27 +206,6 @@ public class GroceryFragment extends Fragment {
 
         groceryListAdapter = new GroceryListAdapter(context, userID, ingredients);
         recyclerView.setAdapter(groceryListAdapter);
-
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                // Row is swiped from recycler view
-                // remove it from adapter
-            }
-
-            @Override
-            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                // view the background view
-            }
-        };
-
-// attaching the touch helper to recycler view
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 
         return view;
     }
