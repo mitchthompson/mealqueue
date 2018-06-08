@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.mitchlthompson.mealqueue.R;
+import com.mitchlthompson.mealqueue.helpers.Ingredient;
 
 import java.util.ArrayList;
 
@@ -19,15 +20,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     private View view;
     private IngredientsViewHolder ingredientsViewHolder;
     private LayoutInflater inflater;
+    private ArrayList<Ingredient> ingredients = new ArrayList<>();
 
-    private ArrayList<String> itemNames = new ArrayList();
-    private ArrayList<String> itemAmounts = new ArrayList();
-
-    public IngredientsAdapter(Context newContext, ArrayList<String> names, ArrayList<String> amounts) {
+    public IngredientsAdapter(Context newContext, ArrayList<Ingredient> ingredients) {
         this.context = newContext;
         inflater = LayoutInflater.from(context);
-        this.itemNames = names;
-        this.itemAmounts = amounts;
+        this.ingredients = ingredients;
     }
 
     @Override
@@ -40,13 +38,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public void onBindViewHolder(final IngredientsViewHolder holder, int position) {
         //Log.d("TAG", itemNames.get(position));
-        holder.ingredientsItem.setText(itemNames.get(position));
-        holder.ingredientsAmount.setText(itemAmounts.get(position));
+        holder.ingredientsItem.setText(ingredients.get(position).getName());
+        holder.ingredientsAmount.setText(ingredients.get(position).getAmount());
         holder.clearIngredientBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemNames.remove(holder.getAdapterPosition());
-                itemAmounts.remove(holder.getAdapterPosition());
+                ingredients.remove(holder.getAdapterPosition());
                 notifyDataSetChanged();
             }
         });
@@ -54,14 +51,13 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     public void addItem(String name, String amount)
     {
-        itemNames.add(name);
-        itemAmounts.add(amount);
+        ingredients.add(new Ingredient(name, amount));
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return itemNames.size();
+        return ingredients.size();
     }
 
     public static class IngredientsViewHolder extends RecyclerView.ViewHolder {

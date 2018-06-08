@@ -6,12 +6,11 @@
     android:layout_height="match_parent"
     android:background="@color/colorAccent"
     android:theme="@style/MealQTheme"
-    tools:context="com.mitchlthompson.mealqueue.AddRecipeActivity">
+    tools:context="com.mitchlthompson.mealqueue.EditRecipeActivity">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="16dp">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/myToolbar"
@@ -26,15 +25,17 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         <Button
-            android:id="@+id/add_to_recipes"
+            android:id="@+id/edit_recipes"
             style="@android:style/Widget.Material.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:fontFamily="sans-serif"
-            android:text="Add Recipe"
+            android:text="Edit Recipe"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_ingredient_recycler" />
@@ -55,13 +56,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:text="@string/add_recipe_name_textview"
             android:textAppearance="@android:style/TextAppearance.Material.Body1"
             android:textColor="@color/Dark"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/import_btn" />
+            app:layout_constraintTop_toBottomOf="@+id/myToolbar" />
 
         <MultiAutoCompleteTextView
             android:id="@+id/edit_directions_input"
@@ -86,19 +87,6 @@
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_name_input" />
-
-        <Button
-            android:id="@+id/import_btn"
-            style="@android:style/Widget.Material.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Import Recipe From Web"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/myToolbar" />
 
         <Button
             android:id="@+id/edit_recipe_pic_btn"
@@ -141,7 +129,7 @@
             app:layout_constraintTop_toBottomOf="@+id/edit_ingredients_title" />
 
         <Button
-            android:id="@+id/add_ingredient_btn"
+            android:id="@+id/edit_add_ingredient_btn"
             style="@android:style/Widget.Material.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -203,5 +191,6 @@
 
 
 </android.support.v4.widget.NestedScrollView>
+
 
 

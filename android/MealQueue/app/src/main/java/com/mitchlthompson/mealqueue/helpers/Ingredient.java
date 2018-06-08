@@ -11,12 +11,21 @@ public class Ingredient {
         this.amount = amount;
     }
 
+    public Ingredient(String name, String amount){
+        this.name = name;
+        this.amount = amount;
+    }
+
     public String getName(){
         return name;
     }
 
     public String getId(){
         return id;
+    }
+
+    public void setID(String id){
+        this.id = id;
     }
 
     public String getAmount(){ return amount;}

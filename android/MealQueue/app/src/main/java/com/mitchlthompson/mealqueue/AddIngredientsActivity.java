@@ -1,14 +1,8 @@
 package com.mitchlthompson.mealqueue;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,16 +10,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,8 +23,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mitchlthompson.mealqueue.adapters.IngredientsAdapter;
-
-import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,8 +97,8 @@ public class AddIngredientsActivity extends AppCompatActivity {
         //prevent keyboard from popping up on activity start
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        ingredientItem = findViewById(R.id.ingredient_item_EditText);
-        ingredientAmount = findViewById(R.id.ingredient_amount_EditText);
+        ingredientItem = findViewById(R.id.edit_ingredient_item_EditText);
+        ingredientAmount = findViewById(R.id.edit_ingredient_amount_EditText);
 
 
         ingredients = new HashMap<>();
@@ -142,11 +130,11 @@ public class AddIngredientsActivity extends AppCompatActivity {
         });
 
         context = getApplicationContext();
-        recyclerView = findViewById(R.id.ingredient_recycler);
+        recyclerView = findViewById(R.id.edit_ingredient_recycler);
         recyclerViewLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
-        ingredientsAdapter = new IngredientsAdapter(context, itemNames, itemAmounts);
+        //ingredientsAdapter = new IngredientsAdapter(context, itemNames, itemAmounts, ingredients);
         recyclerView.setAdapter(ingredientsAdapter);
 
         addRecipeBtn = findViewById(R.id.recipe_done_btn);

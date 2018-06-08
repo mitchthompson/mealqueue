@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:fontFamily="sans-serif-condensed"
+            android:fontFamily="sans-serif"
             android:text="Grocery Item"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/Dark"

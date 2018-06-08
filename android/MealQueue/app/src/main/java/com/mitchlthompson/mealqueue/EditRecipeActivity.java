@@ -3,6 +3,7 @@ package com.mitchlthompson.mealqueue;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,28 +21,32 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mitchlthompson.mealqueue.adapters.IngredientsAdapter;
 import com.mitchlthompson.mealqueue.helpers.Ingredient;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.apache.commons.lang3.text.WordUtils.capitalizeFully;
 
-public class AddRecipeActivity extends AppCompatActivity {
-    private static final String TAG = "AddRecipeActivity";
+public class EditRecipeActivity extends AppCompatActivity {
+    private static final String TAG = "EditRecipeActivity";
 
     private Context context;
 
     private TextView recipeNameInput, directionsInput;
-    private String recipeName, directions;
-    private Button nextBtn, importBtn, addIngredientBtn;
+    private String recipeName, directions, recipeID;;
+    private Button nextBtn, addIngredientBtn;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference mRef;
+    private DatabaseReference mRef, currentRecipeRef, editRecipeRef;
     private String userID;
 
     private RecyclerView recyclerView;
@@ -54,8 +59,7 @@ public class AddRecipeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_recipe);
-
+        setContentView(R.layout.activity_edit_recipe);
         Toolbar myToolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(myToolbar);
 
@@ -81,17 +85,25 @@ public class AddRecipeActivity extends AppCompatActivity {
             }
         };
 
+        if(getIntent().hasExtra("Recipe ID")) {
+            Bundle bundle = getIntent().getExtras();
+            recipeID = bundle.getString("Recipe ID");
+        }else{
+
+        }
+
         //prevent keyboard from popping up on activity start
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         recipeNameInput = findViewById(R.id.edit_name_input);
         directionsInput = findViewById(R.id.edit_directions_input);
 
-        //ingredients = new HashMap<>();
-
         ingredients = new ArrayList<>();
 
-        nextBtn = findViewById(R.id.add_to_recipes);
+        getCurrentRecipe();
+        getCurrentIngredients();
+
+        nextBtn = findViewById(R.id.edit_recipes);
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,16 +115,11 @@ public class AddRecipeActivity extends AppCompatActivity {
                     Toast.makeText(context, "Add the ingredients to finish the recipe", Toast.LENGTH_LONG).show();
                     Log.d(TAG, "No ingredients entered");
                 }else{
-                    AddRecipe();
-                }
-            }
-        });
+                    UpdateRecipe(recipeID);
 
-        importBtn = findViewById(R.id.import_btn);
-        importBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(AddRecipeActivity.this, ImportActivity.class));
+                    startActivity(new Intent(EditRecipeActivity.this, MainActivity.class)
+                            .putExtra("New Recipe", recipeName));
+                }
             }
         });
 
@@ -120,7 +127,7 @@ public class AddRecipeActivity extends AppCompatActivity {
         ingredientAmount = findViewById(R.id.edit_ingredient_amount_EditText);
 
 
-        addIngredientBtn = findViewById(R.id.add_ingredient_btn);
+        addIngredientBtn = findViewById(R.id.edit_add_ingredient_btn);
         addIngredientBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,16 +160,68 @@ public class AddRecipeActivity extends AppCompatActivity {
 
     }
 
-    private void AddRecipe(){
+    private void UpdateRecipe(String recipeID){
+        editRecipeRef = mFirebaseDatabase.getReference("/recipes/" + userID).child(recipeID);
         recipeName = recipeNameInput.getText().toString();
         directions = directionsInput.getText().toString();
-        String key = mRef.push().getKey();
-        mRef.child(key).child("Recipe Name").setValue(capitalizeFully(recipeName));
-        mRef.child(key).child("Directions").setValue(directions);
-        mRef.child(key).child("Ingredients").setValue(ingredients);
-        mRef.child(key).child("Recipe ID").setValue(key);
+        editRecipeRef.child("Recipe Name").setValue(capitalizeFully(recipeName));
+        editRecipeRef.child("Directions").setValue(directions);
+        editRecipeRef.child("Ingredients").setValue(ingredients);
+    }
 
+    private void getCurrentRecipe(){
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        userID = user.getUid();
+        currentRecipeRef = mFirebaseDatabase.getReference("/recipes/" + userID).child(recipeID);
 
+        currentRecipeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                HashMap<String,Object> recipe = (HashMap<String,Object>) dataSnapshot.getValue();
+                if(recipe!=null) {
+
+                    recipeNameInput.setText(recipe.get("Recipe Name").toString());
+                    directionsInput.setText(recipe.get("Directions").toString());
+                    //getIngredients();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
+
+    private void getCurrentIngredients(){
+        currentRecipeRef = mFirebaseDatabase.getReference("/recipes/" + userID + "/" + recipeID).child("Ingredients");
+        currentRecipeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    for(DataSnapshot messageSnapshot: dataSnapshot.getChildren()){
+                        String name = (String) messageSnapshot.child("name").getValue();
+                        String amount = (String) messageSnapshot.child("amount").getValue();
+                        ingredients.add(new Ingredient(name, amount));
+                    }
+
+                    ingredientsAdapter.notifyDataSetChanged();
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 }

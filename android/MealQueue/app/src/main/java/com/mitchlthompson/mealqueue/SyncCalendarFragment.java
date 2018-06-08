@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mitchlthompson.mealqueue.helpers.Ingredient;
 import com.squareup.timessquare.CalendarPickerView;
 
 import java.text.DateFormat;
@@ -49,7 +50,8 @@ public class SyncCalendarFragment extends Fragment {
     private String userID;
 
     private Map<String,Object> firebaseData;
-    private ArrayList<String> recipeIDs, ingredients, ingredientAmounts, syncDates;
+    private ArrayList<String> recipeIDs, syncDates;
+    private ArrayList<Ingredient> ingredients;
 
     public SyncCalendarFragment(){
 
@@ -93,7 +95,6 @@ public class SyncCalendarFragment extends Fragment {
                     for(int i=0;i<selectedDates.size();i++){
                         formattedDates.add(DateFormat.getDateInstance(DateFormat.FULL).format(selectedDates.get(i)));
                     }
-
                     getData(formattedDates);
 
                 }
@@ -130,7 +131,7 @@ public class SyncCalendarFragment extends Fragment {
 
         syncDates = selectedDates;
 
-        mRef.addValueEventListener(new ValueEventListener() {
+        mRef.addListenerForSingleValueEvent (new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 firebaseData = (Map<String, Object>) dataSnapshot.getValue();
@@ -168,25 +169,22 @@ public class SyncCalendarFragment extends Fragment {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
-        mRef = mFirebaseDatabase.getReference("/recipes/" + userID + "/" + recipeID);
+        mRef = mFirebaseDatabase.getReference("/recipes/" + userID + "/" + recipeID).child("Ingredients");
 
 
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                HashMap<String,Object> recipe = (HashMap<String,Object>) dataSnapshot.getValue();
-
                 ingredients = new ArrayList<>();
-                ingredientAmounts = new ArrayList<>();
-                //Get ingredients map
-                Map<String,String> ingredientsMap = (HashMap) recipe.get("Ingredients");
-                for (String key : ingredientsMap.keySet()){
-                    ingredients.add(key);
-                    ingredientAmounts.add(ingredientsMap.get(key));
+                if(dataSnapshot.exists()) {
+                    for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
+                        String name = (String) messageSnapshot.child("name").getValue();
+                        String amount = (String) messageSnapshot.child("amount").getValue();
+                        ingredients.add(new Ingredient(name,amount));
+                    }
                 }
 
-                addIngredientsToGroceryList(ingredients, ingredientAmounts);
+                addIngredientsToGroceryList();
             }
 
             @Override
@@ -196,25 +194,28 @@ public class SyncCalendarFragment extends Fragment {
         });
     }
 
-    private void addIngredientsToGroceryList(ArrayList<String> itemsNames, ArrayList<String> itemAmounts){
+    private void addIngredientsToGroceryList(){
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
         mRef = mFirebaseDatabase.getReference("/grocery/" + userID);
 
-        for(int i=0;i <itemsNames.size();i++){
+        for(int i=0;i <ingredients.size();i++){
             String key = mRef.push().getKey();
-            mRef.child(key).child("Ingredient Name").setValue(capitalizeFully(itemsNames.get(i)));
-            mRef.child(key).child("Ingredient Amount").setValue(itemAmounts.get(i));
+            mRef.child(key).child("Ingredient Name").setValue(capitalizeFully(ingredients.get(i).getName()));
+            mRef.child(key).child("Ingredient Amount").setValue(ingredients.get(i).getAmount());
 
         }
+
 
         GroceryFragment newFragment = new GroceryFragment();
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         fragmentTransaction.replace(R.id.main_frame, newFragment);
         fragmentTransaction.commit();
+
+
 
     }
 }

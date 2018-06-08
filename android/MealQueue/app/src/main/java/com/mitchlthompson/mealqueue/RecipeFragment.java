@@ -7,13 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,10 +20,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mitchlthompson.mealqueue.helpers.Ingredient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class RecipeFragment extends Fragment {
@@ -43,13 +40,12 @@ public class RecipeFragment extends Fragment {
     private String userID;
 
     private HashMap<String,Object> recipe;
-    private Map<String,String> ingredientsMap;
-    private ArrayList<String> ingredients;
-    private ArrayAdapter<String> itemsAdapter;
     private String recipeID, recipeName, directions, ingredientName, ingredientAmount;
     private TextView recipeNameTextView, directionsTextview, ingredientsList;
     private Button recipeDelete, recipeEdit, recipeAddToMealPlan;
     private String removeMealDate, date;
+
+    private ArrayList<Ingredient> ingredients;
 
 
     public RecipeFragment() {
@@ -59,7 +55,7 @@ public class RecipeFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_recipe, container, false);
 
@@ -77,15 +73,9 @@ public class RecipeFragment extends Fragment {
         userID = user.getUid();
         mRef = mFirebaseDatabase.getReference("/recipes/" + userID + "/" + recipeID);
 
-        recipeNameTextView = view.findViewById(R.id.recipe_name_textView);
+        recipeNameTextView = view.findViewById(R.id.edit_name_textView);
         directionsTextview = view.findViewById(R.id.recipe_directions_textView);
         ingredientsList = view.findViewById(R.id.ingredients_list);
-
-        ingredientsMap = new HashMap<>();
-        ingredients = new ArrayList<>();
-//        itemsAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, ingredients);
-//        ListView listView = view.findViewById(R.id.ingredients_listView);
-//        listView.setAdapter(itemsAdapter);
 
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -96,17 +86,7 @@ public class RecipeFragment extends Fragment {
 
                     recipeNameTextView.setText(recipe.get("Recipe Name").toString());
                     directionsTextview.setText(recipe.get("Directions").toString());
-                    String ingredientsString = "";
-                    //Get ingredients map
-                    ingredientsMap = (HashMap) recipe.get("Ingredients");
-                    for (String key : ingredientsMap.keySet()) {
-                        //iterate over key
-                        //Log.d(TAG, ingredientsMap.get(key) + " " + key);
-                        ingredientsString += ingredientsMap.get(key) + "  " + key + "\n\n";
-//                        ingredients.add(ingredientsMap.get(key) + " " + key);
-                    }
-                    ingredientsList.setText(ingredientsString);
-//                    itemsAdapter.notifyDataSetChanged();
+                    getIngredients();
 
                 }
             }
@@ -185,10 +165,45 @@ public class RecipeFragment extends Fragment {
             }
         });
 
+        recipeEdit = view.findViewById(R.id.recipe_edit);
+        recipeEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, EditRecipeActivity.class)
+                        .putExtra("Recipe ID", recipeID));
+            }
+        });
+
 
 
 
         return view;
+    }
+
+    private void getIngredients(){
+        mRef = mFirebaseDatabase.getReference("/recipes/" + userID + "/" + recipeID).child("Ingredients");
+        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    String ingredientsString = "";
+                    for(DataSnapshot messageSnapshot: dataSnapshot.getChildren()){
+                        String name = (String) messageSnapshot.child("name").getValue();
+                        String amount = (String) messageSnapshot.child("amount").getValue();
+                        ingredientsString += name + "  (" + amount + ")\n\n";
+                    }
+                    ingredientsList.setText(ingredientsString);
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void deleteRecipe(){

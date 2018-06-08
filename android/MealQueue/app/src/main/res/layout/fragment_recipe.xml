@@ -15,7 +15,7 @@
         android:scrollbars="vertical">
 
         <TextView
-            android:id="@+id/recipe_name_textView"
+            android:id="@+id/edit_name_textView"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -39,7 +39,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recipe_name_textView" />
+            app:layout_constraintTop_toBottomOf="@+id/edit_name_textView" />
 
         <TextView
             android:id="@+id/ingredients_title_textview"
@@ -66,7 +66,7 @@
             <!--tools:layout_editor_absoluteY="146dp" />-->
 
         <TextView
-            android:id="@+id/directions_title_textview"
+            android:id="@+id/edit_title_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -93,7 +93,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/directions_title_textview" />
+            app:layout_constraintTop_toBottomOf="@+id/edit_title_textview" />
 
         <View
             android:id="@+id/recipe_view2"
@@ -112,9 +112,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:text="@string/recipe_delete_textview"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/recipe_edit"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -123,12 +125,9 @@
             style="@android:style/Widget.Material.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:text="EDIT"
-            app:layout_constraintEnd_toStartOf="@+id/recipe_delete"
-            app:layout_constraintHorizontal_bias="0.75"
             app:layout_constraintStart_toEndOf="@+id/recipe_add_meal"
             app:layout_constraintTop_toTopOf="parent" />
 
