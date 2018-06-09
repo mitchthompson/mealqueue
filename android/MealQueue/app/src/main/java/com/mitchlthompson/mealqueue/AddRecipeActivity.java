@@ -1,7 +1,11 @@
 package com.mitchlthompson.mealqueue;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,16 +19,24 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mitchlthompson.mealqueue.adapters.IngredientsAdapter;
 import com.mitchlthompson.mealqueue.helpers.Ingredient;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.apache.commons.lang3.text.WordUtils.capitalizeFully;
@@ -51,6 +63,14 @@ public class AddRecipeActivity extends AppCompatActivity {
     private ArrayList<Ingredient> ingredients;
     private EditText ingredientItem, ingredientAmount;
 
+    private Button btnChoose;
+    private ImageView imageView;
+    private Uri filePath;
+    private final int PICK_IMAGE_REQUEST = 71;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+    private Boolean imageSelected;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +80,9 @@ public class AddRecipeActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         context = getApplicationContext();
+
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -87,8 +110,6 @@ public class AddRecipeActivity extends AppCompatActivity {
         recipeNameInput = findViewById(R.id.edit_name_input);
         directionsInput = findViewById(R.id.edit_directions_input);
 
-        //ingredients = new HashMap<>();
-
         ingredients = new ArrayList<>();
 
         nextBtn = findViewById(R.id.add_to_recipes);
@@ -115,6 +136,19 @@ public class AddRecipeActivity extends AppCompatActivity {
                 startActivity(new Intent(AddRecipeActivity.this, ImportActivity.class));
             }
         });
+
+        imageSelected = false;
+        btnChoose = findViewById(R.id.chose_recipe_pic_btn);
+        imageView = findViewById(R.id.imgView);
+
+        btnChoose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseImage();
+            }
+        });
+
+
 
         ingredientItem = findViewById(R.id.edit_ingredient_item_EditText);
         ingredientAmount = findViewById(R.id.edit_ingredient_amount_EditText);
@@ -161,8 +195,74 @@ public class AddRecipeActivity extends AppCompatActivity {
         mRef.child(key).child("Directions").setValue(directions);
         mRef.child(key).child("Ingredients").setValue(ingredients);
         mRef.child(key).child("Recipe ID").setValue(key);
+        Log.d(TAG, imageSelected.toString());
+        if(imageSelected){
+            uploadImage(key);
+        }else{
+            startActivity(new Intent(AddRecipeActivity.this, MainActivity.class)
+                    .putExtra("New Recipe", recipeName));
+        }
+    }
 
+    private void chooseImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null )
+        {
+            filePath = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                imageView.setImageBitmap(bitmap);
+                imageSelected = true;
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
 
+    private void uploadImage(String recipeID) {
+
+        if(filePath != null)
+        {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+            StorageReference ref = storageReference.child("images/"+ recipeID);
+            ref.putFile(filePath)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
+                            startActivity(new Intent(AddRecipeActivity.this, MainActivity.class)
+                                    .putExtra("New Recipe", recipeName));
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(AddRecipeActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                    .getTotalByteCount());
+                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                        }
+                    });
+        }
     }
 }

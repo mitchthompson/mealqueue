@@ -11,7 +11,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="16dp">
+        android:paddingBottom="?attr/actionBarSize">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/myToolbar"
@@ -54,7 +54,7 @@
             android:id="@+id/edit_name_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="32dp"
             android:text="@string/add_recipe_name_textview"
             android:textAppearance="@android:style/TextAppearance.Material.Body1"
@@ -101,16 +101,16 @@
             app:layout_constraintTop_toBottomOf="@+id/myToolbar" />
 
         <Button
-            android:id="@+id/edit_recipe_pic_btn"
+            android:id="@+id/chose_recipe_pic_btn"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
-            android:text="Add Picture  (Optional)"
+            android:layout_marginTop="16dp"
+            android:text="Choose"
             android:textColor="@color/Dark"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/add_recipe_view4" />
+            app:layout_constraintTop_toBottomOf="@+id/add_pic_textView" />
 
         <EditText
             android:id="@+id/edit_ingredient_amount_EditText"
@@ -185,7 +185,7 @@
             android:background="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_recipe_pic_btn" />
+            app:layout_constraintTop_toBottomOf="@+id/imgView" />
 
         <View
             android:id="@+id/add_recipe_view2"
@@ -216,6 +216,28 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_directions_input" />
+
+        <TextView
+            android:id="@+id/add_pic_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:text="Add Picture (Optional)"
+            android:textAppearance="@android:style/TextAppearance.Material.Body1"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_recipe_view4" />
+
+        <ImageView
+            android:id="@+id/imgView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toEndOf="@+id/chose_recipe_pic_btn"
+            app:layout_constraintTop_toBottomOf="@+id/add_pic_textView"
+            app:srcCompat="@drawable/ic_add_a_photo_black_24dp" />
 
 
     </android.support.constraint.ConstraintLayout>
