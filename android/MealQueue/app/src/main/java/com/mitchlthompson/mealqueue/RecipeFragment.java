@@ -34,6 +34,8 @@ import com.mitchlthompson.mealqueue.helpers.Ingredient;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static org.apache.commons.lang3.text.WordUtils.capitalizeFully;
+
 
 public class RecipeFragment extends Fragment {
     private static final String TAG = "RecipeFragment";
@@ -221,6 +223,7 @@ public class RecipeFragment extends Fragment {
                     String ingredientsString = "";
                     for(DataSnapshot messageSnapshot: dataSnapshot.getChildren()){
                         String name = (String) messageSnapshot.child("name").getValue();
+                        name = capitalizeFully(name);
                         String amount = (String) messageSnapshot.child("amount").getValue();
                         ingredientsString += name + "  (" + amount + ")\n\n";
                     }
