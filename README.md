@@ -6,3 +6,4 @@ Meal Queue is a meal planning app that I was inspired to make from my own experi
 Mitchell Thompson
 
 ## License
+Apache License 2.0 see [License](https://github.com/mitchthompson/mealqueue/blob/master/LICENSE)
