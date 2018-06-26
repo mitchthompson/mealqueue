@@ -3,16 +3,23 @@ package com.mitchlthompson.mealqueue;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -20,10 +27,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mitchlthompson.mealqueue.helpers.Ingredient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static org.apache.commons.lang3.text.WordUtils.capitalizeFully;
 
 
 public class RecipeFragment extends Fragment {
@@ -46,6 +57,10 @@ public class RecipeFragment extends Fragment {
     private String removeMealDate, date;
 
     private ArrayList<Ingredient> ingredients;
+
+    private ImageView image;
+    private StorageReference storageReference;
+
 
 
     public RecipeFragment() {
@@ -176,6 +191,25 @@ public class RecipeFragment extends Fragment {
 
 
 
+        storageReference = FirebaseStorage.getInstance().getReference().child("/images/"+recipeID);
+        image = view.findViewById(R.id.recipe_imageView);
+
+        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(context).load(uri).into(image);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                image.setVisibility(View.INVISIBLE);
+                image.getLayoutParams().height = 50;
+                image.requestLayout();
+            }
+        });
+
+
+
 
         return view;
     }
@@ -189,6 +223,7 @@ public class RecipeFragment extends Fragment {
                     String ingredientsString = "";
                     for(DataSnapshot messageSnapshot: dataSnapshot.getChildren()){
                         String name = (String) messageSnapshot.child("name").getValue();
+                        name = capitalizeFully(name);
                         String amount = (String) messageSnapshot.child("amount").getValue();
                         ingredientsString += name + "  (" + amount + ")\n\n";
                     }
