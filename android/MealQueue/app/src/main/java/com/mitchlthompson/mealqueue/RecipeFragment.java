@@ -36,12 +36,18 @@ import java.util.HashMap;
 
 import static org.apache.commons.lang3.text.WordUtils.capitalizeFully;
 
-
+/**
+ * This fragment controls the UI for the recipe fragment. Displays recipe details like directions,
+ * ingredients, and recipe picture. Includes buttons to add recipe to meal plan, edit recipe, and
+ * delete recipe.
+ *
+ * @author Mitchell Thompson
+ * @version 1.0
+ * @see RecipesFragment
+ */
 public class RecipeFragment extends Fragment {
     private static final String TAG = "RecipeFragment";
-
     View view;
-
     private Context context;
 
     private FirebaseDatabase mFirebaseDatabase;
@@ -82,16 +88,35 @@ public class RecipeFragment extends Fragment {
             date = getArguments().getString("Date");
         }
 
+        //Firebase variables for verifying user auth
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
-        mRef = mFirebaseDatabase.getReference("/recipes/" + userID + "/" + recipeID);
 
+        //User auth listener. Returns user to login screen if not verified.
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                if(user != null){
+                    Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
+                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                }else{
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        /**
+         * Makes database call for recipe passed into fragment then sets appropriate text in
+         * TextViews
+         */
+        mRef = mFirebaseDatabase.getReference("/recipes/" + userID + "/" + recipeID);
         recipeNameTextView = view.findViewById(R.id.edit_name_textView);
         directionsTextview = view.findViewById(R.id.recipe_directions_textView);
         ingredientsList = view.findViewById(R.id.ingredients_list);
-
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -112,10 +137,15 @@ public class RecipeFragment extends Fragment {
             }
         });
 
+        /**
+         * Sets OnClickListener for delete button that makes database call to remove recipe from
+         * database by calling the method deleteRecipe
+         */
         recipeDelete = view.findViewById(R.id.recipe_delete);
         recipeDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Sets AlertDialog to confirm user wants to delete Recipe
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
                 mBuilder.setIcon(R.drawable.ic_remove_circle_outline_black_24dp);
                 mBuilder.setTitle("Delete " + recipeName);
@@ -158,6 +188,11 @@ public class RecipeFragment extends Fragment {
             }
         });
 
+        /**
+         * Sets OnClickListener for add to meal plan button that replaces current fragment with
+         * RecipeCalendarFragment and passes recipe details in bundle.
+         * @see RecipeCalendarFragment
+         */
         recipeAddToMealPlan = view.findViewById(R.id.recipe_add_meal);
         recipeAddToMealPlan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,6 +215,11 @@ public class RecipeFragment extends Fragment {
             }
         });
 
+        /**
+         * Sets OnClickListener for edit recipe button that launches EditRecipeActivity and passes
+         * recipeID as intent extra.
+         * @see EditRecipeActivity
+         */
         recipeEdit = view.findViewById(R.id.recipe_edit);
         recipeEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,10 +230,12 @@ public class RecipeFragment extends Fragment {
         });
 
 
-
+        /**
+         * Makes call to Firebase storage to get recipe image based on recipeID then attaches to
+         * view with Glide. If no image exists for recipe then hides ImageView.
+         */
         storageReference = FirebaseStorage.getInstance().getReference().child("/images/"+recipeID);
         image = view.findViewById(R.id.recipe_imageView);
-
         storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -207,9 +249,6 @@ public class RecipeFragment extends Fragment {
                 image.requestLayout();
             }
         });
-
-
-
 
         return view;
     }
@@ -241,6 +280,11 @@ public class RecipeFragment extends Fragment {
 
     }
 
+    /**
+     * Makes two data calls to remove the recipe from the database. First one deletes the recipe
+     * from that user's recipes. The second removes any references to that recipe in that user's
+     * meal plan.
+     */
     private void deleteRecipe(){
         mFirebaseDatabase.getReference("/recipes/" + userID).child(recipeID).removeValue();
         final DatabaseReference removeFromMealPlan = mFirebaseDatabase.getReference("/mealplans/" + userID);
@@ -248,10 +292,8 @@ public class RecipeFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    //Log.d(TAG, snapshot.getKey().toString());
                     removeMealDate = snapshot.getKey().toString();
                     for(DataSnapshot child: snapshot.getChildren()){
-                        //Log.d(TAG, child.getValue().toString() + " " + child.getKey().toString());
                         if(child.getValue().toString().equals(recipeID)){
                             removeFromMealPlan.child(removeMealDate).child(child.getKey().toString()).removeValue();
                         }
