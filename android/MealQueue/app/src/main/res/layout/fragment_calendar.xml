@@ -1,0 +1,68 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mitchlthompson.mealqueue.SyncCalendarFragment">
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        >
+
+        <TextView
+            android:id="@+id/sync_instructions_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/done_button"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Select the date range to add ingredients from meal plan to the grocery list. "
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="@color/Dark"
+            android:textSize="16sp" />
+
+
+        <Button
+            android:id="@+id/done_button"
+            style="@android:style/Widget.Material.Button.Colored"
+            android:layout_width="155dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/sync_cancel_btn"
+            android:layout_marginEnd="16dp"
+            android:paddingTop="8dp"
+            android:text="Done" />
+
+        <Button
+            android:id="@+id/sync_cancel_btn"
+            style="@android:style/Widget.Material.Button.Borderless.Colored"
+            android:layout_width="155dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Cancel" />
+
+        <com.squareup.timessquare.CalendarPickerView
+            android:id="@+id/grocery_sync_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sync_instructions_textview"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:scrollbarStyle="outsideOverlay" />
+
+    </RelativeLayout>
+
+</FrameLayout>
