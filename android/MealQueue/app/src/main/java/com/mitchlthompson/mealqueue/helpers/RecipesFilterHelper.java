@@ -1,17 +1,18 @@
 package com.mitchlthompson.mealqueue.helpers;
 
-import android.util.Log;
 import android.widget.Filter;
 
 import com.mitchlthompson.mealqueue.adapters.RecipeAdapter;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
- * Created by mitch on 5/30/2018.
+ * This filter helper takes input from searchview on RecipeFragment and returns filtered recipe list.
+ * @author Mitchell Thompson
+ * @version 1.0
+ * @see com.mitchlthompson.mealqueue.RecipeFragment
+ * @see RecipeAdapter
  */
-
 public class RecipesFilterHelper extends Filter {
 
     static ArrayList<Recipe> currentList;
