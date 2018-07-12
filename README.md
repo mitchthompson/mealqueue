@@ -12,3 +12,7 @@ Target SDK 26
 
 ## License
 Apache License 2.0 - see [license](https://github.com/mitchthompson/mealqueue/blob/master/LICENSE)
+
+
+
+see [javadocs](https://mitchthompson.github.io/mealqueue/)
