@@ -44,10 +44,6 @@
             android:name=".AddRecipeActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".AddIngredientsActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait" />
         <activity android:name=".ImportActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>

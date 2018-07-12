@@ -116,6 +116,10 @@ public class HomeFragment extends Fragment {
             SimpleDateFormat formatter = new SimpleDateFormat(expectedPattern);
             try {
                 dateSelected = formatter.parse(todaysDate);
+                if(dateSelected.compareTo(today)<0){
+                    dateSelected = today;
+                }
+                //dateSelected = formatter.parse(todaysDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
