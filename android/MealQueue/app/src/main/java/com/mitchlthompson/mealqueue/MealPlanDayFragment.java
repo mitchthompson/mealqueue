@@ -24,15 +24,21 @@ import com.mitchlthompson.mealqueue.adapters.MealPlanRecipeAdapter;
 import com.mitchlthompson.mealqueue.helpers.Recipe;
 
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 
-
+/**
+ * This fragment displays a recyclerview list of user's recipes. User comes to this fragment from
+ * HomeFragment to add a recipe to the meal plan. When user selects recipe in recylerview
+ * fragment makes a database call to add the recipe to the date passed from HomeFragment. User is
+ * then returned to HomeFragment.
+ * @author Mitchell Thompson
+ * @version 1.0
+ * @see MealPlanRecipeAdapter
+ */
 public class MealPlanDayFragment extends Fragment {
     private static final String TAG = "MealPlanDayFragment";
     private View view;

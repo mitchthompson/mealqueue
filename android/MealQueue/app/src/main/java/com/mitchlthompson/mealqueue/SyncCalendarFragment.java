@@ -4,6 +4,7 @@ package com.mitchlthompson.mealqueue;
 import android.content.Context;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -34,21 +35,30 @@ import java.util.Map;
 import static com.squareup.timessquare.CalendarPickerView.SelectionMode.RANGE;
 import static org.apache.commons.lang3.text.WordUtils.capitalizeFully;
 
+/**
+ * This fragment is for syncing the grocery list with ingredients from the meal plan.
+ * Includes a calendar with a date range selector. User selects the dates they want to sync then
+ * database calls are made to get the meal plan for those dates then gets all the ingredients from
+ * each recipe. Finally those ingredients are then added to that user's grocery list in the database.
+ * @author Mitchell Thompson
+ * @version 1.0
+ * @see GroceryFragment
+ */
 public class SyncCalendarFragment extends Fragment {
     private static final String TAG = "SyncCalendarFragment";
-
     View viewer;
     private Context context;
+
+    private FirebaseDatabase mFirebaseDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private String userID;
+
+    private DatabaseReference mRef;
 
     private Button doneBtn, cancelBtn;
     private List selectedDates;
     private ArrayList<String> formattedDates;
-
-    private FirebaseDatabase mFirebaseDatabase;
-    private FirebaseAuth mAuth;
-    private DatabaseReference mRef;
-    private String userID;
-
     private Map<String,Object> firebaseData;
     private ArrayList<String> recipeIDs, syncDates;
     private ArrayList<Ingredient> ingredients;
@@ -64,14 +74,35 @@ public class SyncCalendarFragment extends Fragment {
                 false);
         context = getActivity();
 
+        //Firebase variables for verifying user auth
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        userID = user.getUid();
+
+        //User auth listener. Returns user to login screen if not verified.
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                if(user != null){
+                    Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
+                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                }else{
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
         Date today = new Date();
         Calendar nextYear = Calendar.getInstance();
         nextYear.add(Calendar.YEAR, 1);
 
+        //date range selector and listener
         final CalendarPickerView calendar = viewer.findViewById(R.id.grocery_sync_calendar);
         calendar.init(today, nextYear.getTime())
                 .inMode(RANGE);
-
         calendar.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
             @Override
             public void onDateSelected(Date date) {
@@ -96,12 +127,11 @@ public class SyncCalendarFragment extends Fragment {
                         formattedDates.add(DateFormat.getDateInstance(DateFormat.FULL).format(selectedDates.get(i)));
                     }
                     getData(formattedDates);
-
                 }
-
             }
         });
 
+        //if cancel button selected then returns user to GroceryFragment without changes
         cancelBtn = viewer.findViewById(R.id.sync_cancel_btn);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,6 +152,12 @@ public class SyncCalendarFragment extends Fragment {
 
     }
 
+    /**
+     * Takes range of dates user selected then makes a database call add all recipeIDs within that
+     * range to ArrayList named recipeIDs. Then calls method getRecipeIngredients to make database
+     * call for the recipe ingredients for those recipeIDs.
+     * @param selectedDates String ArrayList of the range of dates user selected
+     */
     private void getData(ArrayList<String> selectedDates){
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -164,13 +200,16 @@ public class SyncCalendarFragment extends Fragment {
 
     }
 
+    /**
+     * Makes database call to get all ingredients for recipe then adds them to ingredients ArrayList
+     * @param recipeID the ID of the recipe
+     */
     private void getRecipeIngredients(String recipeID){
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
         mRef = mFirebaseDatabase.getReference("/recipes/" + userID + "/" + recipeID).child("Ingredients");
-
 
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -194,6 +233,9 @@ public class SyncCalendarFragment extends Fragment {
         });
     }
 
+    /**
+     * Makes a database call to add all ingredients in ingredients ArrayList to the grocery
+     */
     private void addIngredientsToGroceryList(){
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -208,14 +250,10 @@ public class SyncCalendarFragment extends Fragment {
 
         }
 
-
         GroceryFragment newFragment = new GroceryFragment();
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         fragmentTransaction.replace(R.id.main_frame, newFragment);
         fragmentTransaction.commit();
-
-
-
     }
 }

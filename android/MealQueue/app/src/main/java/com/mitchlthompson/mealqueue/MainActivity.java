@@ -17,19 +17,31 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
-import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.text.DateFormat;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * This is the activity that launches after the user login is successful or the user returns to app
+ * while still logged-in. It handles the logic for the BottomNavigation and associated fragments.
+ *
+ * @author Mitchell Thompson
+ * @version 1.0
+ * @see HomeFragment
+ * @see RecipesFragment
+ * @see GroceryFragment
+ */
 
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private Context context;
+
+    private FirebaseDatabase mFirebaseDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private String userID;
 
     private BottomNavigationView mMainNav;
     private FrameLayout mMainFrame;
@@ -37,27 +49,22 @@ public class MainActivity extends AppCompatActivity {
     private RecipesFragment recipesFragment;
     private GroceryFragment groceryFragment;
 
-    private FirebaseDatabase mFirebaseDatabase;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private String userID;
-
     private String date;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Toolbar myToolbar = findViewById(R.id.myToolbar);
-        //setSupportActionBar(myToolbar);
         context = getApplicationContext();
 
+
+        //Firebase variables for verifying user auth
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
+        //User auth listener. Returns user to login screen if not verified.
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -90,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         recipesFragment = new RecipesFragment();
         groceryFragment = new GroceryFragment();
 
+        //Checks for bundle extras that would only exist if user created new recipe
         if(getIntent().hasExtra("New Recipe")) {
             Bundle bundle = getIntent().getExtras();
             String recipeName = bundle.getString("New Recipe");
@@ -101,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             mMainNav.setSelectedItemId(R.id.nav_home);
         }
 
-
+        //Listener for handling reselection events on bottom navigation items.
         mMainNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -127,17 +135,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Initialize the contents of the Activity's options menu.
+     * @param menu The options menu in which you place your items.
+     * @return boolean
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main_menu, menu);
-        Drawable yourdrawable = menu.getItem(0).getIcon(); // change 0 with 1,2 ...
+        Drawable yourdrawable = menu.getItem(0).getIcon();
         yourdrawable.mutate();
         yourdrawable.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
         return super.onCreateOptionsMenu(menu);
     }
 
-    //Defines the actions after user selection of the menu items in the toolbar
+    /**
+     * This is called whenever an item in the options menu is selected.
+     * @param item 	MenuItem: The menu item that was selected.
+     * @return boolean
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -145,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
-
 
             case R.id.action_settings:
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
@@ -158,6 +174,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This is called whenever an option is selected in the BottomNavigation. It replaces the current
+     * fragment with the fragment that was passed in as a param. This is called from the
+     * mMainNav.setOnNavigationItemSelectedListener in the OnCreate method.
+     * @param fragment The fragment to be set
+     * @return boolean
+     */
     private void setFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.animator.slide_up,
@@ -191,6 +214,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method clears the fragment backstack if it isn't already empty
+     */
     private void clearBackStack() {
         FragmentManager manager = getSupportFragmentManager();
         if (manager.getBackStackEntryCount() > 0) {

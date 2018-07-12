@@ -3,10 +3,11 @@ package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.BottomNavigationView;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * This fragment controls the UI for the meal plan. Includes a calendar and cardview for the
+ * selected date. Allows a user to select dates to see meals planned for that day and to remove
+ * meals for that day. When a user wants to add a meal it launches MealPlanDayFragment.
+ *
+ * @author Mitchell Thompson
+ * @version 1.0
+ * @see MainActivity
+ * @see MealPlanDayFragment
+ */
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
     private View view;
@@ -40,6 +50,7 @@ public class HomeFragment extends Fragment {
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
     private String userID;
 
     private DatabaseReference mRefMealPlan;
@@ -49,16 +60,13 @@ public class HomeFragment extends Fragment {
     private String todaysDate;
     private Date today, dateSelected;
     private CalendarPickerView calendar;
-
     private Map<String,Object> mealPlanData;
     private Boolean threeMeals;
-
     private TextView dateTextView, dayDateTextView;
     private Button addPlanBtn, editMealPlanBtn;
     private TextView mealsTextView1, mealsTextView2, mealsTextView3;
     private CardView mealPlanCardView;
     private Button removeMeal1, removeMeal2, removeMeal3;
-
     private RecipeFragment recipeFragment;
 
 
@@ -74,17 +82,32 @@ public class HomeFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_home, container, false);
         context = getActivity();
 
+        //Firebase variables for verifying user auth
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
+        //User auth listener. Returns user to login screen if not verified.
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                if(user != null){
+                    Log.d(TAG, "onAuthStateChanged:signed_in: " + user.getUid());
+                    //Toast.makeText(context,"Successfully signing in with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                }else{
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    //Toast.makeText(context,"Successfully signed out", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
 
+        //Create calendar object with today's date
         Calendar nextYear = Calendar.getInstance();
         nextYear.add(Calendar.MONTH, 6);
         calendar = view.findViewById(R.id.meal_plan_calendar);
         today = new Date();
-
 
         if (getArguments() != null) {
             todaysDate = getArguments().getString("Date");
@@ -93,6 +116,10 @@ public class HomeFragment extends Fragment {
             SimpleDateFormat formatter = new SimpleDateFormat(expectedPattern);
             try {
                 dateSelected = formatter.parse(todaysDate);
+                if(dateSelected.compareTo(today)<0){
+                    dateSelected = today;
+                }
+                //dateSelected = formatter.parse(todaysDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -113,6 +140,11 @@ public class HomeFragment extends Fragment {
         calendar.init(today, nextYear.getTime())
                 .withSelectedDate(dateSelected);
 
+        /**
+         * Sets OnDateSelectedListener on calendar. When date selected makes database call to get
+         * recipes on the meal plan for selected date then sets the text on the meal TextViews as
+         * recipe names and sets the tags as the recipe IDs.
+         */
         calendar.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
             @Override
             public void onDateSelected(Date date) {
@@ -137,7 +169,6 @@ public class HomeFragment extends Fragment {
 
 
                 mRefMealPlan2 = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(todaysDate);
-
                 mRefMealPlan2.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -322,7 +353,11 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-
+    /**
+     * Makes a database call to get all recipes on the meal plan for the date passed as a parameter.
+     * Then sets the text on the mealTextViews as recipe names and sets the tags as the recipe IDs.
+     * @param date
+     */
     public void getMeals(String date) {
         mRefMealPlan = mFirebaseDatabase.getReference("/mealplans/" + userID + "/").child(date);
 
@@ -441,5 +476,19 @@ public class HomeFragment extends Fragment {
         today = new Date();
         dateSelected = today;
         super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        today = new Date();
+        dateSelected = today;
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        today = new Date();
+        dateSelected = today;
+        super.onStop();
     }
 }
