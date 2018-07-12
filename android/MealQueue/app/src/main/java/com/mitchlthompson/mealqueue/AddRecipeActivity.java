@@ -41,20 +41,29 @@ import java.util.ArrayList;
 
 import static org.apache.commons.lang3.text.WordUtils.capitalizeFully;
 
+/**
+ * This activity takes form inputs for recipe name, directions, picture, and ingredients then
+ * makes a database call to add them as a new recipe in user's recipes. Includes form validation
+ * for all fields. Also includes a recyclerview for ingredients.
+ *
+ * @author Mitchell Thompson
+ * @version 1.0
+ * @see IngredientsAdapter
+ */
 public class AddRecipeActivity extends AppCompatActivity {
     private static final String TAG = "AddRecipeActivity";
-
     private Context context;
-
-    private TextView recipeNameInput, directionsInput;
-    private String recipeName, directions;
-    private Button nextBtn, importBtn, addIngredientBtn;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference mRef;
     private String userID;
+
+    private DatabaseReference mRef;
+
+    private TextView recipeNameInput, directionsInput;
+    private String recipeName, directions;
+    private Button nextBtn, importBtn, addIngredientBtn;
 
     private RecyclerView recyclerView;
     private IngredientsAdapter ingredientsAdapter;
@@ -88,7 +97,6 @@ public class AddRecipeActivity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
-        mRef = mFirebaseDatabase.getReference("/recipes/" + userID);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -107,11 +115,18 @@ public class AddRecipeActivity extends AppCompatActivity {
         //prevent keyboard from popping up on activity start
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        mRef = mFirebaseDatabase.getReference("/recipes/" + userID);
+
         recipeNameInput = findViewById(R.id.edit_name_input);
         directionsInput = findViewById(R.id.edit_directions_input);
 
         ingredients = new ArrayList<>();
 
+        /**
+         * Sets OnClickListener for button to Add Recipe. Checks for recipe name, directions, and
+         * if at least one ingredient was added. If yes then calls method AddRecipe to add recipe to
+         * database.
+         */
         nextBtn = findViewById(R.id.add_to_recipes);
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +144,7 @@ public class AddRecipeActivity extends AppCompatActivity {
             }
         });
 
+        //On click of import button launches ImportActivity
         importBtn = findViewById(R.id.import_btn);
         importBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,7 +156,6 @@ public class AddRecipeActivity extends AppCompatActivity {
         imageSelected = false;
         btnChoose = findViewById(R.id.chose_recipe_pic_btn);
         imageView = findViewById(R.id.imgView);
-
         btnChoose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,12 +163,14 @@ public class AddRecipeActivity extends AppCompatActivity {
             }
         });
 
-
-
         ingredientItem = findViewById(R.id.edit_ingredient_item_EditText);
         ingredientAmount = findViewById(R.id.edit_ingredient_amount_EditText);
 
 
+        /**
+         * Click Listener to add user inputted ingredient ingredients ArrayList then notifies
+         * IngredientAdapter of change.
+         */
         addIngredientBtn = findViewById(R.id.add_ingredient_btn);
         addIngredientBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,16 +194,21 @@ public class AddRecipeActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Passes ingredients Arraylist to the recyclerview IngredientAdapter to list ingredients
+         */
         context = getApplicationContext();
         recyclerView = findViewById(R.id.edit_ingredient_recycler);
         recyclerViewLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
-
         ingredientsAdapter = new IngredientsAdapter(context, ingredients);
         recyclerView.setAdapter(ingredientsAdapter);
 
     }
 
+    /**
+     * Makes database call to add recipe to user's recipes then starts MainActivity
+     */
     private void AddRecipe(){
         recipeName = recipeNameInput.getText().toString();
         directions = directionsInput.getText().toString();

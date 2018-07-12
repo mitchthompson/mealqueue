@@ -3,11 +3,9 @@ package com.mitchlthompson.mealqueue;
 
 import android.content.Context;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,26 +29,24 @@ import com.mitchlthompson.mealqueue.helpers.Recipe;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * This fragment controls the UI for the recipes list. Uses a customized recylerview to display
+ * each recipe. Includes a searchview that uses a filterhelper to filter search results. Each recipe
+ * contains an onClickListener that sends users to the RecipeFragment displaying that recipe.
+ *
+ * @author Mitchell Thompson
+ * @version 1.0
+ * @see MainActivity
+ * @see com.mitchlthompson.mealqueue.helpers.RecipesFilterHelper
+ * @see RecipeAdapter
+ * @see RecipeFragment
+ */
 public class RecipesFragment extends Fragment {
     private static final String TAG = "RecipesFragment";
     private Context context;
     private View view;
-
-    private RecyclerView recyclerView;
-    private RelativeLayout relativeLayout;
-    private RecipeAdapter recipeAdapter;
-    private RecyclerView.LayoutManager recyclerViewLayoutManager;
-
-    private SearchView searchView;
-
-    private ArrayList<Recipe> recipesList;
-    private Button addRecipeBtn;
-
-    private Map<String,Object> recipes;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
@@ -59,11 +54,19 @@ public class RecipesFragment extends Fragment {
     private DatabaseReference mRef;
     private String userID;
 
+    private RecyclerView recyclerView;
+    private RelativeLayout relativeLayout;
+    private RecipeAdapter recipeAdapter;
+    private RecyclerView.LayoutManager recyclerViewLayoutManager;
+
+    private SearchView searchView;
+    private ArrayList<Recipe> recipesList;
+    private Button addRecipeBtn;
+    private Map<String,Object> recipes;
 
     public RecipesFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -72,11 +75,13 @@ public class RecipesFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_recipes, container, false);
         context = getActivity();
 
+        //Firebase variables for verifying user auth
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
+        //User auth listener. Returns user to login screen if not verified.
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -91,10 +96,10 @@ public class RecipesFragment extends Fragment {
             }
         };
 
+
         searchView = view.findViewById(R.id.recipes_searchView);
 
-        mRef = mFirebaseDatabase.getReference("/recipes/" + userID);
-
+        //Set onClickListener for addRecipeButton. Launches AddRecipeActivity
         addRecipeBtn = view.findViewById(R.id.launch_addrecipe_btn);
         addRecipeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +109,13 @@ public class RecipesFragment extends Fragment {
             }
         });
 
-
+        /**
+         * Makes call to database for user's recipes then passes them to recyclerview RecipeAdapter.
+         * Also sets OnQueryTextListener on searchview to filter search results.
+         * @see RecipeAdapter
+         * @see com.mitchlthompson.mealqueue.helpers.RecipesFilterHelper
+         */
+        mRef = mFirebaseDatabase.getReference("/recipes/" + userID);
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

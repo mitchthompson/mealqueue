@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -46,20 +45,30 @@ import java.util.HashMap;
 
 import static org.apache.commons.lang3.text.WordUtils.capitalizeFully;
 
+/**
+ * This activity allows a user to edit a recipe. It is started from the RecipeFragment
+ * when a user clicks the Edit button. The recipeID is passed in the bundle which is used to make
+ * a database call to get the current recipe details. When the user clicks to Finish button another
+ * database call is made to update the recipe with any changes.
+ *
+ * @author Mitchell Thompson
+ * @version 1.0
+ * @see RecipeFragment
+ */
 public class EditRecipeActivity extends AppCompatActivity {
     private static final String TAG = "EditRecipeActivity";
-
     private Context context;
-
-    private TextView recipeNameInput, directionsInput;
-    private String recipeName, directions, recipeID;;
-    private Button nextBtn, addIngredientBtn;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference mRef, currentRecipeRef, editRecipeRef;
     private String userID;
+
+    private DatabaseReference mRef, currentRecipeRef, editRecipeRef;
+
+    private TextView recipeNameInput, directionsInput;
+    private String recipeName, directions, recipeID;;
+    private Button nextBtn, addIngredientBtn;
 
     private RecyclerView recyclerView;
     private IngredientsAdapter ingredientsAdapter;
@@ -92,7 +101,6 @@ public class EditRecipeActivity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
-        mRef = mFirebaseDatabase.getReference("/recipes/" + userID);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -121,6 +129,8 @@ public class EditRecipeActivity extends AppCompatActivity {
         recipeNameInput = findViewById(R.id.edit_name_input);
         directionsInput = findViewById(R.id.edit_directions_input);
 
+        mRef = mFirebaseDatabase.getReference("/recipes/" + userID);
+
         ingredients = new ArrayList<>();
 
         getCurrentRecipe();
@@ -139,8 +149,6 @@ public class EditRecipeActivity extends AppCompatActivity {
                     Log.d(TAG, "No ingredients entered");
                 }else{
                     UpdateRecipe(recipeID);
-//                    startActivity(new Intent(EditRecipeActivity.this, MainActivity.class)
-//                            .putExtra("New Recipe", recipeName));
                 }
             }
         });
