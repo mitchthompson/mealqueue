@@ -98,7 +98,8 @@
             android:text="Import Recipe From Web"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/myToolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/myToolbar"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/chose_recipe_pic_btn"
