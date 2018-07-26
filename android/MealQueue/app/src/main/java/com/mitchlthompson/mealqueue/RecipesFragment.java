@@ -116,6 +116,7 @@ public class RecipesFragment extends Fragment {
          * @see com.mitchlthompson.mealqueue.helpers.RecipesFilterHelper
          */
         mRef = mFirebaseDatabase.getReference("/recipes/" + userID);
+        //mRef = mFirebaseDatabase.getReference("/recipes/default");
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
