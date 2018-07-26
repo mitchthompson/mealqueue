@@ -114,6 +114,7 @@ public class RecipeFragment extends Fragment {
          * TextViews
          */
         mRef = mFirebaseDatabase.getReference("/recipes/" + userID + "/" + recipeID);
+        //mRef = mFirebaseDatabase.getReference("/recipes/default/" + recipeID);
         recipeNameTextView = view.findViewById(R.id.edit_name_textView);
         directionsTextview = view.findViewById(R.id.recipe_directions_textView);
         ingredientsList = view.findViewById(R.id.ingredients_list);
