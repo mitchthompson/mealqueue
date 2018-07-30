@@ -10,13 +10,12 @@ Meal Queue is a meal planning app that I was inspired to make from my own experi
 Mitchell Thompson
 
 # Dependicies
-Latest version of Android Studio
-Minimum SDK 24
-Target SDK 26
+Latest version of Android Studio  
+Minimum SDK 24  
+Target SDK 26  
 
 ## License
 Apache License 2.0 - see [license](https://github.com/mitchthompson/mealqueue/blob/master/LICENSE)
 
-##Documentation 
-
+## Documentation 
 see [javadocs](https://mitchthompson.github.io/mealqueue/)
